@@ -1,0 +1,130 @@
+{
+  // Place your snippets for java here. Each snippet is defined under a snippet name and has a prefix, body and
+  // description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+  // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the
+  // same ids are connected.
+  // Example:
+  // "Print to console": {
+  // 	"prefix": "log",
+  // 	"body": [
+  // 		"console.log('$1');",
+  // 		"$2"
+  // 	],
+  // 	"description": "Log output to console"
+  // }
+  "System.out": {
+    "prefix": ["sysout", "stdout"],
+    "body": "System.out.println(${1:$TM_SELECTED_TEXT});$0",
+    "description": "Outputs to stdout with selected text",
+  },
+  "System.out.printf": {
+    "prefix": ["sysoutf", "stdoutf"],
+    "body": "System.out.printf(${1:$TM_SELECTED_TEXT});$0",
+    "description": "Outputs to stdout with selected text (Using printf)",
+  },
+  "System.err.printf": {
+    "prefix": ["syserrf", "stderrf"],
+    "body": "System.err.printf(${1:$TM_SELECTED_TEXT});$0",
+    "description": "outputs to stderr with selected text (Using printf)",
+  },
+  "Scanner": {
+    "prefix": ["scan", "sysin", "sn", "stdin"],
+    "body": [
+      "try(Scanner ${1:scan} = new Scanner(${2:System.in})){",
+      "\t$TM_SELECTED_TEXT$0",
+      "}",
+    ],
+    "description": "creates a new scanner with the name defined by selected text if applicable",
+  },
+  "Input File": {
+    "prefix": ["input", "file", "dat"],
+    "body": [
+      "try(Scanner ${1:scan} = new Scanner($TM_FILENAME_BASE.class.getResourceAsStream( \"./${2:${TM_FILENAME_BASE/(.*)/${1:/downcase}/}.dat}\" ))){",
+      "\t$TM_SELECTED_TEXT$0",
+      "}",
+    ],
+    "description": "Creates a scanner with the contents of a file located adjacent to the class file",
+  },
+  "File Lines": {
+    "prefix": ["lines"],
+    "body": [
+      "try (var lines = Files.lines(Path.of( \"./${2:${TM_FILENAME_BASE/(.*)/${1:/downcase}/}.dat}\" ))) {",
+      "\t$TM_SELECTED_TEXT$0",
+      "}",
+    ],
+    "description": "Gets the lines of a file as a Stream",
+  },
+  "Main Class": {
+    "prefix": "main",
+    "body": [
+      "public class $TM_FILENAME_BASE {",
+      "\tpublic static void main(String[] args) {",
+      "\t$TM_SELECTED_TEXT$0",
+      "\t}",
+      "}",
+    ],
+    "description": "Creates a default class based on the file name with a public main method",
+  },
+
+  "Comment Documentation CSA": {
+    "prefix": "csa-comment",
+    "body": [
+      "$BLOCK_COMMENT_START*",
+      " * public Class $TM_FILENAME_BASE",
+      " *",
+      " * <pre>",
+      " * Author: Aaron Dill",
+      " * Date:   $CURRENT_MONTH/$CURRENT_DATE/$CURRENT_YEAR",
+      " * Course: Computer Science I AP",
+      " * Period: 3rd",
+      " * </pre>",
+      " *",
+      " * Summary of file:",
+      " * ${1:$CLIPBOARD}",
+      " *",
+      " *",
+      " $BLOCK_COMMENT_END",
+      "$0",
+    ],
+    "description": "Inserts CSA acceptable doc comment",
+  },
+  "Comment Documentation UIL": {
+    "prefix": "uil-comment",
+    "body": [
+      "$BLOCK_COMMENT_START*",
+      " * Class $TM_FILENAME_BASE",
+      " *",
+      " * <pre>",
+      " * Author1: Aaron Dill",
+      " * Author2: Dylan Lafferty",
+      " * Author3: Evan Sao",
+      " * Date:    $CURRENT_MONTH/$CURRENT_DATE/$CURRENT_YEAR",
+      " * </pre>",
+      " *",
+      " * Summary of file:",
+      " * ${4:$CLIPBOARD}",
+      " *",
+      " $BLOCK_COMMENT_END",
+      "$0",
+    ],
+    "description": "Inserts doc comment for CS UIL",
+  },
+  "Data Count": {
+    "prefix": "data_count",
+    "body": [
+      "try(Scanner dataScanner = new Scanner( $TM_FILENAME_BASE.class.getResourceAsStream( \"./${2:${TM_FILENAME_BASE/(.*)/${1:/downcase}/}.dat}\" ) )){",
+      "\tint dataCount = dataScanner.nextInt();",
+      "\tdataScanner.nextLine();",
+      "\tfor (int i = 0; i < dataCount; i++) {",
+      "\t\t${0:${TM_SELECTED_TEXT:// Do Some Stuff}}",
+      "\t}",
+      "}",
+    ],
+    "description": "Gets number of lines to read from the first line of a file, then repeats a loop that many times",
+  },
+  "New ArrayList": {
+    "prefix": "list",
+    "body": "List<${1:String}> ${2:list} = new ArrayList<>();\n$0",
+    "description": "Creates a new ArrayList",
+  },
+}

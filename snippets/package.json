@@ -1,0 +1,41 @@
+{
+  "name": "my-snippets",
+  "version": "0.0.1",
+  "contributes": {
+    "snippets": [
+      {
+        "language": [
+          "html",
+          "jade",
+          "pug",
+          "eruby",
+          "javascriptreact",
+          "htmldjango",
+          "astro"
+        ],
+        "path": "./html.jsonc"
+      },
+      {
+        "language": "java",
+        "path": "./java.jsonc"
+      },
+      {
+        "language": [
+          "javascript",
+          "javascriptreact",
+          "vue",
+          "svelte"
+        ],
+        "path": "./javascript.jsonc"
+      },
+      {
+        "language": [
+          "shellscript",
+          "shell",
+          "sh"
+        ],
+        "path": "./shellscript.jsonc"
+      }
+    ]
+  }
+}
