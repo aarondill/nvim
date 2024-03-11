@@ -19,12 +19,17 @@ local function line_not_empty(input)
     if not vtext:find("^%s*$") then return input end -- not empty
   end
 end
-local function toggleMovement(firstOp, thenOp)
-  local pos = vim.api.nvim_win_get_cursor(0)
-  vim.cmd("normal! " .. firstOp)
-  local newpos = vim.api.nvim_win_get_cursor(0)
-  -- Compare string representations of tables. Works bc simple tables (ie {2, 3})
-  if table.concat(pos,",") == table.concat(newpos,",") then vim.cmd("normal! " .. thenOp) end
+local function toggle_movement(first, second) ---@return fun()
+  -- Allow <C-k> escapes
+  first = vim.api.nvim_replace_termcodes(first, true, false, true)
+  second = vim.api.nvim_replace_termcodes(second, true, false, true)
+  return vim.schedule_wrap(function()
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0), 1, 2)
+    vim.api.nvim_feedkeys(first, 'nx', false) -- run first -- note: 'x' is needed to ensure that it happens *now*
+    local nrow, ncol = unpack(vim.api.nvim_win_get_cursor(0), 1, 2)
+    if row ~= nrow or col ~= ncol then return end -- it moved!
+    return vim.api.nvim_feedkeys(second, 'n', false) -- run then
+  end)
 end
 
 map({ "i", "n" }, "<F3>", function()
@@ -61,13 +66,13 @@ map("n", "<leader>q1", vim.cmd.q, "Exit without saving")
 map("t", "<Esc>", "<C-\\><C-n>", "Exit insert")
 
 -- Map 0 to go between 0 and ^
-map({ "n", "x" }, "0", bind.with(require("utils.toggle_movement"), "^", "0"), "Go to start of line", { silent = true })
-map({ "n", "x" }, "^", bind.with(require("utils.toggle_movement"), "0", "^"), "Go to start of line", { silent = true })
+map({ "n", "x" }, "0", toggle_movement("^", "0"), "Go to start of line", { silent = true })
+map({ "n", "x" }, "^", toggle_movement("0", "^"), "Go to start of line", { silent = true })
 -- Map gg to go between gg and G
 map(
   { "n", "x" },
   "gg",
-  bind.with(require("utils.toggle_movement"), "gg", "G"),
+  toggle_movement("gg", "G"),
   "Go to start/end of file",
   { silent = true }
 )
@@ -75,7 +80,7 @@ map(
 map(
   { "n", "x" },
   "G",
-  bind.with(require("utils.toggle_movement"), "G", "gg"),
+toggle_movement("G", "gg"),
   "Go to start/end of file",
   { silent = true }
 )
