@@ -11,8 +11,7 @@ end
 
 ---Use in an expr mapping. Returns the mapping if the current line (or selected text) is not just whitespace
 ---@param input string
----@return fun(): string?
-local function line_not_empty(input)
+local function line_not_empty(input) ---@return fun(): string?
   return function()
     local vtext = get_vtext() or get_cursorline_contents()
     if not vtext then return end
@@ -20,24 +19,25 @@ local function line_not_empty(input)
   end
 end
 local function toggle_movement(first, second) ---@return fun()
-  -- Allow <C-k> escapes
-  first = vim.api.nvim_replace_termcodes(first, true, false, true)
+  first = vim.api.nvim_replace_termcodes(first, true, false, true) -- Allow <C-k> escapes
   second = vim.api.nvim_replace_termcodes(second, true, false, true)
-  return vim.schedule_wrap(function()
+  return function()
     local row, col = unpack(vim.api.nvim_win_get_cursor(0), 1, 2)
     vim.api.nvim_feedkeys(first, 'nx', false) -- run first -- note: 'x' is needed to ensure that it happens *now*
     local nrow, ncol = unpack(vim.api.nvim_win_get_cursor(0), 1, 2)
     if row ~= nrow or col ~= ncol then return end -- it moved!
     return vim.api.nvim_feedkeys(second, 'n', false) -- run then
-  end)
+  end
 end
 
 map({ "i", "n" }, "<F3>", function()
-  local cmd = vim.fn.getreg(":", 1) --[[@as string]]
+  local cmd = vim.fn.getreg(":", 1) --[[@as string?]]
   if not cmd or cmd == "" then return vim.notify("No previous command line", vim.log.levels.ERROR) end
-  local parsed = vim.api.nvim_parse_cmd(cmd, {})
-  local res = vim.api.nvim_cmd(parsed, { output = true })
-  return text.insert(res, true)
+  local ok, res = pcall(vim.api.nvim_exec2, cmd, { output = true })
+  if not ok then return vim.notify(res, vim.log.levels.ERROR) end
+  local output = res and res.output
+  if not output then return end
+  return text.insert(output, true)
 end, "Insert last command output into buffer")
 
 -- Change U to redo for symetry with u
@@ -53,8 +53,10 @@ map("n", "Y", "y$", "Yank until EOL")
 -- Quick save and quit
 map("n", "<leader>wq", function()
   -- Save if possible
-  local cmd = (vim.o.bt:len() == 0 and vim.o.modifiable and not vim.readonly) and vim.cmd.wq or vim.cmd.q
-  handle_error(cmd)()
+  local should_write=vim.o.bt:len() == 0 and vim.o.modifiable and not vim.readonly
+  local cmd = should_write and vim.cmd.wq or vim.cmd.q
+  local ok,err = pcall(cmd)
+  if not ok then return vim.notify(err, vim.log.levels.ERROR) end
 end, "Save and exit")
 
 -- Quick quit
