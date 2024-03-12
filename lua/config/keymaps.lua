@@ -304,7 +304,6 @@ end
 map("n", { "<C-CR>", "<Leader><CR>" }, term(true), "Terminal (root dir)")
 map("n", { "<S-CR>", "<Leader><Leader><CR>" }, term(false), "Terminal (cwd dir)")
 
-map("x", "<F4>", function() end)
 map("x", "<C-/>", function()
   -- If :Telescope command doesn't exist, call :grep instead
   if vim.fn.exists(":Telescope") == 2 then return "<Cmd>Telescope grep_string<Cr>" end
