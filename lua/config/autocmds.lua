@@ -120,13 +120,6 @@ vim.api.nvim_create_autocmd("User", {
   end,
 })
 
---- Show diagnostic messages when the cursor stops over it
-vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-  pattern = "*",
-  group = VimRCAutoCmds,
-  callback = function() vim.diagnostic.open_float(nil, { focus = false, scope = "cursor" }) end,
-})
-
 vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = { "gitcommit", "gitrebase" },
   group = VimRCAutoCmds,
