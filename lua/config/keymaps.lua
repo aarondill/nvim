@@ -184,13 +184,11 @@ map("n", "<c-s-a>", "<c-x>", "Decrement")
 map("n", "Y", "y$", "Yank until EOL")
 
 -- Quick save and quit
+map("n", "<leader>qq", "<cmd>qa<cr>", "Quit all")
 map("n", "<leader>wq", function()
-  -- Save if possible
   local should_write = vim.o.bt:len() == 0 and vim.o.modifiable and not vim.readonly
-  local cmd = should_write and vim.cmd.wq or vim.cmd.q
-  local ok, err = pcall(cmd)
-  if not ok then return notifications.error(err) end
-end, "Save and exit")
+  return should_write and "<cmd>wq<cr>" or "<cmd>q<cr>"
+end, "Save and exit", { expr = true })
 
 -- Quick quit
 map("n", "<leader>q!", vim.cmd.q, "Exit without saving")
