@@ -28,6 +28,141 @@ local function toggle_movement(first, second) ---@return fun()
   end
 end
 
+--- Call this function to placehold a keymap
+local unimplemented
+do
+  local count = 0
+  function unimplemented()
+    count = count + 1
+    local define_path = debug.getinfo(2, "S").source:sub(2)
+    local define_line = debug.getinfo(2, "l").currentline
+    return function()
+      return notifications.error({
+        "Sorry, this is a currently unimplemented keymap!",
+        ("Defined at: `%s:%d`"):format(define_path, define_line),
+      })
+    end
+  end
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "VeryLazy",
+    once = true,
+    callback = function()
+      if count == 0 then return end
+      return notifications.warn(
+        ("Currently %d unimplemented keymaps!"):format(count),
+        { title = "Unimplemented Keymaps" }
+      )
+    end,
+  })
+end
+
+-- map up/down to move over screen lines instead of file lines (only matters with 'wrap')
+map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+map({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+map({ "n", "x" }, "<Up>", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+-- Move to window using the <ctrl> hjkl keys
+map("n", "<C-h>", "<C-w>h", { desc = "Go to left window", remap = true })
+map("n", "<C-j>", "<C-w>j", { desc = "Go to lower window", remap = true })
+map("n", "<C-k>", "<C-w>k", { desc = "Go to upper window", remap = true })
+map("n", "<C-l>", "<C-w>l", { desc = "Go to right window", remap = true })
+map("t", "<C-h>", "<cmd>wincmd h<cr>", { desc = "Go to left window" })
+map("t", "<C-j>", "<cmd>wincmd j<cr>", { desc = "Go to lower window" })
+map("t", "<C-k>", "<cmd>wincmd k<cr>", { desc = "Go to upper window" })
+map("t", "<C-l>", "<cmd>wincmd l<cr>", { desc = "Go to right window" })
+-- Resize window using <ctrl> arrow keys
+map("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
+map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
+map("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
+map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
+-- Move Lines
+---TODO: can this be merged together?
+map("n", "<A-j>", "<cmd>m .+1<cr>==", { desc = "Move down" })
+map("n", "<A-k>", "<cmd>m .-2<cr>==", { desc = "Move up" })
+map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up" })
+map("i", "<A-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move down" })
+map("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
+map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
+-- buffers
+map("n", { "<S-h>", "[b" }, "<cmd>bprevious<cr>", { desc = "Prev buffer" })
+map("n", { "<S-l>", "]b" }, "<cmd>bnext<cr>", { desc = "Next buffer" })
+-- Clear search with <esc>
+map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })
+-- Add undo break-points
+for _, k in ipairs({ ",", ".", ";" }) do
+  map("i", k, k .. "<c-g>u")
+end
+map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
+map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
+map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New File" })
+map("n", "[q", vim.cmd.cprev, { desc = "Previous quickfix" })
+map("n", "]q", vim.cmd.cnext, { desc = "Next quickfix" })
+map({ "n", "v" }, "<leader>cf", unimplemented(), { desc = "Format" })
+-- diagnostic
+map("n", "]d", vim.diagnostic.goto_next, { desc = "Next Diagnostic" })
+map("n", "[d", vim.diagnostic.goto_prev, { desc = "Prev Diagnostic" })
+-- toggle options
+
+---@param silent boolean?
+---@param values? {[1]:any, [2]:any}
+---@return fun() toggler the function to toggle the given option
+local function toggle_option(option, values, silent)
+  silent, values = silent or false, values or { true, false }
+  return function()
+    local new_value = values[1]
+    if vim.opt_local[option]:get() == values[1] then new_value = values[2] end
+    vim.opt_local[option] = new_value
+    if silent then return end -- Don't notify!
+    local msg = (new_value == true and "Enabled %s") or (new_value == false and "Disabled %s") or "Set %s to %s"
+    return notifications.info(msg:format(option, new_value), { title = "Option" })
+  end
+end
+---@return fun() toggler the function to toggle diagnostics
+local function toggle_diagnostics(buffer_local) ---@param buffer_local boolean?
+  -- if this Neovim version supports checking if diagnostics are enabled then use that for the current state
+  if not vim.diagnostic.is_disabled then
+    return function()
+      return notifications.warn({
+        "Toggling diagnostics is unsupported when vim.diagnostic.is_disabled is nil.",
+        "Call vim.diagnostic.enable() or vim.diagnostic.disable() to control them.",
+      })
+    end
+  end
+  return function()
+    local enable = vim.diagnostic.is_disabled()
+    local f = enable and vim.diagnostic.enable or vim.diagnostic.disable
+    local msg = enable and "Enabled diagnostics" or "Disabled diagnostics"
+    f(buffer_local and 0 or nil)
+    return notifications.info(msg, { title = "Diagnostics" })
+  end
+end
+local function toggle_inlay_hints()
+  if not vim.lsp.inlay_hint then return notifications.warn("This NeoVim version doesn't have inlay_hint support!") end
+  return vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())
+end
+
+map("n", "<leader>uf", unimplemented(), { desc = "Toggle auto format (global)" })
+map("n", "<leader>uF", unimplemented(), { desc = "Toggle auto format (buffer)" })
+map("n", "<leader>us", toggle_option("spell"), { desc = "Toggle Spelling" })
+map("n", "<leader>uw", toggle_option("wrap"), { desc = "Toggle Word Wrap" })
+map("n", "<leader>uL", toggle_option("relativenumber"), { desc = "Toggle Relative Line Numbers" })
+map("n", "<leader>ud", toggle_diagnostics(), { desc = "Toggle Diagnostics (global)" })
+map("n", "<leader>uD", toggle_diagnostics(true), { desc = "Toggle Diagnostics (buffer)" })
+local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
+map("n", "<leader>uc", toggle_option("conceallevel", { 0, conceallevel }), { desc = "Toggle Conceal" })
+map("n", "<leader>uh", toggle_inlay_hints, { desc = "Toggle Inlay Hints" })
+map("n", "<leader>uT", function()
+  local f = vim.b.ts_highlight and vim.treesitter.stop or vim.treesitter.start
+  return f()
+end, { desc = "Toggle Treesitter Highlight" })
+local lg = function() return require("utils.terminal").open("lazygit", { esc_esc = false, ctrl_hjkl = false }) end
+map("n", "<leader>gg", lg, { desc = "Lazygit" })
+-- windows
+map("n", "<leader>ww", "<C-W>p", { desc = "Other window", remap = true })
+map("n", "<leader>wd", "<C-W>c", { desc = "Delete window", remap = true })
+map("n", { "<leader>-", "<leader>w-" }, "<C-W>s", { desc = "Split window below", remap = true })
+map("n", { "<leader>|", "<leader>w|" }, "<C-W>v", { desc = "Split window right", remap = true })
+
 map({ "i", "n" }, "<F3>", function()
   local cmd = vim.fn.getreg(":", 1) --[[@as string?]]
   if not cmd or cmd == "" then return notifications.error("No previous command line") end
@@ -136,7 +271,7 @@ map("i", "<Tab>", function()
   -- If characters all the way back to start of line were all whitespace,
   -- insert whatever expandtab setting is set to do.
   local current_line = get_cursorline_contents()
-  if current_line:match("^%s*$") then return "<Tab>" end
+  if not current_line or current_line:match("^%s*$") then return "<Tab>" end
 
   -- Insert appropriate amount of spaces instead of real tabs
   local sts = vim.bo.softtabstop <= 0 and vim.fn.shiftwidth() or vim.bo.softtabstop
@@ -160,13 +295,16 @@ map("i", "<S-Tab>", "<C-d>", "Tab inserts a tab, shift-tab should remove it")
 
 map({ "n", "x" }, "\\", "@:", "Backslash redoes the last command")
 
-local lazyterm = function()
-  local root = require("lazyvim.util.root")
-  local terminal = require("lazyvim.util.terminal")
-  return terminal.open(nil, { cwd = root.get() })
+-- floating terminal
+local term = function(root) ---@param root boolean?
+  if root then return unimplemented() end --- TODO: support root dir
+  return function()
+    local t = require("utils.terminal").open(nil, { cwd = nil })
+    map({ "t", "n" }, "<C-CR>", function() t:hide() end, { buffer = t.buf, nowait = true })
+  end
 end
-map("n", { "<C-CR>", "<Leader><CR>" }, lazyterm, "Terminal (root dir)")
-map("t", "<C-CR>", lazyterm, "Terminal (root dir)")
+map("n", { "<C-CR>", "<Leader><CR>" }, term(true), "Terminal (root dir)")
+map("n", { "<S-CR>", "<Leader><Leader><CR>" }, term(false), "Terminal (cwd dir)")
 
 map("x", "<F4>", function() end)
 map("x", "<C-/>", function()
