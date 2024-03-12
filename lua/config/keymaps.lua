@@ -1,7 +1,4 @@
-local bind = require("utils.bind")
 local get_vtext = require("utils.vtext")
-local has_plugin = require("utils.has_plugin") 
-local handle_error = require("utils.handle_error")
 local map = require("utils.set_key_map")
 local text = require("utils.text")
 local function get_cursorline_contents() ---@return string?
@@ -183,9 +180,10 @@ map("t", "<C-CR>", lazyterm, "Terminal (root dir)")
 map("x", "<F4>", function()
 end)
 map("x", "<C-/>", function()
-  if has_plugin('telescope') then return "<Cmd>Telescope grep_string<Cr>" end
+  -- If :Telescope command doesn't exist, call :grep instead
+  if vim.fn.exists(":Telescope") == 2 then return "<Cmd>Telescope grep_string<Cr>" end
   return ":<C-u>grep <C-r><C-w>"
-end, "Grep for the selected string", {expr=true})
+end, "Grep for the selected string", { expr = true })
 
 map("n", "<bs>", function()
   if vim.fn.getreg("#") == "" then return "<cmd>bn<cr>" end
