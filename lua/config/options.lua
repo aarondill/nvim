@@ -59,7 +59,7 @@ opt.vb = false
 
 --Never time out on mappings
 opt.timeout = true
-opt.timeoutlen = 300
+opt.timeoutlen = 1000
 -- opt.timeout = false
 
 -- Quickly time out on keycodes
