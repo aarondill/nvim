@@ -1,3 +1,4 @@
+local notifications = require("utils.notifications")
 -- Autocmds are automatically loaded on the VeryLazy event
 -- Default autocmds that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
 -- Add any additional autocmds here
@@ -36,10 +37,7 @@ api.nvim_create_autocmd(NEW_BUF_EVENTS, {
     ---@type string
     local file = ev.file or ""
     local ext, count = file:sub(2):gsub(".+%.(.+).tmpl$", "%1")
-    if count == 0 then
-      vim.notify("Could not determine template extension for " .. file)
-      return
-    end
+    if count == 0 then return notifications.warn("Could not determine template extension for " .. file) end
     vim.opt.filetype = ext
   end,
 })

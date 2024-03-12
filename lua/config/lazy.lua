@@ -1,12 +1,10 @@
+local notifications = require("utils.notifications")
 local root_safe = require("utils.root_safe")
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   if not root_safe then
-    vim.notify(
-      ("Warning: cloning lazy.nvim into another user's home directory (%s)."):format(lazypath),
-      vim.log.levels.WARN
-    )
+    notifications.warn(("Warning: cloning lazy.nvim into another user's home directory (%s)."):format(lazypath))
   end
   -- bootstrap lazy.nvim
   -- stylua: ignore

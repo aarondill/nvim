@@ -1,4 +1,5 @@
 local is_tty = require("utils.is_tty")
+local notifications = require("utils.notifications")
 ---@param colorscheme fun()|string|(fun()|string)[]
 local function set_colorscheme(colorscheme)
   if type(colorscheme) ~= "table" then colorscheme = { colorscheme } end
@@ -21,7 +22,7 @@ vim.api.nvim_create_autocmd("User", {
     local colorscheme = not is_tty() and { require("tokyonight").load } or { "wildcharm", "pablo" }
     local ok = set_colorscheme(colorscheme)
     if not ok then
-      vim.notify("Could not load your colorscheme", vim.log.levels.ERROR)
+      notifications.error("Could not load your colorscheme")
       vim.cmd.colorscheme("habamax")
     end
   end,

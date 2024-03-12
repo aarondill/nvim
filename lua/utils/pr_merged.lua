@@ -1,3 +1,4 @@
+local notifications = require("utils.notifications")
 local M = {}
 ---(Unused)
 ---@param cmds (string|string[])[] cmds to run
@@ -71,9 +72,7 @@ function M.on_lazy(repo, pr)
           ("The blocking pr(s) #%s in repo %s have been merged!"):format(table.concat(pr, ","), repo),
           "Please change the plugin spec to use the upstream!",
         }, "\n")
-        return vim.notify(msg, vim.log.levels.WARN, {
-          title = "Use Plugin Upstream!",
-        })
+        return notifications.warn(msg, { title = "Use Plugin Upstream!" })
       end)
     end,
   })

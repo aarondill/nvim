@@ -1,5 +1,6 @@
 local get_vtext = require("utils.vtext")
 local map = require("utils.set_key_map")
+local notifications = require("utils.notifications")
 local text = require("utils.text")
 local function get_cursorline_contents() ---@return string?
   local linenr = vim.api.nvim_win_get_cursor(0)[1]
@@ -29,9 +30,9 @@ end
 
 map({ "i", "n" }, "<F3>", function()
   local cmd = vim.fn.getreg(":", 1) --[[@as string?]]
-  if not cmd or cmd == "" then return vim.notify("No previous command line", vim.log.levels.ERROR) end
+  if not cmd or cmd == "" then return notifications.error("No previous command line") end
   local ok, res = pcall(vim.api.nvim_exec2, cmd, { output = true })
-  if not ok then return vim.notify(tostring(res), vim.log.levels.ERROR) end
+  if not ok then return notifications.error(tostring(res)) end
   local output = res and res.output
   if not output then return end
   return text.insert(output, true)
@@ -53,7 +54,7 @@ map("n", "<leader>wq", function()
   local should_write = vim.o.bt:len() == 0 and vim.o.modifiable and not vim.readonly
   local cmd = should_write and vim.cmd.wq or vim.cmd.q
   local ok, err = pcall(cmd)
-  if not ok then return vim.notify(err, vim.log.levels.ERROR) end
+  if not ok then return notifications.error(err) end
 end, "Save and exit")
 
 -- Quick quit
@@ -112,11 +113,10 @@ map({ "i", "n" }, "<F1>", "<NOP>", "Disable help shortcut key")
 map("n", "<Leader>yn", function()
   local res = vim.fn.expand("%:t")
   if not res or res == "" then
-    local opts = { title = "Failed to yank filename", render = "compact" }
-    return vim.notify("Buffer has no filename", vim.log.levels.ERROR, opts)
+    return notifications.error("buffer has no filename", { title = "Failed to yank filename", render = "compact" })
   end
   vim.fn.setreg("+", res)
-  vim.notify(res, vim.log.levels.INFO, { title = "Yanked filename" })
+  return notifications.info(res, { title = "yanked filename" })
 end, "Yank the filename of current buffer")
 
 map("n", "<Leader>yp", function()
@@ -124,7 +124,7 @@ map("n", "<Leader>yp", function()
   res = res == "" and vim.loop.cwd() or res
   if not res or res == "" then return end
   vim.fn.setreg("+", res)
-  vim.notify(res, vim.log.levels.INFO, { title = "Yanked filepath" })
+  return notifications.info(res, { title = "yanked filepath" })
 end, "Yank the full filepath of current buffer")
 
 map("x", "<", "<gv", "Reselect visual block after indent")

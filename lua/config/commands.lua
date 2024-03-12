@@ -1,3 +1,4 @@
+local notifications = require("utils.notifications")
 local text = require("utils.text")
 
 vim.api.nvim_create_user_command("DiffSaved", function()
@@ -36,7 +37,7 @@ vim.api.nvim_create_user_command("UniqLines", function(opts)
   end
   local removed = text.dedupe_lines(start, last, opts.bang)
   local linecount = last - start + 1
-  return vim.notify(("Removed %d duplicates over %d lines"):format(removed, linecount), vim.log.levels.INFO)
+  return notifications.info(("Removed %d duplicates over %d lines"):format(removed, linecount))
 end, { desc = "Remove duplicate lines, keeping the first", bang = true, range = true, bar = true })
 
 local function loop(client)
@@ -51,7 +52,7 @@ local function loop(client)
   table.sort(capAsList) -- sorts alphabetically
 
   local msg = ("# %s\n%s"):format(client.name, table.concat(capAsList, "\n"))
-  vim.notify(msg, vim.log.levels.INFO, { timeout = 14 * 1000 })
+  notifications.info(msg, { timeout = 14 * 1000 })
 end
 vim.api.nvim_create_user_command("LspCapabilities", function()
   local curBuf = vim.api.nvim_get_current_buf()
