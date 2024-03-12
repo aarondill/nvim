@@ -17,10 +17,12 @@ end
 ---@param msg string|string[]
 ---@param opts NotifyOpts?
 function M.notify(msg, opts)
+  --- Note: do these before checking in_fast_event to ensure that if the table changes between calls, the message doesn't change.
   opts = clone(opts or {})
+  ---@diagnostic disable-next-line: undefined-field tbl.n is valid
+  if type(msg) == "table" then msg = table.concat(msg, "\n", 1, msg.n) end
   if vim.in_fast_event() then return vim.schedule(function() return M.notify(msg, opts) end) end
   local lang, level = opts.lang or "markdown", opts.level or vim.log.levels.INFO
-  if type(msg) == "table" then msg = table.concat(msg, "\n") end
   local n = opts.once and vim.notify_once or vim.notify
   ---@cast opts table
   local _on_open = opts.on_open ---@type (fun(win: integer): any)?
