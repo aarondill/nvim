@@ -31,7 +31,7 @@ map({ "i", "n" }, "<F3>", function()
   local cmd = vim.fn.getreg(":", 1) --[[@as string?]]
   if not cmd or cmd == "" then return vim.notify("No previous command line", vim.log.levels.ERROR) end
   local ok, res = pcall(vim.api.nvim_exec2, cmd, { output = true })
-  if not ok then return vim.notify(res, vim.log.levels.ERROR) end
+  if not ok then return vim.notify(tostring(res), vim.log.levels.ERROR) end
   local output = res and res.output
   if not output then return end
   return text.insert(output, true)
@@ -82,7 +82,10 @@ map("n", "<leader>ds", "<cmd>DiffSaved<cr>", "Show the [d]iff with last [s]ave")
 
 -- Paste system clipboard with Ctrl + v
 map({ "c", "i", "n", "x" }, "<C-v>", function()
-  vim.paste(vim.fn.getreg("+", 1, true), -1) ---@diagnostic disable-line: param-type-mismatch # this works, but the types are wrong
+  ---@diagnostic disable-next-line: redundant-parameter # this works, but the types are wrong
+  local clip = vim.fn.getreg("+", 1, true)
+  assert(type(clip) == "table", "getreg returned a string!")
+  return vim.paste(clip, -1)
 end, "Paste from system clipboard")
 
 -- Cut to system clipboard with Ctrl + x
