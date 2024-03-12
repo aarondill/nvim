@@ -25,8 +25,8 @@ end, {})
 
 vim.api.nvim_create_user_command("RandomLine", function()
   local l = math.random(1, vim.fn.line("$") or 1) -- Get random number upto last line
-  local col = vim.api.nvim_win_set_cursor(0)[2]
-  vim.api.nvim_win_set_cursor(0, { l, col })
+  local col = vim.api.nvim_win_get_cursor(0)[2]
+  return vim.api.nvim_win_set_cursor(0, { l, col })
 end, {})
 
 vim.api.nvim_create_user_command("UniqLines", function(opts)
