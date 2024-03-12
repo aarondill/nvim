@@ -28,5 +28,21 @@ local M = {
     "Makefile",
     "Makefile.am",
   },
+  close_on_q = {
+    "PlenaryTestPopup",
+    "help",
+    "lspinfo",
+    "notify",
+    "qf",
+    "query",
+    "spectre_panel",
+    "startuptime",
+    "tsplayground",
+    "neotest-output",
+    "checkhealth",
+    "neotest-summary",
+    "neotest-output-panel",
+    "git", -- used for fugitive
+  },
 }
 return M

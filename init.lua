@@ -1,5 +1,13 @@
 require("future") -- Fowards compatability
 
+-- Override .pluto and .tmpl extensions
+vim.filetype.add({
+  extension = {
+    [".pluto"] = "lua",
+    [".tmpl"] = function(path) return vim.fs.basename(path):match(".+%.(.+).tmpl$") end,
+  },
+})
+
 require("config.options") -- This needs to come first!
 require("config.lazy") -- bootstrap lazy.nvim and plugins
 

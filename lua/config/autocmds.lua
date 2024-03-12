@@ -1,55 +1,95 @@
-local notifications = require("utils.notifications")
--- Autocmds are automatically loaded on the VeryLazy event
--- Default autocmds that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
--- Add any additional autocmds here
-local api = vim.api
-local NEW_BUF_EVENTS = { "BufReadPost", "BufNewFile" }
-local VimRCAutoCmds = api.nvim_create_augroup("VimRCAutoCmds", { clear = true })
--- Stop recording of dir history
-vim.g.netrw_dirhistmax = 0
--- Change .conf syntax highlighting to an aproximate
-api.nvim_create_autocmd(NEW_BUF_EVENTS, {
-  desc = "Change .conf syntax highlighting to an aproximate",
-  group = VimRCAutoCmds,
-  pattern = "*.conf",
-  command = "set syntax=dosini",
-})
--- Change .pluto to .lua
-api.nvim_create_autocmd(NEW_BUF_EVENTS, {
-  desc = "Change .pluto to .lua filetype",
-  group = VimRCAutoCmds,
-  pattern = "*.pluto",
-  command = "set ft=lua",
-})
+local consts = require("consts")
+local map = require("utils.set_key_map")
+vim.g.netrw_dirhistmax = 0 -- Stop recording of dir history
 
--- Disable auto-comments!!!
-api.nvim_create_autocmd("FileType", {
-  desc = "Disable auto-comments",
-  group = VimRCAutoCmds,
-  pattern = "*",
-  command = "setlocal formatoptions-=c formatoptions-=r formatoptions-=o",
-})
+local augroup = vim.api.nvim_create_augroup("vimrc_autocmds", { clear = true })
 
-api.nvim_create_autocmd(NEW_BUF_EVENTS, {
-  pattern = "*.tmpl",
-  group = VimRCAutoCmds,
-  callback = function(ev)
-    ---@type string
-    local file = ev.file or ""
-    local ext, count = file:sub(2):gsub(".+%.(.+).tmpl$", "%1")
-    if count == 0 then return notifications.warn("Could not determine template extension for " .. file) end
-    vim.opt.filetype = ext
+-- Check if we need to reload the file when it changed
+vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
+  group = augroup,
+  callback = function()
+    if vim.o.buftype == "nofile" then return end
+    return vim.cmd.checktime()
+  end,
+})
+-- Highlight on yank
+vim.api.nvim_create_autocmd("TextYankPost", {
+  group = augroup,
+  callback = function() return vim.highlight.on_yank() end,
+})
+-- resize splits if window got resized
+vim.api.nvim_create_autocmd({ "VimResized" }, {
+  group = augroup,
+  callback = function()
+    local current_tab = vim.fn.tabpagenr()
+    vim.cmd("tabdo wincmd =")
+    vim.cmd("tabnext " .. current_tab)
   end,
 })
 
+vim.api.nvim_create_autocmd("FileType", {
+  desc = "Disable auto-comments",
+  group = augroup,
+  command = "setlocal formatoptions-=c formatoptions-=r formatoptions-=o",
+})
 vim.api.nvim_create_autocmd("VimLeavePre", {
-  desc = "hack to work around Neovim bug",
-  pattern = "*",
-  group = VimRCAutoCmds,
+  desc = "hack to work around Neovim bug #21856",
+  group = augroup,
+  callback = function() return vim.cmd.sleep({ args = { "50m" } }) end,
+})
+-- resize splits if window got resized
+vim.api.nvim_create_autocmd({ "VimResized" }, {
+  group = augroup,
   callback = function()
-    -- HACK: Work around https://github.com/neovim/neovim/issues/21856
-    -- causing exit code 134 on :wq
-    vim.cmd.sleep({ args = { "1m" } })
+    local current_tab = vim.fn.tabpagenr()
+    vim.cmd("tabdo wincmd =")
+    vim.cmd("tabnext " .. current_tab)
+  end,
+})
+
+-- go to last visited line when opening a buffer
+vim.api.nvim_create_autocmd("BufReadPost", {
+  group = augroup,
+  callback = function(event)
+    local exclude = { "gitcommit" }
+    local buf = event.buf ---@type integer
+    if vim.tbl_contains(exclude, vim.bo[buf].filetype) or vim.b[buf].has_jumped_last_known_line then return end
+    vim.b[buf].has_jumped_last_known_line = true
+    local mark = vim.api.nvim_buf_get_mark(buf, '"')
+    local lcount = vim.api.nvim_buf_line_count(buf)
+    if mark[1] < 0 or mark[1] > lcount then return end
+    pcall(vim.api.nvim_win_set_cursor, 0, mark)
+  end,
+})
+
+-- close some filetypes with <q>
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup,
+  pattern = consts.close_on_q,
+  callback = function(event)
+    vim.bo[event.buf].buflisted = false
+    map("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
+  end,
+})
+-- make it easier to close man-files when opened inline
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup,
+  pattern = { "man" },
+  callback = function(event) vim.bo[event.buf].buflisted = false end,
+})
+-- Fix conceallevel for json files
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  group = augroup,
+  pattern = { "json", "jsonc", "json5" },
+  callback = function() vim.opt_local.conceallevel = 0 end,
+})
+-- Auto create dir when saving a file, in case some intermediate directory does not exist
+vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+  group = augroup,
+  callback = function(event)
+    if event.match:match("^%w%w+://") then return end
+    local file = vim.loop.fs_realpath(event.match) or event.match
+    return vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
 })
 
@@ -80,7 +120,7 @@ end
 
 vim.api.nvim_create_autocmd("User", {
   pattern = "VeryLazy",
-  group = VimRCAutoCmds,
+  group = augroup,
   desc = "Load documentation for lazyloaded plugins",
   once = true,
   callback = function()
@@ -105,7 +145,7 @@ vim.api.nvim_create_autocmd("User", {
 })
 vim.api.nvim_create_autocmd("User", {
   pattern = "LazyLoad",
-  group = VimRCAutoCmds,
+  group = augroup,
   desc = "Unload documentation when lazy loading plugins",
   callback = function(ev)
     local name = ev.data
@@ -122,10 +162,19 @@ vim.api.nvim_create_autocmd("User", {
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = { "gitcommit", "gitrebase" },
-  group = VimRCAutoCmds,
+  group = augroup,
   callback = function()
     vim.b.spell = true
     vim.api.nvim_win_set_cursor(0, { 1, 0 }) -- go to top line
     vim.cmd.startinsert() -- start in insert mode
+  end,
+})
+-- wrap and check for spell in text filetypes
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup,
+  pattern = { "gitcommit", "markdown" },
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.spell = true
   end,
 })
