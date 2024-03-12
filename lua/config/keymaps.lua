@@ -20,10 +20,10 @@ local function toggle_movement(first, second) ---@return fun()
   second = vim.api.nvim_replace_termcodes(second, true, false, true)
   return function()
     local row, col = unpack(vim.api.nvim_win_get_cursor(0), 1, 2)
-    vim.api.nvim_feedkeys(first, 'nx', false) -- run first -- note: 'x' is needed to ensure that it happens *now*
+    vim.api.nvim_feedkeys(first, "nx", false) -- run first -- note: 'x' is needed to ensure that it happens *now*
     local nrow, ncol = unpack(vim.api.nvim_win_get_cursor(0), 1, 2)
     if row ~= nrow or col ~= ncol then return end -- it moved!
-    return vim.api.nvim_feedkeys(second, 'n', false) -- run then
+    return vim.api.nvim_feedkeys(second, "n", false) -- run then
   end
 end
 
@@ -50,9 +50,9 @@ map("n", "Y", "y$", "Yank until EOL")
 -- Quick save and quit
 map("n", "<leader>wq", function()
   -- Save if possible
-  local should_write=vim.o.bt:len() == 0 and vim.o.modifiable and not vim.readonly
+  local should_write = vim.o.bt:len() == 0 and vim.o.modifiable and not vim.readonly
   local cmd = should_write and vim.cmd.wq or vim.cmd.q
-  local ok,err = pcall(cmd)
+  local ok, err = pcall(cmd)
   if not ok then return vim.notify(err, vim.log.levels.ERROR) end
 end, "Save and exit")
 
@@ -68,21 +68,9 @@ map("t", "<Esc>", "<C-\\><C-n>", "Exit insert")
 map({ "n", "x" }, "0", toggle_movement("^", "0"), "Go to start of line", { silent = true })
 map({ "n", "x" }, "^", toggle_movement("0", "^"), "Go to start of line", { silent = true })
 -- Map gg to go between gg and G
-map(
-  { "n", "x" },
-  "gg",
-  toggle_movement("gg", "G"),
-  "Go to start/end of file",
-  { silent = true }
-)
+map({ "n", "x" }, "gg", toggle_movement("gg", "G"), "Go to start/end of file", { silent = true })
 -- Map G to go between G and gg
-map(
-  { "n", "x" },
-  "G",
-toggle_movement("G", "gg"),
-  "Go to start/end of file",
-  { silent = true }
-)
+map({ "n", "x" }, "G", toggle_movement("G", "gg"), "Go to start/end of file", { silent = true })
 
 -- Remap f9 to fold control
 map("i", "<F9>", "<C-O>za", "Toggle Fold")
@@ -98,14 +86,14 @@ map({ "c", "i", "n", "x" }, "<C-v>", function()
 end, "Paste from system clipboard")
 
 -- Cut to system clipboard with Ctrl + x
-map("x", "<C-x>", line_not_empty('"+d'), "Cut to system clipboard", {expr=true})
-map("n", "<C-x>", line_not_empty('"+dd'), "Cut to system clipboard", {expr=true})
-map("i", "<C-x>", line_not_empty('<ESC>"+ddi'), "Cut to system clipboard", {expr=true})
+map("x", "<C-x>", line_not_empty('"+d'), "Cut to system clipboard", { expr = true })
+map("n", "<C-x>", line_not_empty('"+dd'), "Cut to system clipboard", { expr = true })
+map("i", "<C-x>", line_not_empty('<ESC>"+ddi'), "Cut to system clipboard", { expr = true })
 
 -- Copy to system clipboard with Ctr + c
-map("x", "<C-c>", line_not_empty('"+y'), "[C]opy to system clipboard", {expr=true})
-map("n", "<C-c>", line_not_empty('"+yy'), "[C]opy to system clipboard", {expr=true})
-map("i", "<C-c>", line_not_empty('<ESC>"+yya'), "[C]opy to system clipboard", {expr=true})
+map("x", "<C-c>", line_not_empty('"+y'), "[C]opy to system clipboard", { expr = true })
+map("n", "<C-c>", line_not_empty('"+yy'), "[C]opy to system clipboard", { expr = true })
+map("i", "<C-c>", line_not_empty('<ESC>"+yya'), "[C]opy to system clipboard", { expr = true })
 
 -- Cd shortcuts
 map("n", "<Leader>cc", "<Cmd>cd! %:h<CR>", "[c]d to [c]urrent buffer path")
@@ -177,8 +165,7 @@ end
 map("n", { "<C-CR>", "<Leader><CR>" }, lazyterm, "Terminal (root dir)")
 map("t", "<C-CR>", lazyterm, "Terminal (root dir)")
 
-map("x", "<F4>", function()
-end)
+map("x", "<F4>", function() end)
 map("x", "<C-/>", function()
   -- If :Telescope command doesn't exist, call :grep instead
   if vim.fn.exists(":Telescope") == 2 then return "<Cmd>Telescope grep_string<Cr>" end

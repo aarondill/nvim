@@ -2,7 +2,7 @@
 ---@param filename string the filename to seach for
 ---@return boolean success true if file found, false if not found
 return function(filename)
-  local match = vim.fs.find(filename, { upward = true, limit = 1, type = "file", })
+  local match = vim.fs.find(filename, { upward = true, limit = 1, type = "file" })
   local file = match[1]
   if not file then
     vim.notify("Could not find file: " .. filename, vim.log.levels.WARN)

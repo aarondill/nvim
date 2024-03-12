@@ -19,11 +19,11 @@ vim.api.nvim_create_autocmd("User", {
   once = true,
   callback = function()
     local colorscheme = not is_tty() and { require("tokyonight").load } or { "wildcharm", "pablo" }
-  local ok = set_colorscheme(colorscheme)
-  if not ok then
-    vim.notify("Could not load your colorscheme", vim.log.levels.ERROR)
-    vim.cmd.colorscheme("habamax")
-  end
+    local ok = set_colorscheme(colorscheme)
+    if not ok then
+      vim.notify("Could not load your colorscheme", vim.log.levels.ERROR)
+      vim.cmd.colorscheme("habamax")
+    end
   end,
 })
 

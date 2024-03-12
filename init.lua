@@ -1,6 +1,6 @@
 require("future") -- Fowards compatability
 
-require('config.options') -- This needs to come first!
+require("config.options") -- This needs to come first!
 require("config.lazy") -- bootstrap lazy.nvim and plugins
 
 -- Require all the files in ./config

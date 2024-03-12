@@ -6,23 +6,34 @@ vim.api.nvim_create_user_command("DiffSaved", function()
   vim.cmd.diffthis()
   vim.cmd.vnew()
   vim.cmd.read(filename) -- TODO: use nvim apis?
-  vim.cmd.normal({"1Gdd", bang=true})
+  vim.cmd.normal({ "1Gdd", bang = true })
   vim.cmd.diffthis()
 
-  local opts = { buftype = "nofile", bufhidden = "wipe", buflisted = false, swapfile = false, readonly = true, filetype = filetype}
-  for k, v in pairs(opts) do vim.opt[k] = v end
+  local opts = {
+    buftype = "nofile",
+    bufhidden = "wipe",
+    buflisted = false,
+    swapfile = false,
+    readonly = true,
+    filetype = filetype,
+  }
+  for k, v in pairs(opts) do
+    vim.opt[k] = v
+  end
   vim.keymap.set("n", "q", vim.cmd.close, { buffer = true })
 end, {})
 
 vim.api.nvim_create_user_command("RandomLine", function()
   local l = math.random(1, vim.fn.line("$") or 1) -- Get random number upto last line
   local col = vim.api.nvim_win_set_cursor(0)[2]
-  vim.api.nvim_win_set_cursor(0, {l, col})
+  vim.api.nvim_win_set_cursor(0, { l, col })
 end, {})
 
 vim.api.nvim_create_user_command("UniqLines", function(opts)
   local start, last = 1, vim.fn.line("$")
-  if opts.range == 2 then start, last = opts.line1, opts.line2 end
+  if opts.range == 2 then
+    start, last = opts.line1, opts.line2
+  end
   local removed = text.dedupe_lines(start, last, opts.bang)
   local linecount = last - start + 1
   return vim.notify(("Removed %d duplicates over %d lines"):format(removed, linecount), vim.log.levels.INFO)

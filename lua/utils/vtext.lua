@@ -8,7 +8,7 @@ local function vtext()
   vim.cmd([[silent! normal! "aygv]])
   local text = vim.fn.getreg("a")
   vim.fn.setreg("a", a_orig)
-  assert(type(text) == "string","Something went wrong getting the visual selection!")
+  assert(type(text) == "string", "Something went wrong getting the visual selection!")
   return text
 end
 

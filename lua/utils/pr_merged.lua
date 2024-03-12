@@ -5,7 +5,7 @@ local M = {}
 ---@param kill_on_exit boolean? if true (default), kill other processes when one fails
 ---@return nil
 function M.all_success(cmds, cb, kill_on_exit)
-  if kill_on_exit==nil then kill_on_exit=true end
+  if kill_on_exit == nil then kill_on_exit = true end
   local jobs = {} ---@type table<vim.SystemObj, any>
   local success = true
 
@@ -28,9 +28,9 @@ function M.all_success(cmds, cb, kill_on_exit)
     -- There's still jobs left, and we haven't failed yet, or we should wait for them to finish
     if next(jobs) and (success or not kill_on_exit) then return end
     check:stop()
-      for j in pairs(jobs) do
-        j:kill("sigterm")
-      end
+    for j in pairs(jobs) do
+      j:kill("sigterm")
+    end
     return cb(success)
   end)
 end
@@ -48,7 +48,7 @@ function M.pr_merged(repo, pr, cb)
   --- Note: curl cam take multiple arguments. It runs them sequencially
   local cmd = { "curl", "-fI", "-L", "--" }
   for i, p in ipairs(pr) do
-    cmd[#cmd+1] = ("https://api.github.com/repos/%s/pulls/%d/merge"):format(repo, p)
+    cmd[#cmd + 1] = ("https://api.github.com/repos/%s/pulls/%d/merge"):format(repo, p)
   end
   --- Note: the api returns 204 if merged (else 404), so curl will return 0 if merged.
   pcall(vim.system, cmd, { stderr = false, stdout = false }, function(out)
