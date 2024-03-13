@@ -28,6 +28,7 @@ vim.api.nvim_create_autocmd("User", {
   end,
 })
 
+---@type LazySpec
 return {
   {
     "folke/tokyonight.nvim",
