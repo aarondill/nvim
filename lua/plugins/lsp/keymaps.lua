@@ -1,16 +1,6 @@
 local map = require("utils.map")
 local M = {}
 
----@param buffer integer
----@param method string
-local function has(buffer, method)
-  method = method:find("/") and method or "textDocument/" .. method
-  local clients = vim.lsp.get_clients({ bufnr = buffer })
-  for _, client in ipairs(clients) do
-    if client.supports_method(method, { bufnr = buffer }) then return true end
-  end
-  return false
-end
 local function has_plugin(p) return require("lazy.core.config").spec.plugins[p] ~= nil end
 
 ---@param client integer|vim.lsp.Client
@@ -49,8 +39,8 @@ function M.apply(client, buffer)
     { "gy", telescope_builtin("lsp_type_definitions"), desc = "Goto T[y]pe Definition" },
     { "K", vim.lsp.buf.hover, desc = "Hover", cond = cap.hoverProvider },
     { "gK", vim.lsp.buf.signature_help, desc = "Signature Help", cond = cap.signatureHelpProvider },
-    { "<leader>ca", vim.lsp.buf.code_action, "Code Action", mode = { "n", "v" }, cond = cap.codeActionProvider },
-    { "<leader>cA", source_action, "Source Action", cond = cap.codeActionProvider },
+    { "<leader>ca", vim.lsp.buf.code_action, desc="Code Action", mode = { "n", "v" }, cond = cap.codeActionProvider },
+    { "<leader>cA", source_action, desc="Source Action", cond = cap.codeActionProvider },
     { "<leader>cc", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "v" }, cond = cap.codeLensProvider },
     { "<leader>cC", vim.lsp.codelens.refresh, desc = "Refresh & Display Codelens", cond = cap.codeLensProvider },
     { { "<leader>cr", "<f2>" }, rename_rhs, desc = "Rename", expr = rename_is_expr, cond = cap.renameProvider },
