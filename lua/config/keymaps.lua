@@ -1,3 +1,4 @@
+local create_autocmd = require("utils.create_autocmd")
 local get_vtext = require("utils.vtext")
 local map = require("utils.set_key_map")
 local notifications = require("utils.notifications")
@@ -43,17 +44,13 @@ do
       })
     end
   end
-  vim.api.nvim_create_autocmd("User", {
-    pattern = "VeryLazy",
-    once = true,
-    callback = function()
-      if count == 0 then return end
-      return notifications.warn(
-        ("Currently %d unimplemented keymaps!"):format(count),
-        { title = "Unimplemented Keymaps" }
-      )
-    end,
-  })
+  create_autocmd("User", function()
+    if count == 0 then return end
+    return notifications.warn(
+      ("Currently %d unimplemented keymaps!"):format(count),
+      { title = "Unimplemented Keymaps" }
+    )
+  end, { pattern = "VeryLazy", once = true })
 end
 
 -- map up/down to move over screen lines instead of file lines (only matters with 'wrap')

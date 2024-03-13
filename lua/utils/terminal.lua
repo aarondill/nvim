@@ -1,3 +1,4 @@
+local create_autocmd = require("utils.create_autocmd")
 local M = {}
 
 ---@type table<string,LazyFloat>
@@ -32,11 +33,7 @@ function M.open(cmd, opts)
   for _, key in ipairs(unmaps) do
     vim.keymap.set("t", key, key, { buffer = t.buf, nowait = true })
   end
-
-  vim.api.nvim_create_autocmd("BufEnter", {
-    callback = function() vim.cmd.startinsert() end,
-    buffer = t.buf,
-  })
+  create_autocmd("BufEnter", "startinsert", { buffer = t.buf })
   return t
 end
 

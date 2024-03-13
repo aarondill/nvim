@@ -1,3 +1,4 @@
+local create_autocmd = require("utils.create_autocmd")
 local hcn
 do
   --- HACK: Clear the noice search_count when moving
@@ -6,15 +7,13 @@ do
   local function clear_noice()
     if autocmd then return end -- cache it, we only need one autocmd
     if not package.loaded["noice"] then return end -- noice hasn't loaded, we can skip this
-    autocmd = vim.api.nvim_create_autocmd({ "CursorMoved", "InsertEnter", "CmdlineEnter" }, {
-      callback = function()
-        if jumping then return end -- this was a jump, keep the count
-        local m = require("noice.ui.msg").get("msg_show", "search_count")
-        require("noice.message.manager").remove(m)
-        autocmd = nil
-        return true -- remove the autocmd
-      end,
-    })
+    autocmd = create_autocmd({ "CursorMoved", "InsertEnter", "CmdlineEnter" }, function()
+      if jumping then return end -- this was a jump, keep the count
+      local m = require("noice.ui.msg").get("msg_show", "search_count")
+      require("noice.message.manager").remove(m)
+      autocmd = nil
+      return true -- remove the autocmd
+    end)
   end
 
   ---Calls key on highlight_current_n and handles jumping
@@ -37,18 +36,12 @@ return {
     vim.opt.hlsearch = false
     local augroup = vim.api.nvim_create_augroup("ClearSearchHL", { clear = true })
     -- only see hlsearch /while/ searching
-    vim.api.nvim_create_autocmd({ "CmdlineEnter", "CmdlineLeave" }, {
-      pattern = { "/", "\\?" },
-      callback = function(ev)
-        local val = ev.event == "CmdlineEnter" -- enable on enter, disable on exit
-        vim.opt.hlsearch = val
-      end,
-      group = augroup,
-    })
+    create_autocmd({ "CmdlineEnter", "CmdlineLeave" }, function(ev)
+      vim.opt.hlsearch = ev.event == "CmdlineEnter" -- enable on enter, disable on exit
+    end, { pattern = { "/", "\\?" }, group = augroup })
     -- apply n|N highlighting to the first search result
-    vim.api.nvim_create_autocmd("CmdlineLeave", {
+    create_autocmd("CmdlineLeave", function() require("highlight_current_n")["/,?"]() end, {
       pattern = { "/", "\\?" },
-      callback = function() require("highlight_current_n")["/,?"]() end,
       group = augroup,
     })
   end,

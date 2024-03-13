@@ -1,3 +1,4 @@
+local create_autocmd = require("utils.create_autocmd")
 local notifications = require("utils.notifications")
 local M = {}
 ---(Unused)
@@ -48,7 +49,7 @@ function M.pr_merged(repo, pr, cb)
 
   --- Note: curl cam take multiple arguments. It runs them sequencially
   local cmd = { "curl", "-fI", "-L", "--" }
-  for i, p in ipairs(pr) do
+  for _, p in ipairs(pr) do
     cmd[#cmd + 1] = ("https://api.github.com/repos/%s/pulls/%d/merge"):format(repo, p)
   end
   --- Note: the api returns 204 if merged (else 404), so curl will return 0 if merged.
@@ -63,19 +64,15 @@ end
 ---@param pr integer|integer[] the pr number to check if merged
 function M.on_lazy(repo, pr)
   pr = type(pr) == "table" and pr or { pr } ---@cast pr integer[]
-  vim.api.nvim_create_autocmd("User", {
-    pattern = "VeryLazy",
-    once = true,
-    callback = function()
-      return M.pr_merged(repo, pr, function()
-        local msg = table.concat({
-          ("The blocking pr(s) #%s in repo %s have been merged!"):format(table.concat(pr, ","), repo),
-          "Please change the plugin spec to use the upstream!",
-        }, "\n")
-        return notifications.warn(msg, { title = "Use Plugin Upstream!" })
-      end)
-    end,
-  })
+  create_autocmd("User", function()
+    return M.pr_merged(repo, pr, function()
+      local msg = table.concat({
+        ("The blocking pr(s) #%s in repo %s have been merged!"):format(table.concat(pr, ","), repo),
+        "Please change the plugin spec to use the upstream!",
+      }, "\n")
+      return notifications.warn(msg, { title = "Use Plugin Upstream!" })
+    end)
+  end, { pattern = "VeryLazy", once = true })
 end
 
 return M
