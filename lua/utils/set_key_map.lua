@@ -6,13 +6,13 @@
 ---@param opts table?          Table of |:map-arguments|. (If desc is defined, will be overwritten by arg)
 ---@overload fun(mode:string|string[], lhs:string|string[], rhs:string|function, opts:table)
 return function(mode, lhs, rhs, desc, opts)
-  local descOpts
   if type(desc) == "string" then
-    descOpts = vim.tbl_extend("force", opts or {}, { desc = desc })
+    opts = vim.tbl_extend("force", opts or {}, { desc = desc })
   else
     assert((desc == nil or type(desc) == "table") and opts == nil, "Desc can only be a table if opts is nil")
-    descOpts = desc
+    opts = desc
   end
+  opts = opts or {}
 
   assert(type(lhs) == "table" or type(lhs) == "string", "lhs must be a string or table")
   local lhsT
@@ -21,8 +21,7 @@ return function(mode, lhs, rhs, desc, opts)
   else
     lhsT = { lhs }
   end
-
   for _, l in pairs(lhsT) do
-    vim.keymap.set(mode, l, rhs, descOpts)
+    vim.keymap.set(mode, l, rhs, opts)
   end
 end
