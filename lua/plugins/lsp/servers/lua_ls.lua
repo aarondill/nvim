@@ -1,3 +1,7 @@
+local library = {}
+--- TODO: remove this when possible!
+if vim.fn.has("nvim-0.10") == 1 then library[#library + 1] = (require("neodev.config").types()) end
+
 ---@type LazySpec
 return {
   "neovim/nvim-lspconfig",
@@ -7,9 +11,12 @@ return {
       lua_ls = { ---@type lspconfig.options.lua_ls | {}
         settings = {
           Lua = { ---@type _.lspconfig.settings.lua_ls.Lua|{}
-            workspace = { checkThirdParty = false }, ---@type _.lspconfig.settings.lua_ls.Workspace | {}
+            workspace = { checkThirdParty = false, library = library }, ---@type _.lspconfig.settings.lua_ls.Workspace | {}
             codeLens = { enable = true },
-            completion = { callSnippet = "Replace" }, ---@type _.lspconfig.settings.lua_ls.Completion | {}
+            completion = { ---@type _.lspconfig.settings.lua_ls.Completion | {}
+              postfix = "@", -- use @ to fix a mistake (default)
+              callSnippet = "Disable",
+            },
           },
         },
       },
