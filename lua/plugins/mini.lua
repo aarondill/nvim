@@ -6,7 +6,7 @@ return {
   -- and more.
   {
     "echasnovski/mini.surround",
-    keys = function(_, keys)
+    keys = function(_, keys) ---@param keys LazyKeysSpec[]
       -- Populate the keys based on the user's options
       local plugin = require("lazy.core.config").spec.plugins["mini.surround"]
       local opts = require("lazy.core.plugin").values(plugin, "opts", false)
@@ -19,18 +19,25 @@ return {
         { opts.mappings.replace, desc = "Replace surrounding" },
         { opts.mappings.update_n_lines, desc = "Update `MiniSurround.config.n_lines`" },
       }
-      mappings = vim.tbl_filter(function(m) return m[1] and #m[1] > 0 end, mappings)
-      return vim.list_extend(mappings, keys)
+      -- last two don't work until loaded
+      local surround = { ["("] = ")", ["{"] = "}", ["'"] = "'", ['"'] = '"', ["["] = "]" }
+      for k, v in pairs(surround) do
+        mappings[#mappings + 1] =
+          { k, ([[<Cmd>lua MiniSurround.add('visual')<Cr>]] .. v), desc = "Surround selection with " .. v, mode = "x" }
+      end
+
+      return vim.list_extend(vim.tbl_filter(function(m) return m[1] and #m[1] > 0 end, mappings), keys)
     end,
     opts = {
+      n_lines = 50, -- Number of lines within which surrounding is searched
       mappings = {
-        add = "gsa", -- Add surrounding in Normal and Visual modes
-        delete = "gsd", -- Delete surrounding
-        find = "gsf", -- Find surrounding (to the right)
-        find_left = "gsF", -- Find surrounding (to the left)
-        highlight = "gsh", -- Highlight surrounding
-        replace = "gsr", -- Replace surrounding
-        update_n_lines = "gsn", -- Update `n_lines`
+        add = "gza", -- Add surrounding in Normal and Visual modes
+        delete = "gzd", -- Delete surrounding
+        find = "gzf", -- Find surrounding (to the right)
+        find_left = "gzF", -- Find surrounding (to the left)
+        highlight = "gzh", -- Highlight surrounding
+        replace = "gzr", -- Replace surrounding
+        update_n_lines = "gzn", -- Update `n_lines`
       },
     },
   },
