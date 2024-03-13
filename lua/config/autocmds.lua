@@ -1,6 +1,6 @@
 local consts = require("consts")
 local create_autocmd = require("utils.create_autocmd")
-local map = require("utils.set_key_map")
+local map = require("utils.map")
 vim.g.netrw_dirhistmax = 0 -- Stop recording of dir history
 
 local augroup = vim.api.nvim_create_augroup("vimrc_autocmds", { clear = true })

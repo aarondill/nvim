@@ -1,4 +1,4 @@
-local map = require("utils.set_key_map")
+local map = require("utils.map")
 local M = {}
 
 ---@param buffer integer

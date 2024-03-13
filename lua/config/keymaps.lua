@@ -1,6 +1,6 @@
 local create_autocmd = require("utils.create_autocmd")
 local get_vtext = require("utils.vtext")
-local map = require("utils.set_key_map")
+local map = require("utils.map")
 local notifications = require("utils.notifications")
 local text = require("utils.text")
 local function get_cursorline_contents() ---@return string?
