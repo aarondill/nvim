@@ -77,7 +77,7 @@ function M.detect(opts)
     paths = type(paths) == "table" and paths or { paths }
     local roots = {} ---@type string[]
     for _, p in ipairs(paths) do
-      local pp = M.realpath(p)
+      local pp = realpath(p)
       if pp and not vim.tbl_contains(roots, pp) then roots[#roots + 1] = pp end
     end
     table.sort(roots, function(a, b) return #a > #b end)
