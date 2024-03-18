@@ -334,3 +334,13 @@ map("i", "<c-a>", "<c-o>^", "Beginning of line")
 map("i", "<c-e>", "<End>", "End of line")
 map("c", "<c-a>", "<Home>", "Beginning of line")
 map("c", "<c-e>", "<End>", "End of line")
+
+map("i", "<tab>", function()
+  if package.loaded["tabnine"] and require("tabnine.keymaps").accept_suggestion then
+    if require("tabnine.keymaps").accept_suggestion() then return end
+  end
+  if package.loaded["luasnip"] then
+    if require("luasnip").jump(1) then return end
+  end
+  vim.api.nvim_feedkeys("\t", "n", false)
+end, "Tab completion in insert mode")
