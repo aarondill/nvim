@@ -1,3 +1,17 @@
+---Taken from `prettier -h`
+local prettier_parsers = vim.tbl_flatten({
+  { "flow", "babel", "babel-flow", "babel-ts", "typescript", "acorn", "espree", "meriyah", "css", "less" },
+  { "scss", "json", "json5", "jsonc", "json-stringify", "graphql", "markdown", "mdx" },
+  { "vue", "yaml", "glimmer", "html", "angular", "lwc" },
+})
+---vim file types that don't directly map to prettier parser names
+local prettier_ft_overrides = {
+  javascriptreact = "typescript",
+  javascript = "typescript",
+  typescriptreact = "typescript",
+  ["markdown.mdx"] = "mdx",
+}
+
 return {
   "stevearc/conform.nvim",
   optional = true,
@@ -7,15 +21,11 @@ return {
       ---@type conform.FormatterConfigOverride
       prettier = {
         prepend_args = function(_self, ctx)
-          local overrides = { -- vim file types that don't directly map to prettier parser names
-            javascriptreact = "javascript",
-            typescriptreact = "typescript",
-            ["markdown.mdx"] = "mdx",
-          }
           local ft = vim.bo[ctx.buf].filetype
-          local parser = overrides[ft] or ft
-          if parser == "" then return {} end
-          return { "--parser", parser }
+          ft = prettier_ft_overrides[ft] or ft
+          -- If prettier doesn't support this language, take our chances with auto detection
+          if not vim.tbl_contains(prettier_parsers, ft) then return {} end
+          return { "--parser", ft }
         end,
       },
       -- Set stylua to use the current shift width
