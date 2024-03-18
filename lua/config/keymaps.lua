@@ -329,3 +329,8 @@ map("i", "<c-h>", "<left>")
 map("i", "<c-j>", "<down>")
 map("i", "<c-k>", "<up>")
 map("i", "<c-l>", "<right>")
+
+map("i", "<c-a>", "<c-o>^", "Beginning of line")
+map("i", "<c-e>", "<End>", "End of line")
+map("c", "<c-a>", "<Home>", "Beginning of line")
+map("c", "<c-e>", "<End>", "End of line")
