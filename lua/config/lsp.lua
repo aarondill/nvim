@@ -14,6 +14,15 @@ vim.diagnostic.config({
     --   end
     -- end,
   },
+  float = {
+    prefix = "",
+    suffix = "",
+    format = function(d)
+      if not d.code then return d.message end
+      return string.format("%s (%s)", d.message, d.code)
+    end,
+    source = true,
+  },
   severity_sort = true,
   signs = {
     text = {
