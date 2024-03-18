@@ -28,7 +28,7 @@ return {
   cmd = "Neotree",
   keys = {
     {
-      "<leader>e",
+      "<leader>ee",
       function() require("neo-tree.command").execute({ toggle = true, dir = root() }) end,
       desc = "Explorer NeoTree (root dir)",
     },
