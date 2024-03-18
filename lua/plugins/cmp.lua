@@ -20,30 +20,6 @@ local function snippets_down(entry1, entry2)
 end
 
 return {
-  opts = function(_, opts)
-    local cmp = require("cmp")
-    local compare = cmp.config.compare
-    opts = opts or {}
-    return vim.tbl_deep_extend("force", opts, {
-      sorting = {
-        priority_weight = 2,
-        comparators = {
-          compare.offset,
-          compare.exact,
-          compare.score,
-          compare.recently_used,
-          compare.locality,
-          under_cmp,
-          compare.scopes, -- prioritize values in scope order
-          snippets_down,
-          compare.kind, -- superseded by lsp_first -- just used for lowering text
-          compare.sort_text,
-          compare.length,
-          compare.order,
-        },
-      },
-    })
-  end,
   -- auto completion
   {
     "hrsh7th/nvim-cmp",
