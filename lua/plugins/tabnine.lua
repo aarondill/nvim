@@ -16,7 +16,6 @@ return {
   {
     ("%s/tabnine-nvim"):format(use_upstream and "codota" or "aarondill"),
     dev = false,
-
     cond = use_tabnine,
     branch = use_upstream and "master" or "all_together_now",
     build = "./dl_binaries.sh",
@@ -45,6 +44,7 @@ return {
       exclude_filetypes = require("consts").ignored_filetypes, -- Default: { "TelescopePrompt" }
       codelens_enabled = false,
     },
+    -- Note: <tab> is handled in keymaps.lua
   },
   -- Lualine show Tabnine status
   {
@@ -55,29 +55,6 @@ return {
       opts.sections.lualine_b = opts.sections.lualine_b or {}
       table.insert(opts.sections.lualine_b, "tabnine")
       return opts
-    end,
-  },
-  {
-    "hrsh7th/nvim-cmp",
-    opts = function(_, opts)
-      local cmp = require("cmp")
-      return vim.tbl_deep_extend("force", opts or {}, {
-        mapping = {
-          -- Accept without explicit selection
-          ["<TAB>"] = cmp.mapping(function(fallback)
-            local tabnine_keymaps = require("tabnine.keymaps")
-            if tabnine_keymaps.accept_suggestion and tabnine_keymaps.accept_suggestion() then
-              return
-            elseif cmp.visible() then
-              cmp.confirm({ select = false })
-            else
-              -- Fallback is not mapped correctly. Just hard code a tab character
-              vim.api.nvim_feedkeys("\t", "n", false)
-              -- fallback()
-            end
-          end, { "i" }),
-        },
-      })
     end,
   },
 }
