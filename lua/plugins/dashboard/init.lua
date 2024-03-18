@@ -1,7 +1,7 @@
 local t = require("utils.telescope")
 math.randomseed(os.time())
 for _ = 1, 10 do
-math.random()
+  math.random()
 end
 return {
   "nvimdev/dashboard-nvim",
