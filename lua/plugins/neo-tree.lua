@@ -1,6 +1,4 @@
-local root = function() ---@return string?
-  error("Unimplemented!")
-end
+local root = require("utils.root")
 
 ---@param from string
 ---@param to string
@@ -29,7 +27,7 @@ return {
   keys = {
     {
       "<leader>ee",
-      function() require("neo-tree.command").execute({ toggle = true, dir = root() }) end,
+      function() require("neo-tree.command").execute({ toggle = true, dir = root.get() }) end,
       desc = "Explorer NeoTree (root dir)",
     },
     {

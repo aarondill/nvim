@@ -2,6 +2,7 @@ local create_autocmd = require("utils.create_autocmd")
 local get_vtext = require("utils.vtext")
 local map = require("utils.map")
 local notifications = require("utils.notifications")
+local root = require("utils.root")
 local text = require("utils.text")
 local function get_cursorline_contents() ---@return string?
   local linenr = vim.api.nvim_win_get_cursor(0)[1]
@@ -297,10 +298,10 @@ map("i", "<S-Tab>", "<C-d>", "Tab inserts a tab, shift-tab should remove it")
 map({ "n", "x" }, "\\", "@:", "Backslash redoes the last command")
 
 -- floating terminal
-local term = function(root) ---@param root boolean?
-  if root then return unimplemented() end --- TODO: support root dir
+---@param root_dir boolean?
+local term = function(root_dir)
   return function()
-    local t = require("utils.terminal").open(nil, { cwd = nil })
+    local t = require("utils.terminal").open(nil, { cwd = root_dir and root.get() or nil })
     map({ "t", "n" }, "<C-CR>", function() t:hide() end, { buffer = t.buf, nowait = true })
   end
 end
