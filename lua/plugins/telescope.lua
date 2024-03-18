@@ -1,4 +1,4 @@
-local t= require("utils.telescope")
+local t = require("utils.telescope")
 
 ---@param name string
 ---@param fn fun(name:string)
@@ -18,7 +18,6 @@ end
 local function lazy_action(m)
   return function(...) return require("telescope.actions")[m](...) end
 end
-
 
 return {
   "nvim-telescope/telescope.nvim",

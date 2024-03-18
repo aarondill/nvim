@@ -21,4 +21,4 @@ function M.telescope(builtin, opts) ---@param builtin string
   end
 end
 
-return setmetatable(M, {__call=function(_, ...) return M.telescope(...) end})
+return setmetatable(M, { __call = function(_, ...) return M.telescope(...) end })
