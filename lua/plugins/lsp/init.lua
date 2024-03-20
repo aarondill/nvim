@@ -84,6 +84,7 @@ return {
     opts = { ensure_installed = { "stylua", "shfmt" } },
     ---@param opts MasonSettings | {ensure_installed: string[]}
     config = function(_, opts)
+      require("utils.format").register(require("plugins.lsp.formatter").formatter())
       require("mason").setup(opts)
       local mr = require("mason-registry")
       local ft = function()
