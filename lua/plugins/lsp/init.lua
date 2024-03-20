@@ -64,7 +64,8 @@ return {
       for server, server_opts in pairs(opts.servers) do
         if server_opts == true then server_opts = {} end
         if server_opts then
-          if server_opts.mason and vim.tbl_contains(mlsp_servers, server) then
+          local use_mason = server_opts.mason == nil or server_opts
+          if use_mason and vim.tbl_contains(mlsp_servers, server) then
             ensure_installed[#ensure_installed + 1] = server
           else
             setup(server)
