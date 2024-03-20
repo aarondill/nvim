@@ -1,4 +1,3 @@
-local create_autocmd = require("utils.create_autocmd")
 local get_vtext = require("utils.vtext")
 local map = require("utils.map")
 local notifications = require("utils.notifications")
@@ -28,30 +27,6 @@ local function toggle_movement(first, second) ---@return fun()
     if row ~= nrow or col ~= ncol then return end -- it moved!
     return vim.api.nvim_feedkeys(second, "n", false) -- run then
   end
-end
-
---- Call this function to placehold a keymap
-local unimplemented
-do
-  local count = 0
-  function unimplemented()
-    count = count + 1
-    local define_path = debug.getinfo(2, "S").source:sub(2)
-    local define_line = debug.getinfo(2, "l").currentline
-    return function()
-      return notifications.error({
-        "Sorry, this is a currently unimplemented keymap!",
-        ("Defined at: `%s:%d`"):format(define_path, define_line),
-      })
-    end
-  end
-  create_autocmd("User", function()
-    if count == 0 then return end
-    return notifications.warn(
-      ("Currently %d unimplemented keymaps!"):format(count),
-      { title = "Unimplemented Keymaps" }
-    )
-  end, { pattern = "VeryLazy", once = true })
 end
 
 -- map up/down to move over screen lines instead of file lines (only matters with 'wrap')
@@ -95,7 +70,7 @@ map("n", "<leader>l", "<cmd>Lazy<cr>", "Lazy")
 map("n", "<leader>fn", "<cmd>enew<cr>", "New File")
 map("n", "[q", vim.cmd.cprev, "Previous quickfix")
 map("n", "]q", vim.cmd.cnext, "Next quickfix")
-map({ "n", "v" }, "<leader>cf", unimplemented(), "Format")
+map({ "n", "v" }, "<leader>cf", require("utils.format").format, "Format")
 -- diagnostic
 map("n", "]d", vim.diagnostic.goto_next, "Next Diagnostic")
 map("n", "[d", vim.diagnostic.goto_prev, "Prev Diagnostic")
@@ -139,8 +114,8 @@ local function toggle_inlay_hints()
   return vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())
 end
 
-map("n", "<leader>uf", unimplemented(), "Toggle auto format (global)")
-map("n", "<leader>uF", unimplemented(), "Toggle auto format (buffer)")
+map("n", "<leader>uf", require("utils.format").toggle, "Toggle auto format (global)")
+map("n", "<leader>uF", function() return require("utils.format").toggle(true) end, "Toggle auto format (buffer)")
 map("n", "<leader>us", toggle_option("spell"), "Toggle Spelling")
 map("n", "<leader>uw", toggle_option("wrap"), "Toggle Word Wrap")
 map("n", "<leader>uL", toggle_option("relativenumber"), "Toggle Relative Line Numbers")
