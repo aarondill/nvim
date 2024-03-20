@@ -56,6 +56,8 @@ return {
     { "<leader>sw", t.telescope("grep_string", { word_match = "-w" }), desc = "Word (root dir)" },
     { "<leader>sw", t.telescope("grep_string"), mode = "v", desc = "Selection (root dir)" },
     { "<leader>uc", "<cmd>Telescope colorscheme enable_preview=true<cr>", desc = "Colorscheme with preview" },
+    { "<leader>xx", "<cmd>Telescope diagnostics<cr>", desc = "Workspace Diagnostics" },
+    { "<leader>xX", "<cmd>Telescope diagnostics bufnr=0<cr>", desc = "Document Diagnostics" },
   },
   opts = {
     pickers = {
