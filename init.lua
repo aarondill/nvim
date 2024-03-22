@@ -18,6 +18,29 @@ if vim.fn.has("nvim-0.9.0") == 0 then
   return
 end
 
+do -- delay notifications till vim.notify was replaced or after 500ms
+  local notifs, orig = {}, vim.notify
+  local function temp(...) table.insert(notifs, vim.F.pack_len(...)) end
+  vim.notify = temp
+
+  local timer, check = vim.uv.new_timer(), assert(vim.uv.new_check())
+  local function replay()
+    timer:stop()
+    check:stop()
+    if vim.notify == temp then vim.notify = orig end -- put back the original notify if needed
+    vim.schedule(function()
+      for _, notif in ipairs(notifs) do
+        vim.notify(vim.F.unpack_len(notif))
+      end
+    end)
+  end
+
+  check:start(function()
+    if vim.notify ~= temp then replay() end
+  end) -- wait till vim.notify has been replaced
+  timer:start(500, 0, replay) -- or if it took more than 500ms, then something went wrong
+end
+
 require("config.options") -- This needs to come first!
 require("config.lazy") -- bootstrap lazy.nvim and plugins
 
