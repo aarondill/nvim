@@ -124,3 +124,12 @@ create_autocmd({ "FileType" }, function()
   vim.cmd.startinsert() -- start in insert mode
 end, { pattern = { "gitcommit", "gitrebase" }, group = augroup })
 create_autocmd("FileType", "setlocal wrap spell", { group = augroup, pattern = { "gitcommit", "markdown" } })
+
+create_autocmd("BufHidden", function(event)
+  if event.file ~= "" or vim.bo[event.buf].buftype ~= "" then return end
+  if vim.bo[event.buf].modified then return end
+  return vim.schedule(function()
+    if not vim.api.nvim_buf_is_valid(event.buf) then return end
+    return vim.api.nvim_buf_delete(event.buf, {})
+  end)
+end, { desc = "Delete [No Name] buffers", group = augroup })
