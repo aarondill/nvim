@@ -2,7 +2,7 @@
 return {
   "mbbill/undotree",
   keys = {
-    { "<leader>u", "<Cmd>UndotreeToggle<Cr>", desc = "Toggle Undotree" },
+    { "<leader>uu", "<Cmd>UndotreeToggle<Cr>", desc = "Toggle Undotree" },
   },
   init = function()
     vim.g.undotree_WindowLayout = 2 -- put the window on the left, and the diff across the bottom
