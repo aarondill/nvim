@@ -1,10 +1,11 @@
+local notifications = require("utils.notifications")
 local root_safe = require("utils.root_safe")
 local use_tabnine = true
 if not root_safe then
-  vim.notify("Disabling tabnine because the $HOME variable != user's home directory!", vim.log.levels.WARN)
+  notifications.warn("Disabling tabnine because the $HOME variable != user's home directory!")
   use_tabnine = false
 elseif vim.loop.cwd() == vim.loop.os_homedir() and vim.loop.os_uname().release:find("-arch%d*-") then
-  vim.notify("Disabling tabnine because cwd is $HOME! (on an Arch Linux machine)", vim.log.levels.WARN)
+  notifications.warn("Disabling tabnine because cwd is $HOME! (on an Arch Linux machine)")
   use_tabnine = false -- NOTE: tabnine doesn't seem to have this problem on Ubuntu
 end
 
