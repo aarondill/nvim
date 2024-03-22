@@ -194,7 +194,7 @@ map("x", "<F9>", "zf", "Create Fold")
 map("n", "<leader>ds", "<cmd>DiffSaved<cr>", "Show the [d]iff with last [s]ave")
 
 -- Paste system clipboard with Ctrl + v
-map({ "c", "i", "n", "x" }, "<C-v>", function()
+map({ "c", "i", "n", "x" }, { "<C-v>", "<leader>p" }, function()
   ---@diagnostic disable-next-line: redundant-parameter # this works, but the types are wrong
   local clip = vim.fn.getreg("+", 1, true)
   assert(type(clip) == "table", "getreg returned a string!")
