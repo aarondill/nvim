@@ -1,6 +1,7 @@
 local consts = require("consts")
 local create_autocmd = require("utils.create_autocmd")
 local map = require("utils.map")
+local notifications = require("utils.notifications")
 vim.g.netrw_dirhistmax = 0 -- Stop recording of dir history
 
 local augroup = vim.api.nvim_create_augroup("vimrc_autocmds", { clear = true })
@@ -133,3 +134,16 @@ create_autocmd("BufHidden", function(event)
     return vim.api.nvim_buf_delete(event.buf, {})
   end)
 end, { desc = "Delete [No Name] buffers", group = augroup })
+
+create_autocmd("BufWritePre", function(ev)
+  if vim.uv.fs_stat(ev.file) then return end -- this file already exists, don't do this
+  create_autocmd("BufWritePost", function(event)
+    local shebang = vim.api.nvim_buf_get_lines(event.buf, 0, 1, true)[1]
+    if not shebang or not shebang:match("^#!.+") then return end
+    local fileinfo = vim.uv.fs_stat(event.file)
+    -- If it's already executable, stop
+    if not fileinfo or bit.band(fileinfo.mode - 32768, 0x40) ~= 0 then return end
+    assert(vim.uv.fs_chmod(event.file, bit.bor(fileinfo.mode, 493)))
+    notifications.info("Buffer set executable")
+  end, { buffer = ev.buf, once = true })
+end, { desc = "Set files with a she-bang as executable", group = augroup })
