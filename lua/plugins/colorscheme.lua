@@ -14,15 +14,16 @@ local function set_colorscheme(colorscheme)
   end
   return false
 end
-
 create_autocmd("User", function()
-  local colorscheme = not is_tty() and { require("tokyonight").load } or { "wildcharm", "pablo" }
+  ---@type fun()|string|(fun()|string)[]
+  local colorscheme = function() return require("tokyonight").load() end
+  if is_tty() then colorscheme = { "wildcharm", "pablo" } end
   local ok = set_colorscheme(colorscheme)
   if not ok then
     notifications.error("Could not load your colorscheme")
     vim.cmd.colorscheme("habamax")
   end
-end, { pattern = "VeryLazy", once = true })
+end, { pattern = "LazyDone", once = true })
 
 ---@type LazySpec
 return {
