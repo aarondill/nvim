@@ -1,3 +1,4 @@
+local create_autocmd = require("utils.create_autocmd")
 local root = require("utils.root")
 
 ---@param from string
@@ -43,12 +44,21 @@ return {
   },
   deactivate = function() vim.cmd([[Neotree close]]) end,
   init = function()
-    if vim.fn.argc(-1) ~= 1 then return end
-    local dir = assert(vim.fn.argv(0))
-    assert(type(dir) == "string")
-    local stat = vim.loop.fs_stat(dir)
-    if not stat or stat.type ~= "directory" then return end
-    require("neo-tree") -- load neotree to take over netrw
+    --- Load neo-tree if we try to edit a directory
+    create_autocmd({ "BufEnter", "BufWinEnter" }, function(ev)
+      if package.loaded["neo-tree"] then return true end -- don't do anything if it's already loaded
+      local stat = vim.uv.fs_stat(ev.file)
+      if not stat or stat.type ~= "directory" then return end
+      require("neo-tree") -- load neo-tree
+      return true -- we don't need this anymore
+    end)
+    if vim.fn.argc(-1) == 1 then -- if only one argument
+      local dir = assert(vim.fn.argv(0))
+      assert(type(dir) == "string")
+      local stat = vim.loop.fs_stat(dir)
+      if not stat or stat.type ~= "directory" then return end
+      require("neo-tree") -- load neotree to take over netrw
+    end
   end,
   opts = {
     sources = { "filesystem", "buffers", "git_status", "document_symbols" },
