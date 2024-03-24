@@ -19,6 +19,7 @@ local function snippets_down(entry1, entry2)
   if kind2 == types.lsp.CompletionItemKind.Snippet then return true end -- Discourage snippets
 end
 
+---@type LazySpec
 return {
   -- auto completion
   {

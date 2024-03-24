@@ -73,6 +73,7 @@ local function get_current_lsp()
   return table.concat(active_clients, ",")
 end
 
+---@type LazySpec
 return {
   "nvim-lualine/lualine.nvim",
   event = "VeryLazy",

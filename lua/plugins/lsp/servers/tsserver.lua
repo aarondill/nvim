@@ -13,6 +13,7 @@ end, {
   once = true, -- we don't need to modify the table more than once
 })
 
+---@type LazySpec
 return {
   "neovim/nvim-lspconfig",
   opts = {

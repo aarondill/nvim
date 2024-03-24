@@ -8,6 +8,7 @@ local format_options = {
   lsp_fallback = true, -- not recommended to change
 }
 
+---@type LazySpec
 return {
   "stevearc/conform.nvim",
   dependencies = { "mason.nvim" },

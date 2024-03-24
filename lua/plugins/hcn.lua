@@ -29,6 +29,7 @@ do
   end
 end
 
+---@type LazySpec
 return {
   "rktjmp/highlight-current-n.nvim",
   opts = { highlight_group = "IncSearch" },

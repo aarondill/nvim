@@ -14,6 +14,7 @@ end
 ---@class Linter :lint.Linter
 ---@field condition? fun(ctx: {filename: string, dirname: string}): boolean?
 
+---@type LazySpec
 return {
   "mfussenegger/nvim-lint",
   event = { "BufReadPost", "BufNewFile", "BufWritePre" },

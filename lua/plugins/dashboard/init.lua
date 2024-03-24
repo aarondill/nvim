@@ -3,6 +3,7 @@ math.randomseed(os.time())
 for _ = 1, 10 do
   math.random()
 end
+---@type LazySpec
 return {
   "nvimdev/dashboard-nvim",
   event = "VimEnter",

@@ -1,4 +1,5 @@
 local is_tty = require("utils.is_tty")
+---@type LazySpec
 return {
   "otavioschwanck/arrow.nvim",
   opts = {

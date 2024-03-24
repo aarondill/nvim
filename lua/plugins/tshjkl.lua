@@ -1,3 +1,4 @@
+---@type LazySpec
 return {
   "gsuuon/tshjkl.nvim",
   opts = {

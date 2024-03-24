@@ -8,6 +8,7 @@ local function distinct(t)
   end
   return vim.tbl_keys(added)
 end
+---@type LazySpec
 return {
   { -- syntax highlighting.
     "nvim-treesitter/nvim-treesitter",

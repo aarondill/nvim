@@ -1,4 +1,5 @@
 -- buffer remove
+---@type LazySpec
 return {
   "echasnovski/mini.bufremove",
   keys = {

@@ -19,6 +19,7 @@ local function lazy_action(m)
   return function(...) return require("telescope.actions")[m](...) end
 end
 
+---@type LazySpec
 return {
   "nvim-telescope/telescope.nvim",
   cmd = "Telescope",

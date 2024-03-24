@@ -1,5 +1,6 @@
 local icons = require("config.icons")
 -- Optional=true to ensure that this file doesn't install any of these
+---@type LazySpec
 return {
   {
     "folke/flash.nvim",

@@ -2,6 +2,7 @@ local is_tty = require("utils.is_tty")
 -- Don't change anything if not in a tty
 if not is_tty() then return {} end
 
+---@type LazySpec
 return {
   { "nvim-tree/nvim-web-devicons", optional = true, cond = false }, -- Disable it
   {

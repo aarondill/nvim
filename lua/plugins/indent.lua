@@ -1,4 +1,5 @@
 local create_autocmd = require("utils.create_autocmd")
+---@type LazySpec
 return {
   {
     "lukas-reineke/indent-blankline.nvim",
