@@ -194,12 +194,14 @@ map("x", "<F9>", "zf", "Create Fold")
 map("n", "<leader>ds", "<cmd>DiffSaved<cr>", "Show the [d]iff with last [s]ave")
 
 -- Paste system clipboard with Ctrl + v
-map({ "c", "i", "n", "x" }, { "<C-v>", "<leader>p" }, function()
+local function paste()
   ---@diagnostic disable-next-line: redundant-parameter # this works, but the types are wrong
   local clip = vim.fn.getreg("+", 1, true)
   assert(type(clip) == "table", "getreg returned a string!")
   return vim.paste(clip, -1)
-end, "Paste from system clipboard")
+end
+map({ "c", "i", "n", "x" }, "<C-v>", paste, "Paste from system clipboard")
+map({ "n", "x" }, "<leader>p", paste, "Paste from system clipboard") -- only in normal/select
 
 -- Cut to system clipboard with Ctrl + x
 map("x", "<C-x>", line_not_empty('"+d'), "Cut to system clipboard", { expr = true })
