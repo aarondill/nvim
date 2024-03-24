@@ -22,8 +22,8 @@ return {
       -- last two don't work until loaded
       local surround = { ["("] = ")", ["{"] = "}", ["'"] = "'", ['"'] = '"', ["["] = "]" }
       for k, v in pairs(surround) do
-        mappings[#mappings + 1] =
-          { k, ([[<Cmd>lua MiniSurround.add('visual')<Cr>]] .. v), desc = "Surround selection with " .. v, mode = "x" }
+        local cmd = ([[:<C-u>lua MiniSurround.add('visual')<Cr>]] .. v)
+        mappings[#mappings + 1] = { k, cmd, desc = "Surround selection with " .. v, mode = "x" }
       end
 
       return vim.list_extend(vim.tbl_filter(function(m) return m[1] and #m[1] > 0 end, mappings), keys)
