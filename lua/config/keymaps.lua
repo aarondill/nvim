@@ -53,7 +53,7 @@ map("n", "<C-Down>", "<cmd>resize -2<cr>", "Decrease window height")
 map("n", "<C-Left>", "<cmd>vertical resize -2<cr>", "Decrease window width")
 map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", "Increase window width")
 -- Move Lines
-map("n", "<A-j>", "<cmd>m .+2<cr>==", "Move down")
+map("n", "<A-j>", "<cmd>m .+1<cr>==", "Move down")
 map("n", "<A-k>", "<cmd>m .-2<cr>==", "Move up")
 map("i", "<A-k>", "<cmd>m .-2<cr><c-o>==", "Move up")
 map("i", "<A-j>", "<cmd>m .+1<cr><c-o>==", "Move down")
