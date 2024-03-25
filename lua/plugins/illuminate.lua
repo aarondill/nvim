@@ -16,10 +16,10 @@ return {
     require("illuminate").configure(opts)
 
     map("n", "]]", require("illuminate").goto_next_reference, "Next Reference")
-    map("n", "]]", require("illuminate").goto_prev_reference, "Prev Reference")
+    map("n", "[[", require("illuminate").goto_prev_reference, "Prev Reference")
     create_autocmd("FileType", function(ev) -- A lot of ft plugins overwrite [[ and ]]
       map("n", "]]", require("illuminate").goto_next_reference, "Next Reference", { buffer = ev.buf })
-      map("n", "]]", require("illuminate").goto_prev_reference, "Prev Reference", { buffer = ev.buf })
+      map("n", "[[", require("illuminate").goto_prev_reference, "Prev Reference", { buffer = ev.buf })
     end)
   end,
   keys = {
