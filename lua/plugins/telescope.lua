@@ -39,6 +39,7 @@ return {
     { "<leader>:", "<cmd>Telescope command_history<cr>", desc = "Command History" },
     -- { "<leader><space>", t.telescope("files"), desc = "Find Files (root dir)" },
     -- find
+    { "<leader>ff", t.telescope("files"), desc = "Find Files (root dir)" },
     { "<leader>fb", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "Buffers" },
     { "<leader>fg", "<cmd>Telescope git_files<cr>", desc = "Find Files (git-files)" },
     { "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent" },
