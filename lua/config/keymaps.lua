@@ -289,10 +289,11 @@ map("c", "<c-e>", "<End>", "End of line")
 
 map("i", "<tab>", function()
   if package.loaded["tabnine"] and require("tabnine.keymaps").accept_suggestion then
-    if require("tabnine.keymaps").accept_suggestion() then return end
+    local tkeymaps = require("tabnine.keymaps")
+    if tkeymaps.has_suggestion() then return tkeymaps.accept_suggestion() end
   end
   if package.loaded["luasnip"] then
-    if require("luasnip").jump(1) then return end
+    if require("luasnip").jumpable(1) then return require("luasnip").jump(1) end
   end
-  vim.api.nvim_feedkeys("\t", "n", false)
-end, "Tab completion in insert mode")
+  return "<tab>"
+end, "Tab completion in insert mode", { expr = true })
