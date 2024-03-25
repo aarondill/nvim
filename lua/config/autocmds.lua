@@ -122,7 +122,6 @@ end, "Unload documentation when lazy loading plugins", { pattern = "LazyLoad", g
 create_autocmd({ "FileType" }, function()
   vim.b.spell = true
   vim.api.nvim_win_set_cursor(0, { 1, 0 }) -- go to top line
-  vim.cmd.startinsert() -- start in insert mode
 end, { pattern = { "gitcommit", "gitrebase" }, group = augroup })
 create_autocmd("FileType", "setlocal wrap spell", { group = augroup, pattern = { "gitcommit", "markdown" } })
 
