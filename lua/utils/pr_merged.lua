@@ -30,6 +30,7 @@ function M.all_success(cmds, cb, kill_on_exit)
     -- There's still jobs left, and we haven't failed yet, or we should wait for them to finish
     if next(jobs) and (success or not kill_on_exit) then return end
     check:stop()
+    check:close()
     for j in pairs(jobs) do
       j:kill("sigterm")
     end

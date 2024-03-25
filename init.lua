@@ -25,8 +25,7 @@ do -- delay notifications till vim.notify was replaced or after 500ms
 
   local timer, check = vim.uv.new_timer(), assert(vim.uv.new_check())
   local function replay()
-    timer:stop()
-    check:stop()
+    _ = { timer:stop(), timer:close(), check:stop(), check:close() } -- clean up the timer and check
     if vim.notify == temp then vim.notify = orig end -- put back the original notify if needed
     vim.schedule(function()
       for _, notif in ipairs(notifs) do
