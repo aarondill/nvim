@@ -61,7 +61,7 @@ create_autocmd({ "BufWritePre" }, function(event)
   if event.match:match("^%w%w+://") then return end
   local file = vim.loop.fs_realpath(event.match) or event.match
   return vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
-end, { group = augroup })
+end, "Create directories while saving", { group = augroup })
 
 ---------------------------------------------------------------
 ---------------------------------------------------------------
