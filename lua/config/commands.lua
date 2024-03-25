@@ -2,26 +2,23 @@ local notifications = require("utils.notifications")
 local text = require("utils.text")
 
 vim.api.nvim_create_user_command("DiffSaved", function()
-  local filetype, filename = vim.o.ft, vim.fn.expand("%")
-
-  vim.cmd.diffthis()
-  vim.cmd.vnew()
-  vim.cmd.read(filename) -- TODO: use nvim apis?
-  vim.cmd.normal({ "1Gdd", bang = true })
+  local filename = vim.api.nvim_buf_get_name(0)
+  if filename == "" then return notifications.warn("Cannot diff empty filename!") end
+  local filetype = vim.bo.ft
   vim.cmd.diffthis()
 
-  local opts = {
-    buftype = "nofile",
-    bufhidden = "wipe",
-    buflisted = false,
-    swapfile = false,
-    readonly = true,
-    filetype = filetype,
-  }
-  for k, v in pairs(opts) do
-    vim.opt[k] = v
-  end
-  vim.keymap.set("n", "q", vim.cmd.close, { buffer = true })
+  local buf = vim.api.nvim_create_buf(false, true)
+  local win = vim.api.nvim_open_win(buf, true, { vertical = true })
+  local lines = vim.fn.readfile(filename) ---@type string[]
+  vim.api.nvim_buf_set_lines(buf, 0, -1, true, lines)
+  vim.api.nvim_win_set_cursor(win, { 1, 0 })
+  vim.api.nvim_win_call(win, vim.cmd.diffthis)
+  vim.bo[buf].buftype = "nofile"
+  vim.bo[buf].bufhidden = "wipe"
+  vim.bo[buf].swapfile = false
+  vim.bo[buf].readonly = true
+  vim.bo[buf].filetype = filetype
+  vim.keymap.set("n", "q", vim.cmd.close, { buffer = buf })
 end, {})
 
 vim.api.nvim_create_user_command("RandomLine", function()
