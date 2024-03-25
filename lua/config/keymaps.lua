@@ -246,35 +246,6 @@ end, "Yank the full filepath of current buffer")
 
 map("x", "<", "<gv", "Reselect visual block after indent")
 map("x", ">", ">gv", "Reselect visual block after indent")
-
--- Magic tab thingis - see https://github.com/davidosomething/dotfiles/blob/dev/nvim/lua/dko/mappings.lua#L215
-
-map("i", "<Tab>", function()
-  -- If characters all the way back to start of line were all whitespace,
-  -- insert whatever expandtab setting is set to do.
-  local current_line = get_cursorline_contents()
-  if not current_line or current_line:match("^%s*$") then return "<Tab>" end
-
-  -- Insert appropriate amount of spaces instead of real tabs
-  local sts = vim.bo.softtabstop <= 0 and vim.fn.shiftwidth() or vim.bo.softtabstop
-  -- How many spaces to insert after the current cursor to get to the next sts
-  local spaces_from_cursor_to_next_sts = vim.fn.virtcol(".") % sts
-  if spaces_from_cursor_to_next_sts == 0 then spaces_from_cursor_to_next_sts = sts end
-
-  -- Insert whitespace to next softtabstop
-  -- E.g. sts = 4, cursor at _,
-  --          1234123412341234
-  -- before   abc_
-  -- after    abc _
-  -- before   abc _
-  -- after    abc     _
-  -- before   abc    _
-  -- after    abc     _
-  return (" "):rep(1 + sts - spaces_from_cursor_to_next_sts)
-end, "Tab should insert spaces", { expr = true })
-
-map("i", "<S-Tab>", "<C-d>", "Tab inserts a tab, shift-tab should remove it")
-
 map({ "n", "x" }, "\\", "@:", "Backslash redoes the last command")
 
 -- floating terminal
