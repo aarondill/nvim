@@ -1,8 +1,9 @@
 local notifications = require("utils.notifications")
 local function debounce(ms, fn)
   fn = vim.schedule_wrap(fn)
-  local timer = vim.loop.new_timer()
+  local timer -- don't initialize the timer until first call
   return function(...)
+    timer = timer or vim.loop.new_timer()
     local argv = vim.F.pack_len(...)
     timer:start(ms, 0, function()
       timer:stop()
