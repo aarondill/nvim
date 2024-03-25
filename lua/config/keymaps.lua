@@ -28,6 +28,10 @@ local function toggle_movement(first, second) ---@return fun()
     return vim.api.nvim_feedkeys(second, "n", false) -- run then
   end
 end
+---Use in an expr mapping. returns <cmd>%s<cr> but with count supported
+local function cmd_mapping(cmd)
+  return function() return ("<cmd>%d%s<cr>"):format(vim.v.count1, cmd) end
+end
 
 -- map up/down to move over screen lines instead of file lines (only matters with 'wrap')
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
@@ -39,26 +43,25 @@ map("n", "<C-h>", "<C-w>h", "Go to left window", { remap = true })
 map("n", "<C-j>", "<C-w>j", "Go to lower window", { remap = true })
 map("n", "<C-k>", "<C-w>k", "Go to upper window", { remap = true })
 map("n", "<C-l>", "<C-w>l", "Go to right window", { remap = true })
-map("t", "<C-h>", "<cmd>wincmd h<cr>", "Go to left window")
-map("t", "<C-j>", "<cmd>wincmd j<cr>", "Go to lower window")
-map("t", "<C-k>", "<cmd>wincmd k<cr>", "Go to upper window")
-map("t", "<C-l>", "<cmd>wincmd l<cr>", "Go to right window")
+map("t", "<C-h>", cmd_mapping("wincmd h"), "Go to left window")
+map("t", "<C-j>", cmd_mapping("wincmd j"), "Go to lower window")
+map("t", "<C-k>", cmd_mapping("wincmd k"), "Go to upper window")
+map("t", "<C-l>", cmd_mapping("wincmd l"), "Go to right window")
 -- Resize window using <ctrl> arrow keys
 map("n", "<C-Up>", "<cmd>resize +2<cr>", "Increase window height")
 map("n", "<C-Down>", "<cmd>resize -2<cr>", "Decrease window height")
 map("n", "<C-Left>", "<cmd>vertical resize -2<cr>", "Decrease window width")
 map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", "Increase window width")
 -- Move Lines
----TODO: can this be merged together?
-map("n", "<A-j>", "<cmd>m .+1<cr>==", "Move down")
+map("n", "<A-j>", "<cmd>m .+2<cr>==", "Move down")
 map("n", "<A-k>", "<cmd>m .-2<cr>==", "Move up")
-map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", "Move up")
-map("i", "<A-j>", "<esc><cmd>m .+1<cr>==gi", "Move down")
+map("i", "<A-k>", "<cmd>m .-2<cr><c-o>==", "Move up")
+map("i", "<A-j>", "<cmd>m .+1<cr><c-o>==", "Move down")
 map("v", "<A-j>", ":m '>+1<cr>gv=gv", "Move down")
 map("v", "<A-k>", ":m '<-2<cr>gv=gv", "Move up")
 -- buffers
-map("n", { "<S-h>", "[b" }, "<cmd>bprevious<cr>", "Prev buffer")
-map("n", { "<S-l>", "]b" }, "<cmd>bnext<cr>", "Next buffer")
+map("n", { "<S-h>", "[b" }, cmd_mapping("bprevious"), "Prev buffer", { expr = true })
+map("n", { "<S-l>", "]b" }, cmd_mapping("bnext"), "Next buffer", { expr = true })
 -- Clear search with <esc>
 map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", "Escape and clear hlsearch")
 -- Add undo break-points

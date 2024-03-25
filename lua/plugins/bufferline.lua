@@ -2,12 +2,6 @@
 return {
   "akinsho/bufferline.nvim",
   event = "VeryLazy",
-  keys = {
-    { "<S-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev buffer" },
-    { "<S-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next buffer" },
-    { "[b", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev buffer" },
-    { "]b", "<cmd>BufferLineCycleNext<cr>", desc = "Next buffer" },
-  },
   opts = { ---@type bufferline.UserConfig
     options = {
       close_command = function(n) require("mini.bufremove").delete(n, false) end,
