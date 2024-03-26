@@ -41,7 +41,7 @@ do
     "BufAdd", -- When adding a new file buffer (:enew)
   }, load, { pattern = "{}", group = lazyfilegroup })
   create_autocmd({
-    "BufReadPost", -- Before reading a file
+    "BufReadPre", -- Before reading a file
     "BufNewFile", -- When creating a new file
     "BufWritePre", -- When writing a file (usually shouldn't fire)
   }, load, { group = lazyfilegroup })
