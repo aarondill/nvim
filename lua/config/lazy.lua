@@ -1,3 +1,4 @@
+local create_autocmd = require("utils.create_autocmd")
 local notifications = require("utils.notifications")
 local root_safe = require("utils.root_safe")
 
@@ -11,6 +12,42 @@ if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath })
 end
 vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
+
+do
+  local lazyfilegroup = vim.api.nvim_create_augroup("lazy_file", { clear = true })
+  local done = false
+  local function load(ev) ---@param ev EventInfo
+    if done then return true end
+    done = true
+    vim.api.nvim_del_augroup_by_id(lazyfilegroup)
+    return vim.schedule(function()
+      -- schedule so that nested autocmds are executed and the UI can continue
+      -- rendering without blocking
+      return vim.api.nvim_exec_autocmds("User", {
+        pattern = "LazyFile",
+        modeline = false,
+        ---@class LazyFileParam
+        data = {
+          event = ev,
+        },
+      })
+    end)
+  end
+  create_autocmd({
+    "UIEnter", --- Needed to capture `nvim` without a dashboard (loads on a dashboard too :cry:)
+    "BufAdd", -- When adding a new file buffer (:enew)
+  }, load, { pattern = "{}", group = lazyfilegroup })
+  create_autocmd({
+    "BufReadPost", -- Before reading a file
+    "BufNewFile", -- When creating a new file
+    "BufWritePre", -- When writing a file (usually shouldn't fire)
+  }, load, { group = lazyfilegroup })
+end
+
+local Event = require("lazy.core.handler.event")
+-- let lazy know about the LazyFile mapping
+Event.mappings.LazyFile = { id = "LazyFile", event = "User", pattern = "LazyFile" }
+Event.mappings["User LazyFile"] = Event.mappings.LazyFile
 
 local icons = require("config.icons")
 require("lazy").setup({
