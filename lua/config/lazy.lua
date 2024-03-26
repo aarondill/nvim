@@ -17,6 +17,9 @@ do
   local lazyfilegroup = vim.api.nvim_create_augroup("lazy_file", { clear = true })
   local done = false
   local function load(ev) ---@param ev EventInfo
+    if ev.event == "UIEnter" and vim.g.loaded_dashboard then
+      return -- Ignore UIEnter if dashboard is loaded
+    end
     if done then return true end
     done = true
     vim.api.nvim_del_augroup_by_id(lazyfilegroup)
