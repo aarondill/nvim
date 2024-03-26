@@ -26,37 +26,29 @@ function M.apply(client, buffer)
   ---@type ({mode?:string[]|string,[1]: string|string[], [2]: string|fun():any?, desc:string, cond: any})[]
   local keys = {
     { "<leader>cl", "<cmd>LspInfo<cr>", desc = "Lsp Info" },
-    {
-      "gd",
-      telescope_builtin("lsp_definitions"),
-      desc = "Goto Definition",
-      buffer = buffer,
-      cond = cap.definitionProvider,
-    },
-    { "gD", vim.lsp.buf.declaration, desc = "Goto declaration", cond = cap.declarationProvider },
-    { "gr", "<cmd>Telescope lsp_references<cr>", desc = "References", cond = cap.referencesProvider },
+    { "gd", telescope_builtin("lsp_definitions"), desc = "Goto Definition", buffer = buffer },
+    { "gD", vim.lsp.buf.declaration, desc = "Goto declaration" },
+    { "gr", "<cmd>Telescope lsp_references<cr>", desc = "References" },
     { "gI", telescope_builtin("lsp_implementations"), desc = "Goto Implementation" },
     { "gy", telescope_builtin("lsp_type_definitions"), desc = "Goto T[y]pe Definition" },
-    { "K", vim.lsp.buf.hover, desc = "Hover", cond = cap.hoverProvider },
-    { "gK", vim.lsp.buf.signature_help, desc = "Signature Help", cond = cap.signatureHelpProvider },
-    { "<leader>ca", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" }, cond = cap.codeActionProvider },
-    { "<leader>cA", source_action, desc = "Source Action", cond = cap.codeActionProvider },
-    { "<leader>cc", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "v" }, cond = cap.codeLensProvider },
-    { "<leader>cC", vim.lsp.codelens.refresh, desc = "Refresh & Display Codelens", cond = cap.codeLensProvider },
-    { { "<leader>cr", "<f2>" }, rename_rhs, desc = "Rename", expr = rename_is_expr, cond = cap.renameProvider },
+    { "K", vim.lsp.buf.hover, desc = "Hover" },
+    { "gK", vim.lsp.buf.signature_help, desc = "Signature Help" },
+    { "<leader>ca", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" } },
+    { "<leader>cA", source_action, desc = "Source Action" },
+    { "<leader>cc", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "v" } },
+    { "<leader>cC", vim.lsp.codelens.refresh, desc = "Refresh & Display Codelens" },
+    { { "<leader>cr", "<f2>" }, rename_rhs, desc = "Rename", expr = rename_is_expr },
   }
 
   for _, key in ipairs(keys) do
-    local mode, lhs, rhs, cond = key.mode, key[1], key[2], key.cond
-    if cond then
-      local opts = {}
-      for k, v in pairs(key) do
-        opts[k] = v
-      end
-      opts.buffer = buffer
-      opts.mode, opts[1], opts[2], opts.cond = nil, nil, nil, nil
-      map(mode or "n", lhs, rhs, opts)
+    local mode, lhs, rhs, cond = key.mode, key[1], key[2]
+    local opts = {}
+    for k, v in pairs(key) do
+      opts[k] = v
     end
+    opts.buffer = buffer
+    opts.mode, opts[1], opts[2], opts.cond = nil, nil, nil, nil
+    map(mode or "n", lhs, rhs, opts)
   end
 end
 

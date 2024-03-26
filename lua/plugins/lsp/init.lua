@@ -19,6 +19,7 @@ return {
       setup = {}, ---@type table<string, fun(server:string, opts:_.lspconfig.options): boolean?>
     },
     config = function(_, opts) ---@param opts PluginLspOpts
+      require("utils.format").register(require("plugins.lsp.formatter").formatter())
       create_autocmd("LspAttach", function(args) return remap(args.data.client_id, args.buf) end)
       local register_capability = vim.lsp.handlers["client/registerCapability"]
       vim.lsp.handlers["client/registerCapability"] = function(err, res, ctx) ---@diagnostic disable-line: duplicate-set-field
@@ -65,10 +66,12 @@ return {
         if server_opts == true then server_opts = {} end
         if server_opts then
           local use_mason = server_opts.mason == nil or server_opts and vim.tbl_contains(mlsp_servers, server)
-          if server_opts.enabled ~= false and use_mason then
-            ensure_installed[#ensure_installed + 1] = server
-          else
-            setup(server)
+          if server_opts.enabled ~= false then
+            if use_mason then
+              ensure_installed[#ensure_installed + 1] = server
+            else
+              setup(server)
+            end
           end
         end
       end
@@ -85,7 +88,6 @@ return {
     opts = { ensure_installed = { "stylua", "shfmt" } },
     ---@param opts MasonSettings | {ensure_installed: string[]}
     config = function(_, opts)
-      require("utils.format").register(require("plugins.lsp.formatter").formatter())
       require("mason").setup(opts)
       local mr = require("mason-registry")
       local ft = function()
