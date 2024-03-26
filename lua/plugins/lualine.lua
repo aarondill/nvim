@@ -25,8 +25,6 @@ end
 local function time() return icons.clock .. os.date("%R") end
 
 local function _get_current_lsp_for_each_client(client, buf_ft)
-  local filetypes = client.config.filetypes
-  if not filetypes or vim.fn.index(filetypes, buf_ft) == -1 then return end
   if not vim.lsp.buf_is_attached(0, client.id) then return end
   -- return client.name
   if client.name ~= "null-ls" then return client.name end
