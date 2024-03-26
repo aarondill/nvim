@@ -12,6 +12,6 @@ return {
     ignored_filetypes = require("consts").ignored_filetypes,
     delay = 1000, -- 1 second
   },
-  event = { "BufReadPost", "BufNewFile", "BufWritePre" },
+  event = "LazyFile",
   cmd = cmd,
 }

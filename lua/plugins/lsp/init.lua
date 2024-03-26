@@ -5,7 +5,7 @@ return {
   { import = "plugins.lsp.servers" }, -- Import the configuration from lsp servers
   {
     "neovim/nvim-lspconfig",
-    event = { "BufReadPre", "BufNewFile", "BufEnter" },
+    event = "LazyFile",
     dependencies = { -- load these before lspconfig
       "folke/neoconf.nvim",
       "folke/neodev.nvim",

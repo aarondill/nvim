@@ -9,6 +9,6 @@ return {
     max_time = 100,
     disabled_keys = { ["<Up>"] = {}, ["<Down>"] = {}, ["<Left>"] = {}, ["<Right>"] = {} },
   },
-  event = { "BufReadPre", "BufNewFile", "BufEnter" },
+  event = "LazyFile",
   cmd = "Hardtime",
 }

@@ -1,10 +1,10 @@
 ---@type LazySpec
 return {
   { "ConradIrwin/vim-bracketed-paste", event = "VimEnter" }, -- Bracketed paste to escape charecters
-  { "rhysd/conflict-marker.vim", event = { "BufReadPost", "BufNewFile", "BufWritePre" } }, -- detect git conflict markers
-  { "NMAC427/guess-indent.nvim", event = { "BufReadPost", "BufNewFile", "BufWritePre" }, opts = {} }, -- Guess the current file indention type
+  { "rhysd/conflict-marker.vim", event = "LazyFile" }, -- detect git conflict markers
+  { "NMAC427/guess-indent.nvim", event = "LazyFile", opts = {} }, -- Guess the current file indention type
   { "wsdjeg/vim-fetch", event = { "BufNewFile", "VimEnter" } }, -- Allow line numbers in file names
-  { "micarmst/vim-spellsync", event = { "BufReadPost", "BufNewFile", "BufWritePre" } }, -- Rebuild spell files on file open
+  { "micarmst/vim-spellsync", event = "LazyFile" }, -- Rebuild spell files on file open
   { "nvim-tree/nvim-web-devicons", lazy = true }, -- icons
   { "dstein64/vim-startuptime", cmd = "StartupTime", init = function() vim.g.startuptime_tries = 10 end }, -- measure startuptime
   { "nvim-lua/plenary.nvim", lazy = true }, -- library used by other plugins

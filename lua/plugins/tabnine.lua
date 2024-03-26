@@ -20,7 +20,7 @@ return {
     cond = use_tabnine,
     branch = use_upstream and "master" or "all_together_now",
     build = "./dl_binaries.sh",
-    event = { "BufReadPost", "BufNewFile", "BufWritePre" },
+    event = "LazyFile",
     cmd = {
       "TabnineChat",
       "TabnineChatClear",

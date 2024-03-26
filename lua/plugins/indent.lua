@@ -3,7 +3,7 @@ local create_autocmd = require("utils.create_autocmd")
 return {
   {
     "lukas-reineke/indent-blankline.nvim",
-    event = { "BufReadPost", "BufNewFile", "BufWritePre" },
+    event = "LazyFile",
     opts = {
       indent = {
         char = "│",
@@ -19,7 +19,7 @@ return {
   { -- highligh current scope
     "echasnovski/mini.indentscope",
     version = false,
-    event = { "BufReadPost", "BufNewFile", "BufWritePre" },
+    event = "LazyFile",
     opts = {
       symbol = "│",
       options = { try_as_border = true },

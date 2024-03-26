@@ -16,5 +16,5 @@ return {
       css_fn = true,
     },
   },
-  event = { "BufReadPost", "BufNewFile", "BufWritePre" },
+  event = "LazyFile",
 }
