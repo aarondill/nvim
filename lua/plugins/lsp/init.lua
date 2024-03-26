@@ -50,7 +50,13 @@ return {
       )
 
       local function setup(server)
-        local server_opts = vim.tbl_deep_extend("force", { capabilities = capabilities }, opts.servers[server] or {})
+        local server_opts = vim.tbl_deep_extend("force", {
+          capabilities = capabilities,
+          handlers = {
+            -- HACK: Neodev overwrites this and breaks completion after switching buffers. Set the value so it isn't removed!
+            ["workspace/configuration"] = vim.lsp.handlers["workspace/configuration"],
+          },
+        }, opts.servers[server] or {})
         local f = opts.setup[server] or opts.setup["*"]
         if f and f(server, server_opts) then return end
         return require("lspconfig")[server].setup(server_opts)
