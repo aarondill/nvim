@@ -77,6 +77,7 @@ map({ "n", "v" }, "<leader>cf", require("utils.format").format, "Format")
 -- diagnostic
 map("n", "]d", vim.diagnostic.goto_next, "Next Diagnostic")
 map("n", "[d", vim.diagnostic.goto_prev, "Prev Diagnostic")
+map("n", "gl", function() return vim.diagnostic.open_float({ focusable = true }) end, "Diagnostic")
 -- toggle options
 
 ---@param silent boolean?
