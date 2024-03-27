@@ -115,11 +115,12 @@ return {
 
       local function attach_jdtls()
         local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+        ---@type table
         local config = vim.tbl_deep_extend("force", opts, {
           cmd = opts.full_cmd(opts),
-          root_dir = opts.root_dir(vim.api.nvim_buf_get_name(0)),
           init_options = { bundles = bundles },
         })
+        config.root_dir = opts.root_dir(vim.api.nvim_buf_get_name(0)) -- nil needs to be handled
         config.capabilities = vim.tbl_deep_extend(
           "force",
           vim.lsp.protocol.make_client_capabilities(),
