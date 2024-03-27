@@ -1,74 +1,146 @@
 local consts = require("consts")
-local create_autocmd = require("utils.create_autocmd")
----@param method string
-local function lazy_method(method, ...)
-  local args = vim.F.pack_len(...)
-  return function() return require("jdtls")[method](vim.F.unpack_len(args)) end
-end
+---@class JDTLSConfig :lspconfig.options.jdtls
+---@field dap? JdtSetupDapOpts
+---@field dap_main? JdtSetupMainConfigOpts
+---@field full_cmd fun(opts: JDTLSConfig): string[]
+---@field test boolean
+---@field jdtls? lspconfig.options.jdtls
+---How to find the project name for a given root dir.
+---@field project_name fun(root_dir: string): string
+---Where are the config and workspace dirs for a project?
+---@field jdtls_config_dir fun(project_name: string): string
+---Where are the config and workspace dirs for a project?
+---@field jdtls_workspace_dir fun(project_name: string): string
 
-local keys = {
-  { "<leader>cJi", lazy_method("organize_imports"), desc = "Organize imports" },
-  { "<leader>cJt", lazy_method("test_class"), desc = "Test class" },
-  { "<leader>cJn", lazy_method("test_nearest_method"), desc = "Test nearest method" },
-  { "<leader>cJe", lazy_method("extract_variable"), desc = "Extract variable" },
-  { "<leader>cJM", lazy_method("extract_method"), desc = "Extract method" },
-  {
-    "<leader>cJe",
-    lazy_method("extract_variable", { visual = true }),
-    desc = "Extract variable",
-    mode = "v",
-  },
-  { "<leader>cJM", lazy_method("extract_method", { visual = true }), desc = "Extract method", mode = "v" },
-}
-
-local function setup_jdtls(opts)
-  local jdtls = require("jdtls")
-  local root_dir = require("jdtls.setup").find_root(consts.root_markers)
-  -- `~/dev/xy/project-1` -> `project-1`
-  local project_name = vim.fn.fnamemodify(root_dir or vim.fn.getcwd(), ":p:h:t")
-  local cachedir = vim.fn.stdpath("cache")
-  assert(type(cachedir) == "string")
-  local workspace_dir = vim.fs.joinpath(cachedir, "jdtls", "workspace", project_name)
-
-  local config = vim.tbl_extend("force", vim.deepcopy(opts) or {}, { root_dir = root_dir })
-  vim.list_extend(assert(config.cmd), { "-data", workspace_dir })
-  jdtls.start_or_attach(config)
-  if pcall(require, "dap") then jdtls.setup_dap({ hotcodereplace = "auto", config_overrides = {} }) end
+---Utility function to extend or override a config table, similar to the way that Plugin.opts works.
+---@param config table
+---@param custom function | table | nil
+local function extend_or_override(config, custom, ...)
+  if not custom then return config end
+  if type(custom) == "function" then return custom(config, ...) or config end
+  return vim.tbl_deep_extend("force", config, custom)
 end
 
 ---@type LazySpec
 return {
+  -- Configure nvim-lspconfig to install the server automatically via mason, but
+  -- defer actually starting it to our configuration of nvim-jtdls below.
+  -- make sure mason installs the server
+  -- avoid duplicate servers
+  { "neovim/nvim-lspconfig", opts = { servers = { jdtls = {} }, setup = { jdtls = function() return true end } } },
+
+  -- Set up nvim-jdtls to attach to java files.
   {
-    "neovim/nvim-lspconfig",
-    dependencies = { "mfussenegger/nvim-jdtls" },
-    ---@type PluginLspOpts
-    opts = {
-      servers = {
-        jdtls = {
-          cmd = { "jdtls" },
-          settings = {
-            redhat = { telemetry = { enabled = false } },
-            java = {
-              home = nil, ---@type nil This is FINE!
-              format = {
-                enabled = true,
-                comments = { enabled = true },
-                onType = { enabled = false },
-                settings = {
-                  url = "~/code/java/java-format.xml",
-                  profile = nil, ---@type nil - the config is defined above
-                },
-              },
+    "mfussenegger/nvim-jdtls",
+    dependencies = { "williamboman/mason-lspconfig.nvim" },
+    ft = { "java" },
+    opts = function()
+      ---@type JDTLSConfig | {}
+      return {
+        -- How to find the root dir for a given filename. The default comes from
+        -- lspconfig which provides a function specifically for java projects.
+        root_dir = function() return require("jdtls.setup").find_root(consts.root_markers) end,
+
+        -- How to find the project name for a given root dir.
+        project_name = function(root_dir) return root_dir and vim.fs.basename(root_dir) end,
+
+        -- Where are the config and workspace dirs for a project?
+        jdtls_config_dir = function(project_name)
+          return vim.fn.stdpath("cache") .. "/jdtls/" .. project_name .. "/config"
+        end,
+        jdtls_workspace_dir = function(project_name)
+          return vim.fn.stdpath("cache") .. "/jdtls/" .. project_name .. "/workspace"
+        end,
+
+        -- How to run jdtls. This can be overridden to a full java command-line
+        -- if the Python wrapper script doesn't suffice.
+        cmd = { vim.fn.exepath("jdtls") },
+        full_cmd = function(opts) ---@param opts JDTLSConfig
+          local fname = vim.api.nvim_buf_get_name(0)
+          local root_dir = opts.root_dir(fname) or assert(vim.loop.cwd())
+          local project_name = opts.project_name(root_dir)
+          local cmd = vim.deepcopy(opts.cmd)
+          if project_name then
+            vim.list_extend(cmd, {
+              "-configuration",
+              opts.jdtls_config_dir(project_name),
+              "-data",
+              opts.jdtls_workspace_dir(project_name),
+            })
+          end
+          return cmd
+        end,
+
+        -- These depend on nvim-dap, but can additionally be disabled by setting false here.
+        dap = { hotcodereplace = "auto", config_overrides = {} },
+        dap_main = {},
+
+        settings = {
+          redhat = { telemetry = { enabled = false } },
+          java = {
+            format = {
+              enabled = true,
+              comments = { enabled = true },
+              onType = { enabled = false },
+              settings = { url = "~/code/java/java-format.xml" },
             },
           },
         },
-      },
-      setup = {
-        jdtls = function(_, opts)
-          create_autocmd("FileType", function() return setup_jdtls(opts) end, { pattern = "java" })
-          return true
+      }
+    end,
+    ---@param opts JDTLSConfig
+    config = function(_, opts)
+      local mason_registry = require("mason-registry")
+      local has_dap = opts.dap and mason_registry.is_installed("java-debug-adapter") and pcall(require, "dap")
+      -- Setup keymap and dap after the lsp is fully attached.
+      -- https://github.com/mfussenegger/nvim-jdtls#nvim-dap-configuration
+      -- https://neovim.io/doc/user/lsp.html#LspAttach
+      vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function(args)
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+          if not client or client.name ~= "jdtls" then return end
+          if has_dap then
+            require("jdtls").setup_dap(opts.dap) -- custom init for Java debugger
+            require("jdtls.dap").setup_dap_main_class_configs(opts.dap_main)
+          end
+          -- User can set additional keymaps in opts.on_attach
+          if opts.on_attach then opts.on_attach(args) end
         end,
-      },
-    },
+      })
+
+      -- Find the extra bundles that should be passed on the jdtls command-line if nvim-dap is enabled with java debug/test.
+      local bundles = {} ---@type string[]
+      if has_dap then
+        local java_dbg_path = mason_registry.get_package("java-debug-adapter"):get_install_path()
+        local jar_patterns = { java_dbg_path .. "/extension/server/com.microsoft.java.debug.plugin-*.jar" }
+        -- java-test also depends on java-debug-adapter.
+        if opts.test and mason_registry.is_installed("java-test") then
+          local java_test_path = mason_registry.get_package("java-test"):get_install_path()
+          vim.list_extend(jar_patterns, { java_test_path .. "/extension/server/*.jar" })
+        end
+        for _, jar_pattern in ipairs(jar_patterns) do
+          local files = vim.fn.glob(jar_pattern, false, true) ---@type string[]
+          vim.list_extend(bundles, files)
+        end
+      end
+
+      local function attach_jdtls()
+        local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+        local config = extend_or_override({
+          cmd = opts.full_cmd(opts),
+          root_dir = opts.root_dir(vim.api.nvim_buf_get_name(0)),
+          init_options = { bundles = bundles },
+          capabilities = has_cmp and cmp_nvim_lsp.default_capabilities() or nil,
+        }, opts.jdtls)
+        return require("jdtls").start_or_attach(config) -- Existing server will be reused if the root_dir matches.
+      end
+
+      -- Attach the jdtls for each java buffer. HOWEVER, this plugin loads
+      -- depending on filetype, so this autocmd doesn't run for the first file.
+      -- For that, we call directly below.
+      vim.api.nvim_create_autocmd("FileType", { pattern = "java", callback = attach_jdtls })
+      -- Avoid race condition by calling attach the first time, since the autocmd won't fire.
+      return attach_jdtls()
+    end,
   },
 }
