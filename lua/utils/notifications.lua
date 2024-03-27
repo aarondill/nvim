@@ -58,7 +58,7 @@ M.error = create_notify_func(vim.log.levels.ERROR)
 M.info = create_notify_func(vim.log.levels.INFO)
 M.warn = create_notify_func(vim.log.levels.WARN)
 
----@param msg string|string[]
+---@param msg unknown
 ---@param opts NotifyOpts?
 function M.debug(msg, opts)
   if type(msg) ~= "string" then
