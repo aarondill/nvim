@@ -126,11 +126,19 @@ return {
 
       local function attach_jdtls()
         local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+        local capabilities = vim.tbl_deep_extend(
+          "force",
+          {},
+          vim.lsp.protocol.make_client_capabilities(),
+          { workspace = { didChangeWatchedFiles = { dynamicRegistration = false } } },
+          has_cmp and cmp_nvim_lsp.default_capabilities() or {},
+          opts.capabilities or {}
+        )
         local config = extend_or_override({
           cmd = opts.full_cmd(opts),
           root_dir = opts.root_dir(vim.api.nvim_buf_get_name(0)),
           init_options = { bundles = bundles },
-          capabilities = has_cmp and cmp_nvim_lsp.default_capabilities() or nil,
+          capabilities = capabilities,
         }, opts.jdtls)
         return require("jdtls").start_or_attach(config) -- Existing server will be reused if the root_dir matches.
       end
