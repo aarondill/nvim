@@ -76,6 +76,11 @@ end
 Event.mappings.LazyFile = { id = "LazyFile", event = "User", pattern = "LazyFile" }
 Event.mappings["User LazyFile"] = Event.mappings.LazyFile
 
+create_autocmd("User", function()
+  if vim.o.filetype ~= "lazy" then return end
+  vim.cmd.close()
+end, "Close lazy.nvim when done installing", { pattern = "LazyDone", once = true })
+
 local icons = require("config.icons")
 require("lazy").setup({
   ui = { icons = icons.lazy_nvim.ui.icons },
