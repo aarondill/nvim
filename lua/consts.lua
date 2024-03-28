@@ -22,8 +22,9 @@ local M = {
     "trouble",
   },
   root_markers = {
-    ".git",
-    ".github",
+    ".root", -- Allow manual define root
+    ".git/",
+    ".github/",
     "mvnw",
     "gradlew",
     "pom.xml",
