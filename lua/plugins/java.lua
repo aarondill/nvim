@@ -113,7 +113,9 @@ return {
         end
       end
 
-      local function attach_jdtls()
+      local function attach_jdtls() ---@return nil
+        if vim.b._has_run_jdtls_attach then return end
+        vim.b._has_run_jdtls_attach = 1
         local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
         ---@type table
         local config = vim.tbl_deep_extend("force", opts, {
@@ -127,12 +129,9 @@ return {
           has_cmp and cmp_nvim_lsp.default_capabilities() or {},
           opts.capabilities or {}
         )
-        return require("jdtls").start_or_attach(extend_or_override(config, opts.override)) -- Existing server will be reused if the root_dir matches.
+        require("jdtls").start_or_attach(extend_or_override(config, opts.override)) -- Existing server will be reused if the root_dir matches.
       end
-
-      -- Attach the jdtls for each java buffer. HOWEVER, this plugin loads
-      -- depending on filetype, so this autocmd doesn't run for the first file.
-      -- For that, we call directly below.
+      -- Attach the jdtls for each java buffer
       create_autocmd("FileType", attach_jdtls, { pattern = "java" })
       -- Avoid race condition by calling attach the first time, since the autocmd won't fire.
       return attach_jdtls()
