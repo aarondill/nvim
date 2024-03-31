@@ -39,6 +39,19 @@ return {
     opts = { ---@type pluginConfig | {}
       snippetDir = snippet_dir,
       jsonFormatter = vim.fn.executable("jq") == 1 and "jq" or "none",
+      editSnippetPopup = {
+        keymaps = {
+          cancel = "q",
+          saveChanges = "<CR>",
+          goBackToSearch = "<BS>",
+          deleteSnippet = "<M-BS>",
+          duplicateSnippet = "<C-d>",
+          openInFile = "<C-o>",
+          insertNextToken = "<C-t>", -- insert & normal mode
+          jumpBetweenBodyAndPrefix = "<M-t>", -- insert & normal mode
+        },
+      },
     },
+    cmd = { "ScissorsAddNewSnippet", "ScissorsEditSnippet" },
   },
 }
