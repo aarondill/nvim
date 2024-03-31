@@ -180,6 +180,9 @@ map("n", "<leader>q1", vim.cmd.q, "Exit without saving")
 
 -- Terminal allow escape to exit insert
 map("t", "<Esc>", "<C-\\><C-n>", "Exit insert")
+--- Fix broken shift+space and shift+enter in terminal
+map("t", "<S-Space>", "<Space>")
+map("t", "<S-CR>", "<CR>")
 
 -- Map 0 to go between 0 and ^
 map({ "n", "x" }, "0", toggle_movement("^", "0"), "Go to start of line", { silent = true })
