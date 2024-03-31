@@ -135,7 +135,7 @@ end, "Toggle Treesitter Highlight")
 local lg = function() return require("utils.terminal").open("lazygit", { esc_esc = false, ctrl_hjkl = false }) end
 map("n", "<leader>gg", lg, "Lazygit")
 map("n", "<leader>gf", function()
-  if not vim.fn.executable("git") then return notifications.warn("git is not installed!") end
+  if vim.fn.executable("git") ~= 1 then return notifications.warn("git is not installed!") end
   local pres = vim.system({ "git", "ls-files", "--full-name", vim.api.nvim_buf_get_name(0) }):wait()
   local git_path = assert(pres.stdout, "stdout is not present")
   require("utils.terminal").open({ "lazygit", "-f", vim.trim(git_path) }, { esc_esc = false, ctrl_hjkl = false })

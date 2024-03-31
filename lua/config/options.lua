@@ -82,7 +82,7 @@ if root_safe then
 end
 
 -- Reset to default value
-if vim.fn.executable("rg") then
+if vim.fn.executable("rg") == 1 then
   opt.grepprg = "rg --vimgrep --smart-case --hidden"
   opt.grepformat = "%f:%l:%c:%m"
 end
