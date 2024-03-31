@@ -289,12 +289,10 @@ map("c", "<c-a>", "<Home>", "Beginning of line")
 map("c", "<c-e>", "<End>", "End of line")
 
 map("i", "<tab>", function()
-  if package.loaded["tabnine"] and require("tabnine.keymaps").accept_suggestion then
-    local tkeymaps = require("tabnine.keymaps")
-    if tkeymaps.has_suggestion() then return tkeymaps.accept_suggestion() end
-  end
-  if package.loaded["luasnip"] then
-    if require("luasnip").jumpable(1) then return require("luasnip").jump(1) end
+  if package.loaded["tabnine"] and require("tabnine.keymaps").has_suggestion() then
+    return require("tabnine.keymaps").accept_suggestion()
+  elseif package.loaded["luasnip"] and require("luasnip").jumpable(1) then
+    return require("luasnip").jump(1)
   end
   return "<tab>"
 end, "Tab completion in insert mode", { expr = true })
