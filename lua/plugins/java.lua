@@ -22,6 +22,42 @@ local function extend_or_override(config, custom, ...)
   return vim.tbl_deep_extend("force", config, custom)
 end
 
+---Loads all matches to the quickfix list then opens a telescope picker
+---@param result lsp.TypeHierarchyItem[]|nil
+---@param ctx {params: {item: lsp.TypeHierarchyItem}}
+local function telescope_hierarchy(_, result, ctx)
+  if not result then return end
+  table.insert(result, 1, ctx.params.item) -- insert the given item at the start of the list
+  vim.ui.select(result, {
+    ---@return string
+    format_item = function(item) ---@param item lsp.TypeHierarchyItem
+      local kind = vim.lsp.protocol.SymbolKind[item.kind] or "Unknown"
+      return item.name .. " [" .. kind .. "]"
+    end,
+    prompt = "Select to open:",
+  }, function(item) ---@param item lsp.TypeHierarchyItem
+    item.range = item.selectionRange -- We prefer to jump at the selectionRange
+    vim.lsp.util.jump_to_location(item, "utf-8", true)
+  end)
+end
+
+local function type_hierarchy(method, handler)
+  local params = vim.lsp.util.make_position_params()
+  local prepare_method = "textDocument/prepareTypeHierarchy"
+  vim.lsp.buf_request(0, prepare_method, params, function(_, result)
+    if not result then return end
+    vim.lsp.buf_request(0, method, { item = result[1] }, handler)
+  end)
+end
+---@param method string
+local function lazy_jdtls_method(method, ...)
+  local args = select("#", ...) > 0 and vim.F.pack_len(...) or nil
+  return function()
+    if not args then return require("jdtls")[method]() end
+    return require("jdtls")[method](unpack(args, 1, args.n))
+  end
+end
+
 ---@type LazySpec
 return {
   -- Configure nvim-lspconfig to install the server automatically via mason, but
@@ -33,6 +69,21 @@ return {
     "mfussenegger/nvim-jdtls",
     dependencies = { "williamboman/mason-lspconfig.nvim" },
     ft = { "java" },
+    --- Mappings -- <leader>j is java
+    keys = {
+      { "<leader>ji", lazy_jdtls_method("organize_imports"), "Organize imports" },
+      { "<leader>jt", lazy_jdtls_method("test_class"), "Test class" },
+      { "<leader>jn", lazy_jdtls_method("test_nearest_method"), "Test nearest method" },
+      { "<leader>je", lazy_jdtls_method("extract_variable"), "Extract variable" },
+      { "<leader>jM", lazy_jdtls_method("extract_method"), "Extract method" },
+      { "<leader>je", lazy_jdtls_method("extract_variable", { visual = true }), "Extract variable", mode = "v" },
+      { "<leader>jM", lazy_jdtls_method("extract_method", { visual = true }), "Extract method", mode = "v" },
+      {
+        "<leader>jh",
+        function() return type_hierarchy("typeHierarchy/supertypes", telescope_hierarchy) end,
+        "Show Class Hierarchy",
+      },
+    },
     opts = function()
       local cache = vim.fn.stdpath("cache")
       assert(type(cache) == "string")
