@@ -35,7 +35,8 @@ local function telescope_hierarchy(_, result, ctx)
       return item.name .. " [" .. kind .. "]"
     end,
     prompt = "Select to open:",
-  }, function(item) ---@param item lsp.TypeHierarchyItem
+  }, function(item) ---@param item lsp.TypeHierarchyItem?
+    if not item then return end -- ensure no nil index
     item.range = item.selectionRange -- We prefer to jump at the selectionRange
     vim.lsp.util.jump_to_location(item, "utf-8", true)
   end)
@@ -71,17 +72,17 @@ return {
     ft = { "java" },
     --- Mappings -- <leader>j is java
     keys = {
-      { "<leader>ji", lazy_jdtls_method("organize_imports"), "Organize imports" },
-      { "<leader>jt", lazy_jdtls_method("test_class"), "Test class" },
-      { "<leader>jn", lazy_jdtls_method("test_nearest_method"), "Test nearest method" },
-      { "<leader>je", lazy_jdtls_method("extract_variable"), "Extract variable" },
-      { "<leader>jM", lazy_jdtls_method("extract_method"), "Extract method" },
-      { "<leader>je", lazy_jdtls_method("extract_variable", { visual = true }), "Extract variable", mode = "v" },
-      { "<leader>jM", lazy_jdtls_method("extract_method", { visual = true }), "Extract method", mode = "v" },
+      { "<leader>ji", lazy_jdtls_method("organize_imports"), desc = "Organize imports" },
+      { "<leader>jt", lazy_jdtls_method("test_class"), desc = "Test class" },
+      { "<leader>jn", lazy_jdtls_method("test_nearest_method"), desc = "Test nearest method" },
+      { "<leader>je", lazy_jdtls_method("extract_variable"), desc = "Extract variable" },
+      { "<leader>jM", lazy_jdtls_method("extract_method"), desc = "Extract method" },
+      { "<leader>je", lazy_jdtls_method("extract_variable", { visual = true }), desc = "Extract variable", mode = "v" },
+      { "<leader>jM", lazy_jdtls_method("extract_method", { visual = true }), desc = "Extract method", mode = "v" },
       {
         "<leader>jh",
         function() return type_hierarchy("typeHierarchy/supertypes", telescope_hierarchy) end,
-        "Show Class Hierarchy",
+        desc = "Show Class Hierarchy",
       },
     },
     opts = function()
