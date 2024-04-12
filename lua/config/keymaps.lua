@@ -260,8 +260,8 @@ local term = function(root_dir)
     map({ "t", "n" }, "<C-CR>", function() t:hide() end, { buffer = t.buf, nowait = true })
   end
 end
-map("n", { "<C-CR>", "<Leader><CR>" }, term(true), "Terminal (root dir)")
-map("n", { "<S-CR>", "<Leader><S-CR>" }, term(false), "Terminal (cwd dir)")
+map("n", "<C-CR>", term(true), "Terminal (root dir)")
+map("n", "<C-;>", term(false), "Terminal (cwd dir)")
 
 map("x", "<C-/>", function()
   -- If :Telescope command doesn't exist, call :grep instead
