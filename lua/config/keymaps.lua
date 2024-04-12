@@ -252,16 +252,16 @@ map("x", "<", "<gv", "Reselect visual block after indent")
 map("x", ">", ">gv", "Reselect visual block after indent")
 map({ "n", "x" }, "\\", "@:", "Backslash redoes the last command")
 
--- floating terminal
----@param root_dir boolean?
-local term = function(root_dir)
-  return function()
-    local t = require("utils.terminal").open(nil, { cwd = root_dir and root.get() or nil })
-    map({ "t", "n" }, "<C-CR>", function() t:hide() end, { buffer = t.buf, nowait = true })
-  end
-end
-map("n", "<C-CR>", term(true), "Terminal (root dir)")
-map("n", "<C-;>", term(false), "Terminal (cwd dir)")
+-- -- floating terminal
+-- ---@param root_dir boolean?
+-- local term = function(root_dir)
+--   return function()
+--     local t = require("utils.terminal").open(nil, { cwd = root_dir and root.get() or nil })
+--     map({ "t", "n" }, "<C-CR>", function() t:hide() end, { buffer = t.buf, nowait = true })
+--   end
+-- end
+-- map("n", "<C-CR>", term(true), "Terminal (root dir)")
+-- map("n", "<C-;>", term(false), "Terminal (cwd dir)")
 
 map("x", "<C-/>", function()
   -- If :Telescope command doesn't exist, call :grep instead
