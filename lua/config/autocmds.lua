@@ -146,3 +146,9 @@ create_autocmd("BufWritePre", function(ev)
     notifications.info("Buffer set executable")
   end, { buffer = ev.buf, once = true })
 end, { desc = "Set files with a she-bang as executable", group = augroup })
+
+--- Read-only files should be non-modifiable.
+create_autocmd("BufRead", function(ev)
+  if vim.bo[ev.buf].buftype ~= "" then return end -- only on files
+  vim.bo[ev.buf].modifiable = not vim.bo[ev.buf].readonly
+end)
