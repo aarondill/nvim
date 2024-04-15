@@ -23,6 +23,7 @@ local M = {
   },
   root_markers = {
     ".root", -- Allow manual define root
+    ".config", -- Custom root file for java projects
     ".git/",
     ".github/",
     "mvnw",
