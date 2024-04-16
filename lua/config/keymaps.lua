@@ -123,6 +123,7 @@ map("n", "<leader>uF", function() return require("utils.format").toggle(true) en
 map("n", "<leader>us", toggle_option("spell"), "Toggle Spelling")
 map("n", "<leader>uw", toggle_option("wrap"), "Toggle Word Wrap")
 map("n", "<leader>uL", toggle_option("relativenumber"), "Toggle Relative Line Numbers")
+map("n", "<leader>um", toggle_option("modifiable"), "Toggle Modifiable")
 map("n", "<leader>ud", toggle_diagnostics(), "Toggle Diagnostics (global)")
 map("n", "<leader>uD", toggle_diagnostics(true), "Toggle Diagnostics (buffer)")
 local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
