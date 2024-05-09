@@ -1,5 +1,5 @@
 local M = {
-  ---@type table<string, boolean>
+  ---@type string[]
   ignored_filetypes = {
     "",
     "TelescopePrompt",

@@ -1,3 +1,4 @@
+local consts = require("consts")
 local create_autocmd = require("utils.create_autocmd")
 local map = require("utils.map")
 -- Automatically highlights other instances of the word under your cursor.
@@ -11,6 +12,7 @@ return {
     delay = 200,
     large_file_cutoff = 2000,
     large_file_overrides = { providers = { "lsp" } },
+    filetypes_denylist = consts.ignored_filetypes,
   },
   config = function(_, opts)
     require("illuminate").configure(opts)
