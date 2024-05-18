@@ -1,7 +1,7 @@
-local cmd = vim.tbl_flatten({ ---@type string[]
+local cmd = require("utils.flatten")(
   { "GitBlameOpenCommitURL", "GitBlameToggle", "GitBlameEnable", "GitBlameDisable" },
-  { "GitBlameCopySHA", "GitBlameCopyCommitURL", "GitBlameOpenFileURL", "GitBlameCopyFileURL" },
-})
+  { "GitBlameCopySHA", "GitBlameCopyCommitURL", "GitBlameOpenFileURL", "GitBlameCopyFileURL" }
+)
 ---@type LazySpec
 return {
   "f-person/git-blame.nvim",

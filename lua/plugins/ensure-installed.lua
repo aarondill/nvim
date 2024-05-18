@@ -1,8 +1,9 @@
-local mason_ensure_installed = vim.tbl_flatten({
+local flatten = require("utils.flatten")
+local mason_ensure_installed = flatten(
   { "lua-language-server", "bash-language-server", "cspell", "eslint-lsp", "eslint_d", "jdtls" },
   { "json-lsp", "prettier", "shellcheck", "taplo", "typescript-language-server", "vim-language-server" },
-  { "vint", "alex", "gitlint" },
-})
+  { "vint", "alex", "gitlint" }
+)
 local treesitter_ensure_installed = { "dockerfile", "git_config", "jsdoc", "make", "toml", "vimdoc", "java" }
 
 ---@type LazySpec

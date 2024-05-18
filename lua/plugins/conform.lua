@@ -1,9 +1,9 @@
 ---Taken from `prettier -h`
-local prettier_parsers = vim.tbl_flatten({
+local prettier_parsers = require("utils.flatten")(
   { "flow", "babel", "babel-flow", "babel-ts", "typescript", "acorn", "espree", "meriyah", "css", "less" },
   { "scss", "json", "json5", "jsonc", "json-stringify", "graphql", "markdown", "mdx" },
-  { "vue", "yaml", "glimmer", "html", "angular", "lwc" },
-})
+  { "vue", "yaml", "glimmer", "html", "angular", "lwc" }
+)
 ---vim file types that don't directly map to prettier parser names
 local prettier_ft_overrides = {
   javascriptreact = "typescript",

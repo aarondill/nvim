@@ -34,11 +34,11 @@ return {
     opts = { ---@type TSConfig
       highlight = { enable = true },
       indent = { enable = true },
-      ensure_installed = vim.tbl_flatten({
+      ensure_installed = require("utils.flatten")(
         { "bash", "c", "diff", "html", "javascript", "jsdoc", "json", "jsonc" },
         { "lua", "luadoc", "luap", "markdown", "markdown_inline", "python", "query", "regex", "toml" },
-        { "tsx", "typescript", "vim", "vimdoc", "xml", "yaml" },
-      }),
+        { "tsx", "typescript", "vim", "vimdoc", "xml", "yaml" }
+      ),
       incremental_selection = {
         enable = true,
         keymaps = {
