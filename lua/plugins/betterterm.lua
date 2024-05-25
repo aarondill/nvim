@@ -1,3 +1,4 @@
+local root = require("utils.root")
 local current = 2
 ---@type LazySpec
 return {
@@ -6,7 +7,7 @@ return {
   keys = {
     -- toggle firts term
     {
-      "<C-;>",
+      "<C-'>",
       function() require("betterTerm").open() end,
       mode = { "n", "t" },
       desc = "Open terminal",
@@ -15,7 +16,7 @@ return {
     -- https://github.com/CRAG666/betterTerm.nvim/issues/12
     {
       "<C-CR>",
-      function() require("betterTerm").open() end,
+      function() require("betterTerm").open(nil, { cwd = root.get() }) end,
       mode = { "n", "t" },
       "Terminal (root dir)",
     },
