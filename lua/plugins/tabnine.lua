@@ -9,7 +9,7 @@ elseif vim.loop.cwd() == vim.loop.os_homedir() and vim.loop.os_uname().release:f
   use_tabnine = false -- NOTE: tabnine doesn't seem to have this problem on Ubuntu
 end
 
-local use_upstream = false
+local use_upstream = true
 
 ---@type LazySpec
 return {
