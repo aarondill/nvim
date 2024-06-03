@@ -1,7 +1,6 @@
 local get_vtext = require("utils.vtext")
 local map = require("utils.map")
 local notifications = require("utils.notifications")
-local root = require("utils.root")
 local text = require("utils.text")
 local function get_cursorline_contents() ---@return string?
   local linenr = vim.api.nvim_win_get_cursor(0)[1]
@@ -291,12 +290,3 @@ map("i", "<c-a>", "<c-o>^", "Beginning of line")
 map("i", "<c-e>", "<End>", "End of line")
 map("c", "<c-a>", "<Home>", "Beginning of line")
 map("c", "<c-e>", "<End>", "End of line")
-
-map("i", "<tab>", function()
-  if package.loaded["tabnine"] and require("tabnine.keymaps").has_suggestion() then
-    return require("tabnine.keymaps").accept_suggestion()
-  elseif package.loaded["luasnip"] and require("luasnip").jumpable(1) then
-    return require("luasnip").jump(1)
-  end
-  return "<tab>"
-end, "Tab completion in insert mode", { expr = true })
