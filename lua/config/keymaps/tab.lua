@@ -13,7 +13,7 @@ M.providers[#M.providers + 1] = {
   active = function()
     return package.loaded["supermaven-nvim"] and require("supermaven-nvim.completion_preview").has_suggestion()
   end,
-  run = function() return require("supermaven-nvim.completion_preview").on_accept_suggestion() end,
+  run = vim.schedule_wrap(function() return require("supermaven-nvim.completion_preview").on_accept_suggestion() end),
 }
 
 --- Tabnine
@@ -34,3 +34,5 @@ map("i", "<tab>", function()
   end
   return "<tab>"
 end, "Tab completion in insert mode", { expr = true })
+
+return M
