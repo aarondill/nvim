@@ -115,7 +115,7 @@ return {
     ft = "lua",
     opts = {
       library = {
-        vim.env.LAZY .. "/luvit-meta/library", -- see below
+        "luvit-meta/library", -- see below
       },
     },
   },
@@ -131,4 +131,5 @@ return {
       })
     end,
   },
+  { "folke/neodev.nvim", optional = true, enabled = false }, -- make sure to disable neodev.nvim
 }
