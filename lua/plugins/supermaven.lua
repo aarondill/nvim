@@ -9,6 +9,11 @@ return {
     "supermaven-inc/supermaven-nvim",
     main = "supermaven-nvim",
     event = { "LazyFile" },
+    cmd = {
+      "SupermavenUseFree",
+      "SupermavenLogout",
+      "SupermavenUsePro",
+    },
     opts = {
       ignore_filetypes = ignored,
       disable_keymaps = true,
