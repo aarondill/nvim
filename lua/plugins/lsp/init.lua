@@ -116,6 +116,7 @@ return {
     opts = {
       library = {
         "luvit-meta/library", -- see below
+        "lazy.nvim",
       },
     },
   },
