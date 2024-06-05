@@ -13,6 +13,10 @@ return {
       "SupermavenUseFree",
       "SupermavenLogout",
       "SupermavenUsePro",
+      "SupermavenStart",
+      "SupermavenStop",
+      "SupermavenRestart",
+      "SupermavenStatus",
     },
     opts = {
       ignore_filetypes = ignored,
