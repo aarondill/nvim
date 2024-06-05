@@ -115,11 +115,13 @@ return {
     ft = "lua",
     opts = {
       library = {
-        "luvit-meta/library", -- see below
+        { path = "luvit-meta/library", words = { "vim%.uv" } },
         "lazy.nvim",
+        { path = "wezterm-types", mods = { "wezterm" } },
       },
     },
   },
+  { "justinsgithub/wezterm-types", lazy = true },
   { "Bilal2453/luvit-meta", lazy = true }, -- `vim.uv` typings
   { -- completion source for require statements and module annotations
     "hrsh7th/nvim-cmp",
