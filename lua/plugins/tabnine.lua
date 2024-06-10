@@ -1,14 +1,3 @@
-local notifications = require("utils.notifications")
-local root_safe = require("utils.root_safe")
-local use_tabnine = true
-if not root_safe then
-  notifications.warn("Disabling tabnine because the $HOME variable != user's home directory!")
-  use_tabnine = false
-elseif vim.loop.cwd() == vim.loop.os_homedir() and vim.loop.os_uname().release:find("-arch%d*-") then
-  notifications.warn("Disabling tabnine because cwd is $HOME! (on an Arch Linux machine)")
-  use_tabnine = false -- NOTE: tabnine doesn't seem to have this problem on Ubuntu
-end
-
 local use_upstream = true
 
 ---@type LazySpec
@@ -17,7 +6,15 @@ return {
   {
     ("%s/tabnine-nvim"):format(use_upstream and "codota" or "aarondill"),
     dev = false,
-    cond = use_tabnine,
+    cond = function()
+      local notifications = require("utils.notifications")
+      local root_safe = require("utils.root_safe")
+      if not root_safe then
+        notifications.warn("Disabling tabnine because the $HOME variable != user's home directory!", { once = true })
+        return false
+      end
+      return true
+    end,
     branch = use_upstream and "master" or "all_together_now",
     build = "./dl_binaries.sh",
     event = "LazyFile",
