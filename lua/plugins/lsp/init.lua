@@ -115,7 +115,7 @@ return {
     ft = "lua",
     opts = {
       library = {
-        { path = "luvit-meta/library", words = { "vim%.uv" } },
+        { path = "luvit-meta/library", words = { "vim%.uv", "vim%.loop" } },
         "lazy.nvim",
         { path = "wezterm-types", mods = { "wezterm" } },
       },
