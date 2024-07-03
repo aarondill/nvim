@@ -6,7 +6,7 @@ end
 ---@type LazySpec
 return {
   "nvimdev/dashboard-nvim",
-  event = "VimEnter",
+  event = { "VimEnter", "StdinReadPre" },
   opts = function()
     local headers = require("plugins.dashboard.headers")
     local header = headers[math.random(1, #headers)]
