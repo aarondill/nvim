@@ -12,6 +12,10 @@ local prettier_ft_overrides = {
   ["markdown.mdx"] = "mdx",
 }
 
+do ---@module "conform"
+  local _ = nil
+end
+
 ---@type LazySpec
 return {
   "stevearc/conform.nvim",
