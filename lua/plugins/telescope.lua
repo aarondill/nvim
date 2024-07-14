@@ -39,7 +39,7 @@ return {
     { "<leader>:", "<cmd>Telescope command_history<cr>", desc = "Command History" },
     -- { "<leader><space>", t.telescope("files"), desc = "Find Files (root dir)" },
     -- find
-    { "<leader>ff", t.telescope("files"), desc = "Find Files (root dir)" },
+    { "<leader>ff", t.telescope("find_files"), desc = "Find Files (root dir)" },
     { "<leader>fb", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "Buffers" },
     { "<leader>fg", "<cmd>Telescope git_files<cr>", desc = "Find Files (git-files)" },
     { "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent" },
@@ -63,7 +63,11 @@ return {
   },
   opts = {
     pickers = {
-      find_files = { hidden = true },
+      find_files = {
+        find_command = vim.fn.executable("fd") == 1 and { "fd", "--type", "f", "--color", "never", "-E", ".git" }
+          or nil,
+        hidden = true,
+      },
       git_files = { show_untracked = true },
     },
     defaults = {
