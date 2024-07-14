@@ -5,7 +5,17 @@ return {
   { "NMAC427/guess-indent.nvim", event = "LazyFile", opts = {} }, -- Guess the current file indention type
   { "wsdjeg/vim-fetch", event = { "BufNewFile", "VimEnter" } }, -- Allow line numbers in file names
   { "micarmst/vim-spellsync", event = "LazyFile" }, -- Rebuild spell files on file open
-  { "nvim-tree/nvim-web-devicons", lazy = true }, -- icons
+
+  {
+    "echasnovski/mini.icons",
+    init = function()
+      package.preload["nvim-web-devicons"] = function()
+        require("mini.icons").mock_nvim_web_devicons()
+        return package.loaded["nvim-web-devicons"]
+      end
+    end,
+  }, -- icons
+
   { "dstein64/vim-startuptime", cmd = "StartupTime", init = function() vim.g.startuptime_tries = 10 end }, -- measure startuptime
   { "nvim-lua/plenary.nvim", lazy = true }, -- library used by other plugins
 

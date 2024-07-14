@@ -4,7 +4,11 @@ if not is_tty() then return {} end
 
 ---@type LazySpec
 return {
-  { "nvim-tree/nvim-web-devicons", optional = true, cond = false }, -- Disable it
+
+  {
+    "echasnovski/mini.icons",
+    opts = { style = "ascii" },
+  },
   {
     "nvim-lualine/lualine.nvim",
     opts = {
