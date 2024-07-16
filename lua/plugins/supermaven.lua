@@ -1,3 +1,6 @@
+-- DISABLED: see supermaven-inc/supermaven-nvim#74
+if true then return {} end
+
 local ignored = {}
 for _, ft in ipairs(require("consts").ignored_filetypes) do
   ignored[ft] = true
