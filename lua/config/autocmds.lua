@@ -157,7 +157,12 @@ create_autocmd("VimEnter", function()
   vim.system({ "curl", "-SsfL", "https://vtip.43z.one" }, nil, function(obj)
     local res = obj.stdout
     if obj.code ~= 0 then res = "Error fetching tip: " .. table.concat({ obj.stderr, obj.stdout }, "\n") end
-    return vim.notify(res, vim.log.levels.INFO, { title = "In Case You Didn't Know!", timeout = 5000 })
+    vim.schedule(function()
+      vim.notify(res, vim.log.levels.INFO, { title = "In Case You Didn't Know!", timeout = 5000 })
+      -- Add the tip to the cache file
+      local cache = vim.fn.stdpath("cache") --[[@as string]]
+      vim.fn.writefile({ res }, vim.fs.joinpath(cache, "vtip.log"), "a")
+    end)
   end)
   return true
 end, { desc = "Fetch tips from vtip.43z.one", group = augroup })
