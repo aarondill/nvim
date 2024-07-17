@@ -4,7 +4,7 @@ local root = require("utils.root")
 ---@param from string
 ---@param to string
 local function on_rename(from, to)
-  local clients = M.get_clients()
+  local clients = vim.lsp.get_clients()
   for _, client in ipairs(clients) do
     if client.supports_method("workspace/willRenameFiles") then
       local resp = client.request_sync("workspace/willRenameFiles", {
