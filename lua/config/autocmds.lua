@@ -151,4 +151,13 @@ end, { desc = "Set files with a she-bang as executable", group = augroup })
 create_autocmd("BufRead", function(ev)
   if vim.bo[ev.buf].buftype ~= "" then return end -- only on files
   vim.bo[ev.buf].modifiable = not vim.bo[ev.buf].readonly
-end)
+end, { desc = "Make read-only files non-modifiable", group = augroup })
+
+create_autocmd("VimEnter", function()
+  vim.system({ "curl", "-SsfL", "https://vtip.43z.one" }, nil, function(obj)
+    local res = obj.stdout
+    if obj.code ~= 0 then res = "Error fetching tip: " .. table.concat({ obj.stderr, obj.stdout }, "\n") end
+    return vim.notify(res, vim.log.levels.INFO, { title = "In Case You Didn't Know!", timeout = 5000 })
+  end)
+  return true
+end, { desc = "Fetch tips from vtip.43z.one", group = augroup })
