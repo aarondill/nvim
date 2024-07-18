@@ -9,8 +9,6 @@ return {
     "supermaven-inc/supermaven-nvim",
     main = "supermaven-nvim",
     event = { "LazyFile" },
-    -- Locked to fixed commit: see supermaven-inc/supermaven-nvim#74
-    commit = "df3ecf7",
     cmd = {
       "SupermavenUseFree",
       "SupermavenLogout",
