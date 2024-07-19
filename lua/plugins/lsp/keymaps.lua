@@ -26,7 +26,7 @@ function M.apply(client, buffer)
   ---@type ({mode?:string[]|string,[1]: string|string[], [2]: string|fun():any?, desc:string, cond: any})[]
   local keys = {
     { "<leader>cl", "<cmd>LspInfo<cr>", desc = "Lsp Info" },
-    { "gd", telescope_builtin("lsp_definitions"), desc = "Goto Definition", buffer = buffer },
+    { "gd", telescope_builtin("lsp_definitions"), desc = "Goto Definition" },
     { "gD", vim.lsp.buf.declaration, desc = "Goto declaration" },
     { "gr", "<cmd>Telescope lsp_references<cr>", desc = "References" },
     { "gI", telescope_builtin("lsp_implementations"), desc = "Goto Implementation" },
@@ -34,6 +34,7 @@ function M.apply(client, buffer)
     { "K", vim.lsp.buf.hover, desc = "Hover" },
     { "gK", vim.lsp.buf.signature_help, desc = "Signature Help" },
     { "<leader>ca", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" } },
+    { "<leader>co", require("utils.organize_imports"), desc = "Organize Imports", mode = { "n" } },
     { "<leader>cA", source_action, desc = "Source Action" },
     { "<leader>cc", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "v" } },
     { "<leader>cC", vim.lsp.codelens.refresh, desc = "Refresh & Display Codelens" },
@@ -41,7 +42,7 @@ function M.apply(client, buffer)
   }
 
   for _, key in ipairs(keys) do
-    local mode, lhs, rhs, cond = key.mode, key[1], key[2]
+    local mode, lhs, rhs = key.mode, key[1], key[2]
     local opts = {}
     for k, v in pairs(key) do
       opts[k] = v

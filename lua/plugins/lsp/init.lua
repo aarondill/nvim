@@ -1,5 +1,15 @@
 local create_autocmd = require("utils.create_autocmd")
-local remap = require("plugins.lsp.keymaps").apply
+local keymaps = require("plugins.lsp.keymaps")
+
+local remap = keymaps.apply
+---@param args EventInfo
+local function LspAttach(args)
+  create_autocmd("BufWritePre", require("utils.organize_imports"), {
+    buffer = args.buf,
+    desc = "Organize imports",
+  })
+  return remap(args.data.client_id, args.buf)
+end
 ---@type LazySpec
 return {
   { import = "plugins.lsp.servers" }, -- Import the configuration from lsp servers
@@ -19,7 +29,9 @@ return {
     },
     config = function(_, opts) ---@param opts PluginLspOpts
       require("utils.format").register(require("plugins.lsp.formatter").formatter())
-      create_autocmd("LspAttach", function(args) return remap(args.data.client_id, args.buf) end)
+      create_autocmd("LspAttach", LspAttach)
+      vim.api.nvim_create_user_command("OrganizeImports", require("utils.organize_imports"), {})
+
       local register_capability = vim.lsp.handlers["client/registerCapability"]
       vim.lsp.handlers["client/registerCapability"] = function(err, res, ctx) ---@diagnostic disable-line: duplicate-set-field
         local ret = register_capability(err, res, ctx)
