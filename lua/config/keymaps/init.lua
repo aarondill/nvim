@@ -74,8 +74,8 @@ map("n", "[q", vim.cmd.cprev, "Previous quickfix")
 map("n", "]q", vim.cmd.cnext, "Next quickfix")
 map({ "n", "v" }, "<leader>cf", require("utils.format").format, "Format")
 -- diagnostic
-map("n", "]d", vim.diagnostic.goto_next, "Next Diagnostic")
-map("n", "[d", vim.diagnostic.goto_prev, "Prev Diagnostic")
+map("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, "Next Diagnostic")
+map("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, "Prev Diagnostic")
 map("n", "gl", function() return vim.diagnostic.open_float({ focusable = true }) end, "Diagnostic")
 -- toggle options
 
@@ -95,26 +95,16 @@ local function toggle_option(option, values, silent)
 end
 ---@return fun() toggler the function to toggle diagnostics
 local function toggle_diagnostics(buffer_local) ---@param buffer_local boolean?
-  -- if this Neovim version supports checking if diagnostics are enabled then use that for the current state
-  if not vim.diagnostic.is_disabled then
-    return function()
-      return notifications.warn({
-        "Toggling diagnostics is unsupported when vim.diagnostic.is_disabled is nil.",
-        "Call vim.diagnostic.enable() or vim.diagnostic.disable() to control them.",
-      })
-    end
-  end
   return function()
-    local enable = vim.diagnostic.is_disabled()
-    local f = enable and vim.diagnostic.enable or vim.diagnostic.disable
-    local msg = enable and "Enabled diagnostics" or "Disabled diagnostics"
-    f(buffer_local and 0 or nil)
+    local state = vim.diagnostic.is_enabled()
+    vim.diagnostic.enable(not state, { bufnr = buffer_local and 0 or nil })
+    local msg = state and "Disabled diagnostics" or "Enabled diagnostics"
     return notifications.info(msg, { title = "Diagnostics" })
   end
 end
 local function toggle_inlay_hints()
   if not vim.lsp.inlay_hint then return notifications.warn("This NeoVim version doesn't have inlay_hint support!") end
-  return vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())
+  return vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end
 
 map("n", "<leader>uf", require("utils.format").toggle, "Toggle auto format (global)")
