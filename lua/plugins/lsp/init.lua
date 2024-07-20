@@ -1,9 +1,13 @@
 local create_autocmd = require("utils.create_autocmd")
 local keymaps = require("plugins.lsp.keymaps")
 
+---@type table<integer, boolean>
+local lsp_initialized_buffers = {}
 local remap = keymaps.apply
 ---@param args EventInfo
 local function LspAttach(args)
+  if lsp_initialized_buffers[args.buf] then return end
+  lsp_initialized_buffers[args.buf] = true
   create_autocmd("BufWritePre", require("utils.organize_imports"), {
     buffer = args.buf,
     desc = "Organize imports",
