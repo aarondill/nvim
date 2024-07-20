@@ -27,14 +27,15 @@ end
 
 ---@alias lsp.Client.format {timeout_ms?: number, format_options?: table} | vim.lsp.get_clients.Filter
 
----@param opts? lsp.Client.format
+---@param opts? vim.lsp.buf.format.Opts
 function M.format(opts)
   opts = vim.tbl_deep_extend("force", opts or {}, defaults)
   local ok, conform = pcall(require, "conform")
   -- use conform for formatting with LSP when available,
   if not ok then return vim.lsp.buf.format(opts) end
-  opts.formatters = {}
-  return conform.format(opts)
+  local conform_opts = opts --[[@as conform.FormatOpts]]
+  conform_opts.formatters = {}
+  return conform.format(conform_opts)
 end
 
 return M
