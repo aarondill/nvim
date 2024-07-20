@@ -8,8 +8,6 @@ local function has_plugin(p) return require("lazy.core.config").spec.plugins[p] 
 function M.apply(client, buffer)
   if type(client) == "number" then client = assert(vim.lsp.get_client_by_id(client)) end
   buffer = buffer or vim.api.nvim_get_current_buf()
-  --- Apply universal lsp remaps here
-  local cap = client.server_capabilities or {}
   local function telescope_builtin(key)
     return function() return require("telescope.builtin")[key]({ reuse_win = true }) end
   end
