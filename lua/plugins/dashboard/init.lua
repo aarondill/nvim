@@ -26,7 +26,7 @@ return {
         header = header,
         center = {
           {
-            action = t.telescope("files"),
+            action = t.telescope("find_files"),
             desc = " Find file",
             icon = " ",
             key = "f",
