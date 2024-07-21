@@ -1,12 +1,12 @@
 local M = {}
 local defaults = { timeout_ms = 3000, async = false, quiet = false, lsp_fallback = true }
 
----@param opts? Formatter| {filter?: (string|vim.lsp.get_clients.Filter)}
+---@param opts? Formatter| {filter?: (string|vim.lsp.buf.format.Opts)}
 ---@return Formatter
 function M.formatter(opts)
   opts = opts or {}
   local filter = opts.filter or {}
-  filter = type(filter) == "string" and { name = filter } or filter ---@cast filter vim.lsp.get_clients.Filter
+  if type(filter) == "string" then filter = { name = filter } end
   local ret = { ---@type Formatter
     name = "LSP",
     primary = true,
