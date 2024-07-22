@@ -34,33 +34,43 @@ return {
       end,
     },
   },
-  keys = {
-    { "<leader>/", t.telescope("live_grep"), desc = "Grep (root dir)" },
-    { "<leader>:", "<cmd>Telescope command_history<cr>", desc = "Command History" },
-    { "<leader><space>", t.telescope("find_files"), desc = "Find Files (root dir)" },
-    -- find
-    { "<leader>ff", t.telescope("find_files"), desc = "Find Files (root dir)" },
-    { "<leader>fb", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "Buffers" },
-    { "<leader>fg", "<cmd>Telescope git_files<cr>", desc = "Find Files (git-files)" },
-    { "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent" },
-    -- git
-    { "<leader>gc", "<cmd>Telescope git_commits<CR>", desc = "commits" },
-    -- search
-    { "<leader>sa", "<cmd>Telescope autocommands<cr>", desc = "Auto Commands" },
-    { "<leader>sC", "<cmd>Telescope commands<cr>", desc = "Commands" },
-    { "<leader>sD", "<cmd>Telescope diagnostics<cr>", desc = "Workspace diagnostics" },
-    { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Help Pages" },
-    { "<leader>sH", "<cmd>Telescope highlights<cr>", desc = "Search Highlight Groups" },
-    { "<leader>sk", "<cmd>Telescope keymaps<cr>", desc = "Key Maps" },
-    { "<leader>sM", "<cmd>Telescope man_pages<cr>", desc = "Man Pages" },
-    { "<leader>sm", "<cmd>Telescope marks<cr>", desc = "Jump to Mark" },
-    { "<leader>so", "<cmd>Telescope vim_options<cr>", desc = "Options" },
-    { "<leader>sw", t.telescope("grep_string", { word_match = "-w" }), desc = "Word (root dir)" },
-    { "<leader>sw", t.telescope("grep_string"), mode = "v", desc = "Selection (root dir)" },
-    { "<leader>uc", "<cmd>Telescope colorscheme enable_preview=true<cr>", desc = "Colorscheme with preview" },
-    { "<leader>xx", "<cmd>Telescope diagnostics<cr>", desc = "Workspace Diagnostics" },
-    { "<leader>xX", "<cmd>Telescope diagnostics bufnr=0<cr>", desc = "Document Diagnostics" },
-  },
+  keys = function()
+    local keys = {
+      { "<leader>/", t.telescope("live_grep"), desc = "Grep (root dir)" },
+      { "<leader>:", "<cmd>Telescope command_history<cr>", desc = "Command History" },
+      { "<leader><space>", t.telescope("find_files"), desc = "Find Files (root dir)" },
+      -- find
+      { "<leader>ff", t.telescope("find_files"), desc = "Find Files (root dir)" },
+      { "<leader>fb", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "Buffers" },
+      { "<leader>fg", "<cmd>Telescope git_files<cr>", desc = "Find Files (git-files)" },
+      { "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent" },
+      -- git
+      { "<leader>gc", "<cmd>Telescope git_commits<CR>", desc = "commits" },
+      -- search
+      { "<leader>sa", "<cmd>Telescope autocommands<cr>", desc = "Auto Commands" },
+      { "<leader>sC", "<cmd>Telescope commands<cr>", desc = "Commands" },
+      { "<leader>sD", "<cmd>Telescope diagnostics<cr>", desc = "Workspace diagnostics" },
+      { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Help Pages" },
+      { "<leader>sH", "<cmd>Telescope highlights<cr>", desc = "Search Highlight Groups" },
+      { "<leader>sk", "<cmd>Telescope keymaps<cr>", desc = "Key Maps" },
+      { "<leader>sM", "<cmd>Telescope man_pages<cr>", desc = "Man Pages" },
+      { "<leader>sm", "<cmd>Telescope marks<cr>", desc = "Jump to Mark" },
+      { "<leader>so", "<cmd>Telescope vim_options<cr>", desc = "Options" },
+      { "<leader>sw", t.telescope("grep_string", { word_match = "-w" }), desc = "Word (root dir)" },
+      { "<leader>sw", t.telescope("grep_string"), mode = "v", desc = "Selection (root dir)" },
+      { "<leader>uc", "<cmd>Telescope colorscheme enable_preview=true<cr>", desc = "Colorscheme with preview" },
+    }
+
+    local has_trouble = require("lazy.core.config").plugins["trouble.nvim"]
+    if not has_trouble then
+      vim.list_extend(keys, {
+        { "<leader>xx", "<cmd>Telescope diagnostics<cr>", desc = "Workspace Diagnostics" },
+        { "<leader>xX", "<cmd>Telescope diagnostics bufnr=0<cr>", desc = "Document Diagnostics" },
+      })
+    end
+
+    return keys
+  end,
   opts = {
     pickers = {
       find_files = {
