@@ -56,3 +56,5 @@ vim.api.nvim_create_user_command("LspCapabilities", function()
   local clients = vim.lsp.get_clients({ bufnr = curBuf })
   vim.tbl_map(loop, clients)
 end, {})
+
+vim.api.nvim_create_user_command("OrganizeImports", require("utils.organize_imports"), {})

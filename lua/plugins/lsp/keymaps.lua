@@ -32,7 +32,7 @@ function M.apply(client, buffer)
     { "K", vim.lsp.buf.hover, desc = "Hover" },
     { "gK", vim.lsp.buf.signature_help, desc = "Signature Help" },
     { "<leader>ca", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" } },
-    { "<leader>co", require("utils.organize_imports").organize_imports, desc = "Organize Imports", mode = { "n" } },
+    { "<leader>co", require("utils.organize_imports"), desc = "Organize Imports", mode = { "n" } },
     { "<leader>cA", source_action, desc = "Source Action" },
     { "<leader>cc", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "v" } },
     { "<leader>cC", vim.lsp.codelens.refresh, desc = "Refresh & Display Codelens" },

@@ -8,7 +8,7 @@ local remap = keymaps.apply
 local function LspAttach(args)
   if lsp_initialized_buffers[args.buf] then return end
   lsp_initialized_buffers[args.buf] = true
-  create_autocmd("BufWritePre", require("utils.organize_imports").organize_imports, {
+  create_autocmd("BufWritePre", require("utils.organize_imports"), {
     buffer = args.buf,
     desc = "Organize imports",
   })
@@ -34,7 +34,7 @@ return {
     config = function(_, opts) ---@param opts PluginLspOpts
       require("utils.format").register(require("plugins.lsp.formatter").formatter())
       create_autocmd("LspAttach", LspAttach)
-      vim.api.nvim_create_user_command("OrganizeImports", require("utils.organize_imports").organize_imports, {})
+      vim.api.nvim_create_user_command("OrganizeImports", require("utils.organize_imports"), {})
 
       local register_capability = vim.lsp.handlers["client/registerCapability"]
       vim.lsp.handlers["client/registerCapability"] = function(err, res, ctx) ---@diagnostic disable-line: duplicate-set-field
