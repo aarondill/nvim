@@ -58,3 +58,15 @@ vim.api.nvim_create_user_command("LspCapabilities", function()
 end, {})
 
 vim.api.nvim_create_user_command("OrganizeImports", require("utils.organize_imports"), {})
+
+vim.api.nvim_create_user_command("VTip", function() -- Show new vtip
+  return require("utils.vtip").fetch()
+end, { desc = "Show VTip" })
+
+vim.api.nvim_create_user_command("VTipClear", function() -- Clear vtip
+  return require("utils.vtip").clear()
+end, { desc = "Clear VTip" })
+
+vim.api.nvim_create_user_command("VTipHistory", function() -- Show vtip history
+  return require("utils.vtip").history()
+end, { desc = "Show VTip history" })
