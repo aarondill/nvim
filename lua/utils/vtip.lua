@@ -31,7 +31,9 @@ function M.fetch(on_success, on_error)
       return on_error(err)
     end
     local res = assert(obj.stdout, "No stdout from curl") -- this isn't possible
+
     vim.schedule(function() -- Writefile has to be scheduled
+      vim.fn.mkdir(vim.fs.dirname(M.file), "p") -- Create the directory if it doesn't exist
       local write_res = vim.split(res, "\n", { plain = true, trimempty = true }) -- writefile expects a list of lines
       vim.fn.writefile(write_res, M.file, "a") -- Append the tip to the cache file
     end)
@@ -43,9 +45,11 @@ end
 
 --- Open a popup with the VTip history
 function M.history()
-  --- Replace newlines with null bytes
-  local lines = vim.tbl_map(function(line) return line:gsub("\n", "\0") end, vim.fn.readfile(M.file))
+  if vim.fn.filereadable(M.file) == 0 then return notifications.info("VTip history is empty") end
+  local ok, lines = pcall(vim.fn.readfile, M.file)
+  if not ok then return notifications.error("Could not read VTip history: " .. lines) end
   if #lines == 0 then return notifications.info("VTip history is empty") end
+  lines = vim.tbl_map(function(line) return line:gsub("\n", "\0") end, lines) --- Replace newlines with null bytes
 
   local buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
@@ -53,6 +57,7 @@ function M.history()
   vim.bo[buf].modifiable = false
   vim.bo[buf].bufhidden = "wipe"
   vim.bo[buf].buftype = "nofile"
+  vim.bo[buf].swapfile = false
 
   local width = math.floor(vim.o.columns * 0.5)
   local height = math.floor(vim.o.lines * 0.5)
@@ -72,7 +77,11 @@ function M.history()
     return vim.api.nvim_win_close(win, true)
   end, { buffer = buf, nowait = true })
 
+  vim.wo[win].number = true
+
   vim.api.nvim_win_set_buf(win, buf)
+  -- Scroll to the bottom
+  vim.api.nvim_win_set_cursor(win, { vim.fn.line("$", win), 0 })
 end
 
 --- Clear the VTip history
