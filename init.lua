@@ -1,19 +1,3 @@
-require("future") -- Fowards compatability
-
--- Override .pluto and .tmpl extensions
-vim.filetype.add({
-  pattern = {
-    [".*/etc/default/grub.d/.*%.cfg"] = "sh",
-  },
-  filename = {
-    ["/etc/default/grub"] = "sh",
-  },
-  extension = {
-    [".pluto"] = "lua",
-    [".tmpl"] = function(path) return vim.fs.basename(path):match(".+%.(.+).tmpl$") end,
-  },
-})
-
 if vim.fn.has("nvim-0.9.0") == 0 then
   vim.api.nvim_echo({
     { "This configurations requires Neovim >= 0.9.0\n", "ErrorMsg" },
@@ -23,6 +7,8 @@ if vim.fn.has("nvim-0.9.0") == 0 then
   vim.fn.getchar()
   return
 end
+
+require("future") -- Fowards compatability
 
 do -- delay notifications till vim.notify was replaced or after 500ms
   local notifs, orig = {}, vim.notify
