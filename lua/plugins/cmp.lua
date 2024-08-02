@@ -34,7 +34,7 @@ return {
     opts = function()
       local cmp = require("cmp")
       local compare = cmp.config.compare
-      return {
+      return { ---@type cmp.ConfigSchema
         -- Change border of documentation hover window, See https://github.com/neovim/neovim/pull/13998.
         window = { completion = { border = "rounded" }, documentation = { border = "rounded" } },
         completion = { completeopt = "menu,menuone,noinsert" },
@@ -56,12 +56,17 @@ return {
           end,
         }),
         sources = cmp.config.sources({ { name = "nvim_lsp" }, { name = "path" } }, { { name = "buffer" } }),
-        formatting = {
+        formatting = { ---@type cmp.FormattingConfig|{}
           format = function(_, item)
             local icons = require("config.icons").lazyvim.icons.kinds
             if icons[item.kind] then item.kind = icons[item.kind] .. item.kind end
             return item
           end,
+        },
+        performance = { ---@type cmp.PerformanceConfig|{}
+          trigger_debounce_time = 500,
+          throttle = 550,
+          fetching_timeout = 80,
         },
         experimental = { ghost_text = false }, -- Don't show the ghost text
         sorting = {
