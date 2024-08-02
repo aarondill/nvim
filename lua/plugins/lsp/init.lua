@@ -80,7 +80,9 @@ return {
       for server, server_opts in pairs(opts.servers) do
         if server_opts == true then server_opts = {} end
         if server_opts then
-          local use_mason = server_opts.mason == nil or server_opts and vim.tbl_contains(mlsp_servers, server)
+          -- run manual setup if mason=false or if this is a server that cannot be installed with mason-lspconfig
+          local use_mason = server_opts.mason ---@type boolean?
+          if use_mason ~= false then use_mason = vim.tbl_contains(mlsp_servers, server) end
           if server_opts.enabled ~= false then
             if use_mason then
               ensure_installed[#ensure_installed + 1] = server
