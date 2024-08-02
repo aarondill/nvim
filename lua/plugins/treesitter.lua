@@ -32,6 +32,7 @@ return {
     },
     ---@diagnostic disable-next-line: missing-fields
     opts = { ---@type TSConfig
+      auto_install = true,
       highlight = { enable = true },
       indent = { enable = true },
       ensure_installed = require("utils.flatten")(
