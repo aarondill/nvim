@@ -6,6 +6,9 @@ return {
   init = function()
     vim.g.netrw_nogx = 1 -- disable netrw gx
   end,
+  opts = {
+    select_for_search = false,
+  },
   keys = {
     { "gx", "<cmd>Browse<cr>", mode = { "n", "x" } },
     {
