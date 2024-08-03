@@ -4,7 +4,6 @@ return {
   opts = {
     servers = {
       tailwindcss = { ---@type lspconfig.options.tailwindcss
-        mason = false,
         settings = { ---@type lspconfig.settings.tailwindcss|{}
           scss = { validate = false },
           editor = {

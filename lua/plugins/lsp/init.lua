@@ -14,6 +14,15 @@ local function LspAttach(args)
   })
   return remap(args.data.client_id, args.buf)
 end
+
+---@class _.lspconfig.options
+---Default is `true` for all servers.
+---@field enabled? boolean
+---Pass `false` to disable mason-lspconfig.
+---Pass `true` to enable mason-lspconfig, and auto install the server.
+---Pass `nil` to use mason-lspconfig, but not install the server.
+---@field mason? boolean
+
 ---@type LazySpec
 return {
   { import = "plugins.lsp.servers" }, -- Import the configuration from lsp servers
@@ -27,21 +36,17 @@ return {
     },
     ---@class PluginLspOpts
     opts = {
+      ---@type lsp.ServerCapabilities
       capabilities = {}, -- add any global capabilities here
-      servers = {}, ---@type lspconfig.options | {}
-      setup = {}, ---@type table<string, fun(server:string, opts:_.lspconfig.options): boolean?>
+      ---@type lspconfig.options|{}
+      servers = {},
+      ---Return true to skip setting up the server with lspconfig
+      ---@type table<string, fun(server:string, opts:_.lspconfig.options): boolean?>
+      setup = {},
     },
     config = function(_, opts) ---@param opts PluginLspOpts
       require("utils.format").register(require("plugins.lsp.formatter").formatter())
       create_autocmd("LspAttach", LspAttach)
-      vim.api.nvim_create_user_command("OrganizeImports", require("utils.organize_imports"), {})
-
-      local register_capability = vim.lsp.handlers["client/registerCapability"]
-      vim.lsp.handlers["client/registerCapability"] = function(err, res, ctx) ---@diagnostic disable-line: duplicate-set-field
-        local ret = register_capability(err, res, ctx)
-        remap(ctx.client_id, ctx.bufnr)
-        return ret
-      end
 
       -- diagnostics
       local icons = require("config.icons").lazyvim.icons
@@ -71,29 +76,26 @@ return {
         return require("lspconfig")[server].setup(server_opts)
       end
 
-      -- get all the servers that are available through mason-lspconfig
-      local have_mlsp, mlsp = pcall(require, "mason-lspconfig")
-      local mlsp_servers = have_mlsp and vim.tbl_keys(require("mason-lspconfig.mappings.server").lspconfig_to_package)
-        or {}
-
       local ensure_installed = {} ---@type string[]
+      ---For preconfigured servers
       for server, server_opts in pairs(opts.servers) do
-        if server_opts == true then server_opts = {} end
-        if server_opts then
-          -- run manual setup if mason=false or if this is a server that cannot be installed with mason-lspconfig
-          local use_mason = server_opts.mason ---@type boolean?
-          if use_mason ~= false then use_mason = vim.tbl_contains(mlsp_servers, server) end
-          if server_opts.enabled ~= false then
-            if use_mason then
-              ensure_installed[#ensure_installed + 1] = server
-            else
-              setup(server)
-            end
+        ---@type _.lspconfig.options
+        server_opts = server_opts
+        if server_opts.enabled ~= false then
+          -- If mason is false, manually setup the server
+          -- If mason is true, install/setup the server
+          -- If mason is nil, setup the server if it is installed through mason-lspconfig
+          if server_opts.mason == false then
+            setup(server)
+          elseif server_opts.mason == true then
+            ensure_installed[#ensure_installed + 1] = server
           end
         end
       end
 
-      if have_mlsp then mlsp.setup({ ensure_installed = ensure_installed, handlers = { setup } }) end
+      local mlsp = require("mason-lspconfig")
+      mlsp.setup({ ensure_installed = ensure_installed })
+      mlsp.setup_handlers({ setup })
     end,
   },
   { "williamboman/mason-lspconfig.nvim", dependencies = { "mason.nvim" } },
