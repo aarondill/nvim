@@ -1,9 +1,8 @@
 local flatten = require("utils.flatten")
-local mason_ensure_installed = flatten(
-  { "lua-language-server", "bash-language-server", "cspell", "eslint-lsp", "eslint_d", "jdtls" },
-  { "json-lsp", "prettier", "shellcheck", "taplo", "typescript-language-server", "vim-language-server" },
-  { "vint", "alex", "gitlint" }
-)
+local mason_ensure_installed = flatten({
+  { "cspell", "eslint-lsp", "eslint_d", "prettier" },
+  { "shellcheck", "vint", "alex", "gitlint" },
+})
 local treesitter_ensure_installed = { "dockerfile", "git_config", "jsdoc", "make", "toml", "vimdoc", "java" }
 
 ---@type LazySpec

@@ -2,9 +2,12 @@
 return {
   {
     "neovim/nvim-lspconfig",
+    ---@type PluginLspOpts
     opts = {
       servers = {
-        tsserver = {},
+        tsserver = {
+          mason = true, -- auto install
+        },
       },
     },
   },

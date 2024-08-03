@@ -2,9 +2,11 @@
 return {
   "neovim/nvim-lspconfig",
   optional = true,
+  ---@type PluginLspOpts
   opts = {
     servers = {
-      lua_ls = { ---@type lspconfig.options.lua_ls | {}
+      lua_ls = {
+        mason = true, -- auto install
         settings = {
           Lua = { ---@type _.lspconfig.settings.lua_ls.Lua|{}
             workspace = { checkThirdParty = false }, ---@type _.lspconfig.settings.lua_ls.Workspace | {}
