@@ -2,45 +2,40 @@
 -- Copied from LazyVim (https://github.com/LazyVim/LazyVim/blob/d01a58ef904b9e11378e5c175f3389964c69169d/lua/lazyvim/util/mini.lua#L63)
 local function ai_whichkey()
   if not pcall(require, "which-key") then return end
-  local objects = {
+  local defaults = {
     { " ", desc = "whitespace" },
     { '"', desc = '" string' },
+    { "`", desc = "` string" },
     { "'", desc = "' string" },
     { "(", desc = "() block" },
     { ")", desc = "() block with ws" },
     { "<", desc = "<> block" },
     { ">", desc = "<> block with ws" },
     { "?", desc = "user prompt" },
-    { "U", desc = "use/call without dot" },
     { "[", desc = "[] block" },
     { "]", desc = "[] block with ws" },
     { "_", desc = "underscore" },
-    { "`", desc = "` string" },
     { "a", desc = "argument" },
     { "b", desc = ")]} block" },
-    { "c", desc = "class" },
-    { "d", desc = "digit(s)" },
-    { "e", desc = "CamelCase / snake_case" },
-    { "f", desc = "function" },
-    { "g", desc = "entire file" },
-    { "i", desc = "indent" },
-    { "o", desc = "block, conditional, loop" },
+    { "f", desc = "function call" },
     { "q", desc = "quote `\"'" },
-    { "t", desc = "tag" },
-    { "u", desc = "use/call" },
     { "{", desc = "{} block" },
     { "}", desc = "{} with ws" },
   }
+  local objects = vim.list_extend({
+    { "i", desc = "indent" }, -- Technically via mini.indentscope
+    { "c", desc = "class" },
+    { "U", desc = "use/call without dot" },
+    { "d", desc = "digit(s)" },
+    { "e", desc = "CamelCase / snake_case" },
+    { "g", desc = "entire file" },
+    { "o", desc = "block, conditional, loop" },
+    { "t", desc = "tag" },
+    { "u", desc = "use/call" },
+  }, defaults)
 
   local ret = { mode = { "o", "x" } }
-  for prefix, name in pairs({
-    i = "inside",
-    a = "around",
-    il = "last",
-    ["in"] = "next",
-    al = "last",
-    an = "next",
-  }) do
+  for prefix, name in pairs({ i = "inside", a = "around", il = "last", ["in"] = "next", al = "last", an = "next" }) do
     ret[#ret + 1] = { prefix, group = name }
     for _, obj in ipairs(objects) do
       local desc = obj.desc
@@ -48,7 +43,7 @@ local function ai_whichkey()
       ret[#ret + 1] = { prefix .. obj[1], desc = obj.desc }
     end
   end
-  require("which-key").add(ret, { notify = false })
+  return require("which-key").add(ret, { notify = false })
 end
 
 ---@type LazySpec
@@ -130,23 +125,39 @@ return {
       },
     },
   },
-
+  {
+    "echasnovski/mini.extra",
+    optional = true, -- Don't load unless it's being used as dependency
+    config = true, -- call setup. Strickly speaking, this is not necessary; but the docs say to do it
+  },
   -- Better text-objects
   {
     "echasnovski/mini.ai",
     event = "VeryLazy",
+    dependencies = "echasnovski/mini.extra",
     opts = function()
       local ai = require("mini.ai")
+      local gen_ai_spec = require("mini.extra").gen_ai_spec
       return {
         n_lines = 500,
         custom_textobjects = {
-          o = ai.gen_spec.treesitter({
+          g = gen_ai_spec.buffer(), -- g like gg or G
+          L = gen_ai_spec.line(), -- can't use 'l' because of conflict with 'a/i last X'
+          d = gen_ai_spec.number(), -- d for digit
+
+          o = ai.gen_spec.treesitter({ -- code block "outer"
             a = { "@block.outer", "@conditional.outer", "@loop.outer" },
             i = { "@block.inner", "@conditional.inner", "@loop.inner" },
-          }, {}),
-          f = ai.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }, {}),
-          c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }, {}),
-          t = { "<([%p%w]-)%f[^<%w][^<>]->.-</%1>", "^<.->().*()</[^/]->$" },
+          }),
+          f = ai.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }), -- function
+          c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }), -- class
+          t = { "<([%p%w]-)%f[^<%w][^<>]->.-</%1>", "^<.->().*()</[^/]->$" }, -- tags
+          e = { -- Word with case
+            { "%u[%l%d]+%f[^%l%d]", "%f[%S][%l%d]+%f[^%l%d]", "%f[%P][%l%d]+%f[^%l%d]", "^[%l%d]+%f[^%l%d]" },
+            "^().*()$",
+          },
+          u = ai.gen_spec.function_call(), -- u for "Usage"
+          U = ai.gen_spec.function_call({ name_pattern = "[%w_]" }), -- without dot in function name
         },
       }
     end,
