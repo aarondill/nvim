@@ -136,10 +136,21 @@ return {
     opts = {
       library = {
         { path = "luvit-meta/library", words = { "vim%.uv", "vim%.loop" } },
-        "lazy.nvim",
+        { "lazy.nvim", words = { "Lazy", "lazy" } },
         { path = "wezterm-types", mods = { "wezterm" } },
       },
     },
+  },
+  { -- optional completion source for require statements and module annotations
+    "hrsh7th/nvim-cmp",
+    optional = true,
+    opts = function(_, opts)
+      opts.sources = opts.sources or {}
+      table.insert(opts.sources, {
+        name = "lazydev",
+        group_index = 0, -- set group index to 0 to skip loading LuaLS completions
+      })
+    end,
   },
   { "justinsgithub/wezterm-types", lazy = true },
   { "Bilal2453/luvit-meta", lazy = true }, -- `vim.uv` typings
