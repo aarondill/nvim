@@ -142,7 +142,7 @@ return {
         --- Note: lua/ is possible a false-positive, but it's unlikely to be used in a non-nvim project
         for _, path in ipairs({ "plugin/", "autoload/", "after/", ".neoconf.json", "lua/" }) do
           local full_path = vim.fs.joinpath(root_dir, path)
-          local exists = vim.fs.dir(full_path) ~= nil
+          local exists = vim.uv.fs_stat(full_path) ~= nil
           if exists then return true end
         end
       end,
