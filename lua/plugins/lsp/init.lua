@@ -133,7 +133,19 @@ return {
   {
     "folke/lazydev.nvim",
     ft = "lua",
+    cmd = "LazyDev",
+    ---@module 'lazydev'
+    ---@type lazydev.Config
     opts = {
+      enabled = function(root_dir) -- Default to off unless `lazydev_enabled` is set to true or we're under ~/.config/nvim
+        if vim.g.lazydev_enabled or root_dir == vim.fn.expand("~/.config/nvim") then return true end
+        --- Note: lua/ is possible a false-positive, but it's unlikely to be used in a non-nvim project
+        for _, path in ipairs({ "plugin/", "autoload/", "after/", ".neoconf.json", "lua/" }) do
+          local full_path = vim.fs.joinpath(root_dir, path)
+          local exists = vim.fs.dir(full_path) ~= nil
+          if exists then return true end
+        end
+      end,
       library = {
         { path = "luvit-meta/library", words = { "vim%.uv", "vim%.loop" } },
         { "lazy.nvim", words = { "Lazy", "lazy" } },
@@ -145,24 +157,14 @@ return {
     "hrsh7th/nvim-cmp",
     optional = true,
     opts = function(_, opts)
-      opts.sources = opts.sources or {}
-      table.insert(opts.sources, {
+      _ = _ ---@module 'cmp'
+      opts.sources = opts.sources or {} ---@type cmp.SourceConfig[]
+      opts.sources[#opts.sources + 1] = {
         name = "lazydev",
         group_index = 0, -- set group index to 0 to skip loading LuaLS completions
-      })
+      }
     end,
   },
   { "justinsgithub/wezterm-types", lazy = true },
   { "Bilal2453/luvit-meta", lazy = true }, -- `vim.uv` typings
-  { -- completion source for require statements and module annotations
-    "hrsh7th/nvim-cmp",
-    optional = true,
-    opts = function(_, opts)
-      opts.sources = opts.sources or {}
-      table.insert(opts.sources, {
-        name = "lazydev",
-        group_index = 0, -- set group index to 0 to skip loading LuaLS completions
-      })
-    end,
-  },
 }
