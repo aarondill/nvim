@@ -165,5 +165,4 @@ return {
       })
     end,
   },
-  { "folke/neodev.nvim", optional = true, enabled = false }, -- make sure to disable neodev.nvim
 }
