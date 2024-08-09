@@ -1,13 +1,21 @@
-local names = { "reminder", "todo" }
 local extensions = { ".txt", ".md", "" }
+local names = { "reminder", "todo" } -- both capitals and lowercase will be added
 
-for _, name in ipairs(names) do
-  for _, ext in ipairs(extensions) do
-    vim.filetype.add({
-      pattern = { ["%.?" .. name .. ext] = "markdown" },
-    })
-  end
-end
+vim
+  .iter(names)
+  :map(function(name) ---@param name string
+    return { name:lower(), name:gsub("^%l", string.upper), name:upper() }
+  end)
+  :flatten(1)
+  :map(function(name) return { "." .. name, name } end) -- Add leading dot
+  :flatten(1)
+  :map(function(name) ---@param name string
+    return vim.iter(extensions):map(function(ext) return name .. ext end):totable()
+  end)
+  :flatten(1)
+  :each(function(file) ---@param file string
+    return vim.filetype.add({ filename = { [file] = "markdown" } })
+  end)
 
 -- Override .pluto and .tmpl extensions
 vim.filetype.add({
