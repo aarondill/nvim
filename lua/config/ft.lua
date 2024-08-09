@@ -1,5 +1,6 @@
 local extensions = { ".txt", ".md", "" }
 local names = { "reminder", "todo" } -- both capitals and lowercase will be added
+local home = os.getenv("HOME")
 
 vim
   .iter(names)
@@ -13,6 +14,7 @@ vim
     return vim.iter(extensions):map(function(ext) return name .. ext end):totable()
   end)
   :flatten(1)
+  :map(function(file) return vim.fs.joinpath(home, file) end)
   :each(function(file) ---@param file string
     return vim.filetype.add({ filename = { [file] = "markdown" } })
   end)
