@@ -21,7 +21,7 @@ end
 --- Creates a skeleton for new files
 local setup_todos = vim.schedule_wrap(function(path) ---@param path string
   local group = vim.api.nvim_create_augroup("todos", { clear = true })
-  local pattern = pattern_escape(vim.fs.joinpath(path, "*"))
+  local pattern = vim.fs.joinpath(pattern_escape(path), "*")
 
   create_autocmd({ "BufRead", "BufNewFile" }, handle_todo, { group = group, pattern = pattern })
 
