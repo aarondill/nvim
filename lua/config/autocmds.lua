@@ -157,3 +157,8 @@ create_autocmd("VimEnter", function()
   require("utils.vtip").fetch()
   return true
 end, { desc = "Fetch tips from vtip.43z.one", group = augroup })
+
+create_autocmd({ "BufEnter", "TermOpen" }, function(e)
+  if vim.bo[e.buf].buftype ~= "terminal" then return end
+  vim.cmd.startinsert()
+end, { desc = "Enter terminal mode when entering a terminal buffer", group = augroup })
