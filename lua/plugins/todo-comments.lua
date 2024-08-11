@@ -25,7 +25,7 @@ return {
       after = "",
       keyword = "bg",
       multiline = false,
-      pattern = [[.*<((KEYWORDS)\s*([^:]*)?\s*:)]],
+      pattern = [[.*<((KEYWORDS)\s*(\([^:]*\))?\s*:)]],
     },
   },
   keys = {
