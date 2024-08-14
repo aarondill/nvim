@@ -48,7 +48,7 @@ return {
   keys = {
     {
       "<leader>H",
-      function() require("harpoon"):list():append() end,
+      function() require("harpoon"):list():add() end,
       desc = "Harpoon file",
     },
     { "<leader>h", toggle_quick_menu, desc = "Harpoon quick menu" },
