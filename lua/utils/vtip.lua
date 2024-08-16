@@ -27,7 +27,7 @@ function M.fetch(on_success, on_error)
   on_success, on_error = on_success or M.notify, on_error or M.error
   local ok = pcall(vim.system, { "curl", "-SsfL", M.url }, nil, function(obj)
     if obj.code ~= 0 or obj.signal ~= 0 then
-      local err = table.concat({ obj.stderr, obj.stdout }, "\n")
+      local err = vim.trim(table.concat({ obj.stdout, obj.stderr }, "\n"))
       return on_error(err)
     end
     local res = assert(obj.stdout, "No stdout from curl") -- this isn't possible
