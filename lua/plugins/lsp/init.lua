@@ -70,6 +70,9 @@ return {
       )
 
       local function setup(server)
+        -- HACK: https://github.com/neovim/nvim-lspconfig/pull/3232
+        if server == "tsserver" then server = "ts_ls" end
+
         local server_opts = vim.tbl_deep_extend("force", { capabilities = capabilities }, opts.servers[server] or {})
         local f = opts.setup[server] or opts.setup["*"]
         if f and f(server, server_opts) then return end

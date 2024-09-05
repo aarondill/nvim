@@ -30,7 +30,7 @@ return {
       create_autocmd("LspAttach", function(args)
         local client = vim.lsp.get_client_by_id(args.data.client_id)
         if not client or not client.name then return end
-        if client.name ~= "tsserver" then return end
+        if client.name ~= "ts_ls" then return end
         return require("twoslash-queries").attach(client, args.buf)
       end)
     end,
