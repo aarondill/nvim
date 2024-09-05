@@ -11,7 +11,7 @@ return {
       jsonls = { mason = true },
       lua_ls = { mason = true },
       taplo = { mason = true },
-      tsserver = { mason = true },
+      ts_ls = { mason = true },
       vimls = { mason = true },
     },
   },
