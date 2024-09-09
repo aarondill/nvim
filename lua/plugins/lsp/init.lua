@@ -70,25 +70,10 @@ return {
       )
 
       local function setup(server)
-        -- HACK: https://github.com/neovim/nvim-lspconfig/pull/3232
-        -- Mason doesn't support the new name for tsserver yet
-        if server == "tsserver" then server = "ts_ls" end
-
         local server_opts = vim.tbl_deep_extend("force", { capabilities = capabilities }, opts.servers[server] or {})
         local f = opts.setup[server] or opts.setup["*"]
         if f and f(server, server_opts) then return end
         return require("lspconfig")[server].setup(server_opts)
-      end
-      do
-        local avail_servers = require("mason-lspconfig").get_available_servers({ "typescript" })
-        for _, server in ipairs(avail_servers) do
-          if server == "ts_ls" then
-            local info = debug.getinfo(1)
-            local source, myline = info.source:match("@(.*)$"), info.currentline
-            local msg = ("%s:%d"):format(source, myline)
-            require("utils.notifications").warn(msg, { title = "mason-lspconfig now supports ts_ls!" })
-          end
-        end
       end
 
       local ensure_installed = {} ---@type string[]
@@ -103,9 +88,6 @@ return {
           if server_opts.mason == false then
             setup(server)
           elseif server_opts.mason == true then
-            -- HACK: https://github.com/neovim/nvim-lspconfig/pull/3232
-            -- Mason doesn't support the new name for tsserver yet
-            if server == "ts_ls" then server = "tsserver" end
             ensure_installed[#ensure_installed + 1] = server
           end
         end
