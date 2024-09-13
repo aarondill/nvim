@@ -14,11 +14,17 @@ vim.g.maplocalleader = " "
 -- computer crashes.
 opt.hidden = true
 
-opt.wildmenu = true -- Better command-line completion
+-- Better command-line completion
+opt.wildmenu = true
 
-opt.showcmd = true -- Show partial commands in the last line of the screen
+-- Show partial commands in the last line of the screen
+opt.showcmd = true
 
-opt.hlsearch = true -- Highlight searches (use <C-L> to temporarily turn off highlighting
+-- Highlight searches (use <C-L> to temporarily turn off highlighting
+opt.hlsearch = true
+
+-- When soft-wrapping lines, break at word boundaries
+opt.linebreak = true
 
 -- Use case insensitive search, except when using capital letters
 opt.ignorecase = true
