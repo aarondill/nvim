@@ -9,7 +9,7 @@ assert(thisdir, "Could not find thisdir")
 local function download_ltex_ngram()
   local url = [[https://languagetool.org/download/ngram-data/ngrams-en-20150817.zip]]
   --- Already downloaded
-  if vim.loop.fs_stat(vim.fs.joinpath(url, "en")) then return end
+  if vim.loop.fs_stat(vim.fs.joinpath(ngrams_dir, "en")) then return end
 
   vim.fn.mkdir(chachedir, "p")
   vim.fn.mkdir(ngrams_dir, "p")
