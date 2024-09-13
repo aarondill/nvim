@@ -19,6 +19,7 @@ return {
       "SupermavenStatus",
     },
     opts = {
+      log_level = "warn",
       ignore_filetypes = ignored,
       disable_keymaps = true,
     },
