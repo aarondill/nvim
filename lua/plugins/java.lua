@@ -82,7 +82,12 @@ return {
       {
         "<leader>jh",
         function() return type_hierarchy("typeHierarchy/supertypes", telescope_hierarchy) end,
-        desc = "Show Class Hierarchy",
+        desc = "Show Class Hierarchy (supertypes)",
+      },
+      {
+        "<leader>jH",
+        function() return type_hierarchy("typeHierarchy/subtypes", telescope_hierarchy) end,
+        desc = "Show Class Hierarchy (subtypes)",
       },
     },
     opts = function()
