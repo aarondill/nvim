@@ -27,6 +27,8 @@ function M.fetch(on_success, on_error)
   on_success, on_error = on_success or M.notify, on_error or M.error
   local ok = pcall(vim.system, { "curl", "-SsfL", M.url }, nil, function(obj)
     if obj.code ~= 0 or obj.signal ~= 0 then
+      if obj.code == 6 then return end -- Could not resolve host
+      if obj.code == 7 then return end -- Failed to connect
       local err = vim.trim(table.concat({ obj.stdout, obj.stderr }, "\n"))
       return on_error(err)
     end
