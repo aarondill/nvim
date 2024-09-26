@@ -39,9 +39,10 @@ return {
       })
     end, { pattern = "VeryLazy", once = true })
   end,
-  ---@class ConformOpts
+  ---@class conform.setupOpts
   opts = {
-    formatters_by_ft = { ---@type table<string, conform.FormatterUnit[]>
+    formatters_by_ft = {
+      kotlin = { "ktfmt" },
       lua = { "stylua" },
       fish = { "fish_indent" },
       sh = { "shfmt" },
