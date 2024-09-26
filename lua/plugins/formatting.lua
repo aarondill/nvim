@@ -42,7 +42,6 @@ return {
   ---@class conform.setupOpts
   opts = {
     formatters_by_ft = {
-      kotlin = { "ktfmt" },
       lua = { "stylua" },
       fish = { "fish_indent" },
       sh = { "shfmt" },
