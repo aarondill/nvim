@@ -25,7 +25,8 @@ local M = {
 ---@param on_error? fun(err: string): any?
 function M.fetch(on_success, on_error)
   on_success, on_error = on_success or M.notify, on_error or M.error
-  local ok = pcall(vim.system, { "curl", "-SsfL", M.url }, nil, function(obj)
+  local ok = pcall(vim.system, { "curl", "-SsfL", M.url }, { timeout = 3 * 1000 }, function(obj)
+    if obj.code == 124 then return end -- Timeout
     if obj.code ~= 0 or obj.signal ~= 0 then
       if obj.code == 6 then return end -- Could not resolve host
       if obj.code == 7 then return end -- Failed to connect
