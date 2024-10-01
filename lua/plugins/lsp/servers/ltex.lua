@@ -1,6 +1,9 @@
 local notifications = require("utils.notifications")
 local chachedir = vim.fn.stdpath("cache")
+local configdir = vim.fn.stdpath("config")
 assert(type(chachedir) == "string", "stdpath cache dir is not a string")
+assert(type(configdir) == "string", "stdpath config dir is not a string")
+
 local ngrams_dir = vim.fs.joinpath(chachedir, "ngrams")
 
 local thisdir = debug.getinfo(1, "S").source:match("@(.*)/")
@@ -24,6 +27,11 @@ local function download_ltex_ngram()
     return notifications.info("ltex download complete")
   end)
 end
+local dictionary_en_us
+do
+  local ok, lines = pcall(vim.fn.readfile, vim.fs.joinpath(configdir, "spell", "en.utf-8.add"))
+  if ok then dictionary_en_us = lines end
+end
 
 ---@type LazySpec
 return {
@@ -41,6 +49,7 @@ return {
             checkFrequency = 1000,
             language = "en-US",
             languageModel = ngrams_dir,
+            dictionary = { ["en-US"] = dictionary_en_us },
           },
         },
       },
