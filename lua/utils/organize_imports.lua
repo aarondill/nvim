@@ -10,13 +10,20 @@ local commands = {
   ["ts_ls"] = "_typescript.organizeImports",
   ["jdtls"] = function() return require("jdtls").organize_imports() end,
 }
+local skip = {
+  jdtls = true, -- JAVA is dumb and removes all imports on a syntax error
+}
 
-return function()
+---@param force? boolean
+return function(force)
   local method = "workspace/executeCommand"
   local bufnr = vim.api.nvim_get_current_buf()
   local client = vim.lsp.get_clients({ bufnr = bufnr })[1]
+  if not client then return end
+  local name = client.name
+  if force ~= true and skip[name] then return end
   ---@type organize_imports_command?
-  local command = commands[client.name] or commands.default
+  local command = commands[name] or commands.default
   if type(command) == "function" then command = command(client, bufnr) end
   if not command then return end -- No command found / function returned nil
 
