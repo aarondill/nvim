@@ -50,14 +50,6 @@ local function type_hierarchy(method, handler)
     vim.lsp.buf_request(0, method, { item = result[1] }, handler)
   end)
 end
----@param method string
-local function lazy_jdtls_method(method, ...)
-  local args = select("#", ...) > 0 and vim.F.pack_len(...) or nil
-  return function()
-    if not args then return require("jdtls")[method]() end
-    return require("jdtls")[method](unpack(args, 1, args.n))
-  end
-end
 
 ---@type LazySpec
 return {
@@ -72,13 +64,6 @@ return {
     ft = { "java" },
     --- Mappings -- <leader>j is java
     keys = {
-      { "<leader>ji", lazy_jdtls_method("organize_imports"), desc = "Organize imports" },
-      { "<leader>jt", lazy_jdtls_method("test_class"), desc = "Test class" },
-      { "<leader>jn", lazy_jdtls_method("test_nearest_method"), desc = "Test nearest method" },
-      { "<leader>je", lazy_jdtls_method("extract_variable"), desc = "Extract variable" },
-      { "<leader>jM", lazy_jdtls_method("extract_method"), desc = "Extract method" },
-      { "<leader>je", lazy_jdtls_method("extract_variable", { visual = true }), desc = "Extract variable", mode = "v" },
-      { "<leader>jM", lazy_jdtls_method("extract_method", { visual = true }), desc = "Extract method", mode = "v" },
       {
         "<leader>jh",
         function() return type_hierarchy("typeHierarchy/supertypes", telescope_hierarchy) end,
