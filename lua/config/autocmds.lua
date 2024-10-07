@@ -153,11 +153,6 @@ create_autocmd("BufRead", function(ev)
   vim.bo[ev.buf].modifiable = not vim.bo[ev.buf].readonly
 end, { desc = "Make read-only files non-modifiable", group = augroup })
 
-create_autocmd("VimEnter", function()
-  require("utils.vtip").fetch()
-  return true
-end, { desc = "Fetch tips from vtip.43z.one", group = augroup })
-
 create_autocmd({ "BufEnter", "TermOpen" }, function(e)
   if vim.bo[e.buf].buftype ~= "terminal" then return end
   vim.cmd.startinsert()
