@@ -11,12 +11,23 @@ local function under_cmp(entry1, entry2)
     return true
   end
 end
+---@param entry1 cmp.Entry
+---@param entry2 cmp.Entry
 local function snippets_down(entry1, entry2)
   local types = require("cmp.types")
   local kind1, kind2 = entry1:get_kind(), entry2:get_kind()
-  if kind1 == kind2 then return nil end -- no preference if same
-  if kind1 == types.lsp.CompletionItemKind.Snippet then return false end -- Discourage snippets
-  if kind2 == types.lsp.CompletionItemKind.Snippet then return true end -- Discourage snippets
+  local Snippet = types.lsp.CompletionItemKind.Snippet
+  if kind1 == Snippet then
+    -- Only return if 2 is not a snippet
+    if kind2 ~= Snippet then return false end
+  elseif kind2 == Snippet then
+    return true
+  else -- Neither is a snippet, ignore it
+    return
+  end
+  -- Both are snippets, discourage nvim_lsp snippets
+  if entry1.source.name == "nvim_lsp" then return false end
+  if entry2.source.name == "nvim_lsp" then return true end
 end
 
 ---@type LazySpec
@@ -74,12 +85,12 @@ return {
           comparators = {
             compare.offset,
             compare.exact,
+            snippets_down,
             compare.score,
             compare.recently_used,
             compare.locality,
             under_cmp,
             compare.scopes, -- prioritize values in scope order
-            snippets_down,
             compare.kind, -- superseded by lsp_first -- just used for lowering text
             compare.sort_text,
             compare.length,
