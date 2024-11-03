@@ -14,45 +14,45 @@
   // }
   "System.out": {
     "prefix": ["sysout", "stdout"],
-    "body": "System.out.println(${1:$TM_SELECTED_TEXT});$0",
-    "description": "Outputs to stdout with selected text",
+    "body": "System.out.println(${1:$TM_SELECTED_TEXT}",
+    "description": "Outputs to stdout with selected text"
   },
   "System.out.printf": {
     "prefix": ["sysoutf", "stdoutf"],
-    "body": "System.out.printf(${1:$TM_SELECTED_TEXT});$0",
-    "description": "Outputs to stdout with selected text (Using printf)",
+    "body": "System.out.printf(${1:$TM_SELECTED_TEXT}",
+    "description": "Outputs to stdout with selected text (Using printf)"
   },
   "System.err.printf": {
     "prefix": ["syserrf", "stderrf"],
-    "body": "System.err.printf(${1:$TM_SELECTED_TEXT});$0",
-    "description": "outputs to stderr with selected text (Using printf)",
+    "body": "System.err.printf(${1:$TM_SELECTED_TEXT}",
+    "description": "outputs to stderr with selected text (Using printf)"
   },
   "Scanner": {
     "prefix": ["scan", "sysin", "sn", "stdin"],
     "body": [
       "try(Scanner ${1:scan} = new Scanner(${2:System.in})){",
       "\t$TM_SELECTED_TEXT$0",
-      "}",
+      "}"
     ],
-    "description": "creates a new scanner with the name defined by selected text if applicable",
+    "description": "creates a new scanner with the name defined by selected text if applicable"
   },
   "Input File": {
     "prefix": ["input", "file", "dat"],
     "body": [
       "try(Scanner ${1:scan} = new Scanner($TM_FILENAME_BASE.class.getResourceAsStream( \"./${2:${TM_FILENAME_BASE/(.*)/${1:/downcase}/}.dat}\" ))){",
       "\t$TM_SELECTED_TEXT$0",
-      "}",
+      "}"
     ],
-    "description": "Creates a scanner with the contents of a file located adjacent to the class file",
+    "description": "Creates a scanner with the contents of a file located adjacent to the class file"
   },
   "File Lines": {
     "prefix": ["lines"],
     "body": [
       "try (var lines = Files.lines(Path.of( \"./${2:${TM_FILENAME_BASE/(.*)/${1:/downcase}/}.dat}\" ))) {",
       "\t$TM_SELECTED_TEXT$0",
-      "}",
+      "}"
     ],
-    "description": "Gets the lines of a file as a Stream",
+    "description": "Gets the lines of a file as a Stream"
   },
   "Main Class": {
     "prefix": "main",
@@ -61,9 +61,9 @@
       "\tpublic static void main(String[] args) {",
       "\t$TM_SELECTED_TEXT$0",
       "\t}",
-      "}",
+      "}"
     ],
-    "description": "Creates a default class based on the file name with a public main method",
+    "description": "Creates a default class based on the file name with a public main method"
   },
 
   "Comment Documentation CSA": {
@@ -84,9 +84,9 @@
       " *",
       " *",
       " $BLOCK_COMMENT_END",
-      "$0",
+      "$0"
     ],
-    "description": "Inserts CSA acceptable doc comment",
+    "description": "Inserts CSA acceptable doc comment"
   },
   "Comment Documentation UIL": {
     "prefix": "uil-comment",
@@ -105,9 +105,9 @@
       " * ${4:$CLIPBOARD}",
       " *",
       " $BLOCK_COMMENT_END",
-      "$0",
+      "$0"
     ],
-    "description": "Inserts doc comment for CS UIL",
+    "description": "Inserts doc comment for CS UIL"
   },
   "Data Count": {
     "prefix": "data_count",
@@ -118,13 +118,13 @@
       "\tfor (int i = 0; i < dataCount; i++) {",
       "\t\t${0:${TM_SELECTED_TEXT:// Do Some Stuff}}",
       "\t}",
-      "}",
+      "}"
     ],
-    "description": "Gets number of lines to read from the first line of a file, then repeats a loop that many times",
+    "description": "Gets number of lines to read from the first line of a file, then repeats a loop that many times"
   },
   "New ArrayList": {
     "prefix": "list",
     "body": "List<${1:String}> ${2:list} = new ArrayList<>();\n$0",
-    "description": "Creates a new ArrayList",
-  },
+    "description": "Creates a new ArrayList"
+  }
 }
