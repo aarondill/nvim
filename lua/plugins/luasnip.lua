@@ -18,7 +18,7 @@ return {
     },
     config = function(opts)
       require("luasnip").setup(opts)
-      require("luasnip.loaders.from_vscode").lazy_load({ paths = snippet_dir })
+      require("luasnip.loaders.from_vscode").lazy_load({ paths = snippet_dir, default_priority = 6000 })
     end,
   },
   {
