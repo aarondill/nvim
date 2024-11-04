@@ -8,6 +8,10 @@ if vim.fn.has("nvim-0.9.0") == 0 then
   return
 end
 
+---Remove . from the package.path. This never does anything good.
+package.path = package.path:gsub("^%./%?%.lua;", "")
+package.cpath = package.cpath:gsub("^%./%?%.so;", "")
+
 require("future") -- Fowards compatability
 
 do -- delay notifications till vim.notify was replaced or after 500ms
