@@ -1,7 +1,6 @@
 local config = vim.fn.stdpath("config")
 assert(type(config) == "string")
 local snippet_dir = vim.fs.joinpath(config, "snippets")
-require("utils.pr_merged").on_lazy("saadparwaiz1/cmp_luasnip", { 65 })
 
 ---@type LazySpec
 return {
@@ -28,7 +27,7 @@ return {
   },
   {
     "nvim-cmp",
-    dependencies = { "aarondill/cmp_luasnip" },
+    dependencies = { "saadparwaiz1/cmp_luasnip" },
     opts = function(_, opts)
       opts.snippet = { expand = function(args) require("luasnip").lsp_expand(args.body) end }
       table.insert(opts.sources, { name = "luasnip" })
