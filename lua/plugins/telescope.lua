@@ -63,7 +63,7 @@ return {
       { "<leader>so", "<cmd>Telescope vim_options<cr>", desc = "Options" },
       { "<leader>sw", t.telescope("grep_string", { word_match = "-w" }), desc = "Word (root dir)" },
       { "<leader>sw", t.telescope("grep_string"), mode = "v", desc = "Selection (root dir)" },
-      { "<leader>uc", "<cmd>Telescope colorscheme enable_preview=true<cr>", desc = "Colorscheme with preview" },
+      { "<leader>sc", "<cmd>Telescope colorscheme enable_preview=true<cr>", desc = "Colorscheme with preview" },
     }
 
     local has_trouble = require("lazy.core.config").plugins["trouble.nvim"]
