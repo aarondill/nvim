@@ -3,7 +3,7 @@ local filetypes = { "html", "typescript", "javascript", "typescriptreact", "java
 ---@type LazySpec
 return {
   {
-    "https://github.com/axelvc/template-string.nvim",
+    "axelvc/template-string.nvim",
     ft = filetypes, -- lazy load it
     opts = {
       filetypes = filetypes,
