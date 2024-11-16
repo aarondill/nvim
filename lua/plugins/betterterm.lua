@@ -13,7 +13,6 @@ return {
       desc = "Open terminal",
     },
     -- Override the C-CR mapping too (ideally would open in root)
-    -- https://github.com/CRAG666/betterTerm.nvim/issues/12
     {
       "<C-CR>",
       function() require("betterTerm").open(nil, { cwd = root.get() }) end,
