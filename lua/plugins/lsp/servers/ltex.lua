@@ -1,5 +1,6 @@
 local notifications = require("utils.notifications")
 local chachedir = vim.fn.stdpath("cache")
+local root_safe = require("utils.root_safe")
 local configdir = vim.fn.stdpath("config")
 assert(type(chachedir) == "string", "stdpath cache dir is not a string")
 assert(type(configdir) == "string", "stdpath config dir is not a string")
@@ -10,6 +11,7 @@ local thisdir = debug.getinfo(1, "S").source:match("@(.*)/")
 assert(thisdir, "Could not find thisdir")
 
 local function download_ltex_ngram()
+  if not root_safe then return end -- Don't download into later inaccessible home
   local url = [[https://languagetool.org/download/ngram-data/ngrams-en-20150817.zip]]
   --- Already downloaded
   if vim.loop.fs_stat(vim.fs.joinpath(ngrams_dir, "en")) then return end
