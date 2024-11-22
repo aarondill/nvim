@@ -165,3 +165,9 @@ create_autocmd("BufNewFile", function(e)
   if vim.fn.filereadable(template) == 0 then return end -- Return if template does not exist
   vim.cmd("silent! 0r " .. vim.fn.fnameescape(template))
 end, { desc = "Template when opening a new file", group = augroup })
+
+local this = ...
+require("lazy.core.util").lsmod(this, function(mod)
+  if mod == this then return end
+  return require(mod)
+end)
