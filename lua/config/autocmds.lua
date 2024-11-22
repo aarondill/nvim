@@ -157,3 +157,11 @@ create_autocmd({ "BufEnter", "TermOpen" }, function(e)
   if vim.bo[e.buf].buftype ~= "terminal" then return end
   vim.cmd.startinsert()
 end, { desc = "Enter terminal mode when entering a terminal buffer", group = augroup })
+
+create_autocmd("BufNewFile", function(e)
+  local extension = vim.fn.fnamemodify(e.file, ":e")
+  if extension == "" then return end
+  local template = vim.fs.joinpath(vim.fn.stdpath("config"), "templates", "skeleton." .. extension)
+  if vim.fn.filereadable(template) == 0 then return end -- Return if template does not exist
+  vim.cmd("silent! 0r " .. vim.fn.fnameescape(template))
+end, { desc = "Template when opening a new file", group = augroup })
