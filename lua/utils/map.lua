@@ -15,13 +15,9 @@ return function(mode, lhs, rhs, desc, opts)
   opts = opts or {}
 
   assert(type(lhs) == "table" or type(lhs) == "string", "lhs must be a string or table")
-  local lhsT
-  if type(lhs) == "table" then
-    lhsT = lhs
-  else
-    lhsT = { lhs }
-  end
-  for _, l in pairs(lhsT) do
+  ---@type string[]
+  lhs = type(lhs) == "table" and lhs or { lhs }
+  for _, l in ipairs(lhs) do
     vim.keymap.set(mode, l, rhs, opts)
   end
 end

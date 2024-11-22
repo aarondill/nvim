@@ -21,9 +21,7 @@ function M.notify(msg, opts)
   opts = clone(opts or {})
   ---@diagnostic disable-next-line: undefined-field tbl.n is valid
   if type(msg) == "table" then msg = table.concat(msg, "\n", 1, msg.n) end
-  if vim.in_fast_event() then
-    return vim.schedule(function() return M.notify(msg, opts) end)
-  end
+  if vim.in_fast_event() then return vim.schedule(function() return M.notify(msg, opts) end) end
   local lang, level = opts.lang or "markdown", opts.level or vim.log.levels.INFO
   local n = opts.once and vim.notify_once or vim.notify
   ---@cast opts table

@@ -2,12 +2,8 @@ local M = {}
 
 ---@param name string
 ---@return integer?
-function M.find_buffer_by_name(name)
-  local bufs = vim.api.nvim_list_bufs() ---@type integer[]
-  for _, buf in ipairs(bufs) do
-    local buf_name = vim.api.nvim_buf_get_name(buf)
-    if buf_name == name then return buf end
-  end
+local function find_buffer_by_name(name)
+  return vim.iter(vim.api.nvim_list_bufs()):find(function(buf) return vim.api.nvim_buf_get_name(buf) == name end)
 end
 
 ---Open file in the appropriate window.
@@ -17,7 +13,7 @@ end
 function M.open(path, open_cmd, bufnr)
   if not path then return end
   open_cmd = open_cmd or "edit"
-  bufnr = bufnr or M.find_buffer_by_name(path) -- If the file is already open, switch to it.
+  bufnr = bufnr or find_buffer_by_name(path) -- If the file is already open, switch to it.
   if bufnr then
     local buf_cmd_lookup = { edit = "b", e = "b", split = "sb", sp = "sb", vsplit = "vert sb", vs = "vert sb" }
     local buf_open = buf_cmd_lookup[open_cmd]
