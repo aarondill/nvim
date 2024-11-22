@@ -4,12 +4,9 @@
 local function vtext()
   local mode = vim.fn.mode()
   if mode ~= "v" and mode ~= "V" and mode ~= "" then return nil end
-  local a_orig = vim.fn.getreg("a")
-  vim.cmd([[silent! normal! "aygv]])
-  local text = vim.fn.getreg("a")
-  vim.fn.setreg("a", a_orig)
-  assert(type(text) == "string", "Something went wrong getting the visual selection!")
-  return text
+
+  local lines = vim.fn.getregion(vim.fn.getpos("."), vim.fn.getpos("v"), { type = vim.fn.mode() })
+  return table.concat(lines, "\n")
 end
 
 return vtext
