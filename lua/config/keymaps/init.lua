@@ -298,4 +298,8 @@ map("c", "<c-e>", "<End>", "End of line")
 map({ "n", "v" }, "<CR>", ":", "Enter command line")
 
 --- Require the tab keymaps
-require(... .. ".tab")
+local this = ...
+require("lazy.core.util").lsmod(this, function(mod)
+  if mod == this then return end
+  return require(mod)
+end)
