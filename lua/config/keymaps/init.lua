@@ -181,6 +181,8 @@ map({ "n", "x" }, "^", toggle_movement("0", "^"), "Go to start of line", { silen
 map({ "n", "x" }, "gg", toggle_movement("gg", "G"), "Go to start/end of file", { silent = true })
 -- Map G to go between G and gg
 map({ "n", "x" }, "G", toggle_movement("G", "gg"), "Go to start/end of file", { silent = true })
+map("", "<home>", "^", { desc = "Move to first non-blank char", silent = true })
+map("i", "<home>", "<C-o>^", { desc = "Move to first non-blank char", silent = true })
 
 -- Remap f9 to fold control
 map("i", "<F9>", "<C-O>za", "Toggle Fold")
@@ -189,6 +191,17 @@ map("o", "<F9>", "<C-C>za", "Toggle Fold")
 map("x", "<F9>", "zf", "Create Fold")
 
 map("n", "<leader>ds", "<cmd>DiffSaved<cr>", "Show the [d]iff with last [s]ave")
+
+map("v", "<leader>rr", function()
+  local t = get_vtext()
+  assert(t, "No visual selection")
+  return [[:<C-u>%s/\V]] .. vim.fn.escape(t, "/\\") .. "/"
+end, { desc = "open :%s// with selection", expr = true })
+map("n", "<leader>rr", function()
+  local t = vim.fn.expand("<cword>")
+  assert(t, "No word under cursor")
+  return [[:<C-u>%s/\V]] .. vim.fn.escape(t, "/\\") .. "/"
+end, { desc = "open :%s// with cword", expr = true })
 
 -- Paste system clipboard with Ctrl + v
 local function paste()
