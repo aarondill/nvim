@@ -281,5 +281,8 @@ map("i", "<c-e>", "<End>", "End of line")
 map("c", "<c-a>", "<Home>", "Beginning of line")
 map("c", "<c-e>", "<End>", "End of line")
 
+--- Enter opens command line
+map({ "n", "v" }, "<CR>", ":", "Enter command line")
+
 --- Require the tab keymaps
 require(... .. ".tab")
