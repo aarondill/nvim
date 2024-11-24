@@ -45,6 +45,11 @@
     ],
     "description": "Creates a scanner with the contents of a file located adjacent to the class file"
   },
+  "Next Line": {
+    "prefix": ["nextline", "line"],
+    "body": "if(${1:scan}.hasNextLine()) ${1:scan}.nextLine();\n$0",
+    "description": "Gets the next line of input"
+  },
   "File Lines": {
     "prefix": ["lines"],
     "body": [
