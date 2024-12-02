@@ -147,7 +147,7 @@ return {
         end
       end,
       library = {
-        { path = "luvit-meta/library", words = { "vim%.uv", "vim%.loop" } },
+        { path = "${3rd}/luv/library", words = { "vim%.uv", "vim%.loop" } },
         { "lazy.nvim", words = { "Lazy", "lazy" } },
         { path = "wezterm-types", mods = { "wezterm" } },
       },
@@ -166,5 +166,4 @@ return {
     end,
   },
   { "justinsgithub/wezterm-types", lazy = true },
-  { "Bilal2453/luvit-meta", lazy = true }, -- `vim.uv` typings
 }
