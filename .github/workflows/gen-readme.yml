@@ -14,6 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - run: |
+          [ -f README.tmpl.md ] || cp README.md README.tmpl.md # Initialize README.tmpl.md
           printf '%s\n' "<!-- This file is generated from README.tmpl.md -->" > README.md
           cat README.tmpl.md >> README.md
       - name: CLOC
