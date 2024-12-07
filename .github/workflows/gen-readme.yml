@@ -29,4 +29,5 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "chore: Generate README"
-          file_pattern: README.md
+          # Note: README.tmpl.md is needed in the first case
+          file_pattern: README.md README.tmpl.md
