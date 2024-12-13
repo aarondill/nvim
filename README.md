@@ -30,8 +30,8 @@ Language|files|blank|comment|code
 Lua|112|297|689|4467
 YAML|3|0|2|68
 JSON|3|0|0|56
-Bourne Shell|1|6|0|38
-Markdown|1|3|0|18
+Markdown|2|8|1|49
+Bourne Shell|1|6|0|39
 TOML|1|1|0|9
 --------|--------|--------|--------|--------
-SUM:|121|307|691|4656
+SUM:|122|312|692|4688
