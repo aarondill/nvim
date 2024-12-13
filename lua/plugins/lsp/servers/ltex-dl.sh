@@ -25,16 +25,17 @@ err() { printf '%s\n' "$@" >&2 || true; }
 abort() { err "$this: $1" && exit "${2:-1}"; }
 has() { command -v -- "$1" &>/dev/null; }
 
+{ [ -n "$url" ] && [ -n "$ngrams_dir" ]; } || abort "usage: $this <url> <ngrams_dir>"
 exlock_now || abort "already running" 75 # exit 75 to indicate that the process is already running
 has curl || abort "curl is required"
 has unzip || abort "unzip is required"
-{ [ -n "$url" ] && [ -n "$ngrams_dir" ]; } || abort "usage: $this <url> <ngrams_dir>"
 
 mkdir -p "$ngrams_dir"
-zip_file=$(mktemp "${ngrams_dir%/}.XXXXXXXXX")
+zip_file="${ngrams_dir%/}/$(basename -- "$url")"
 log "Downloading $url to $zip_file"
 rm -f -- "$zip_file"
 
+trap 'rm -f -- "$zip_file"' EXIT
 curl -fL -o "$zip_file" -- "$url"
 
 log "Extracting $zip_file to $ngrams_dir"
