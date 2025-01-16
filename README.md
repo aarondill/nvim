@@ -22,17 +22,16 @@ It works on my machine ¯\\\_(ツ)\_\/¯
 > Please open an issue if something doesn't work. I'd love to make these dotfiles more universal.
 
 ### Lines of code
-<sup><sub>Generated at commit f40aaaa0c23cfcc3237ef13179d50b8971e92033</sub></sup>
-cloc|github.com/AlDanial/cloc v 1.96
+<sup><sub>Generated at commit c56de851b2a9aa392547b1787a69124d43e312b4</sub></sup>
+cloc|github.com/AlDanial/cloc v 2.02
 --- | ---
 
 Language|files|blank|comment|code
 :-------|-------:|-------:|-------:|-------:
-Lua|112|297|689|4467
-YAML|3|0|2|90
+Lua|112|299|692|4469
 JSON|3|0|0|56
-Markdown|2|8|1|49
+Markdown|2|8|1|50
 Bourne Shell|1|6|0|39
 TOML|1|1|0|9
 --------|--------|--------|--------|--------
-SUM:|122|312|692|4710
+SUM:|119|314|693|4623
