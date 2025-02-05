@@ -11,7 +11,7 @@ local format_options = {
 ---@type LazySpec
 return {
   "stevearc/conform.nvim",
-  dependencies = { "mason.nvim" },
+  dependencies = { "mason.nvim", optional = true },
   cmd = "ConformInfo",
   keys = {
     {
@@ -37,7 +37,7 @@ return {
           return vim.tbl_map(function(v) return v.name end, ret)
         end,
       })
-    end, { pattern = "VeryLazy", once = true })
+    end, { pattern = "LazyFile", once = true })
   end,
   ---@class conform.setupOpts
   opts = {
@@ -45,6 +45,8 @@ return {
       lua = { "stylua" },
       fish = { "fish_indent" },
       sh = { "shfmt" },
+      rust = { "rustfmt", lsp_format = "fallback" },
+      python = { "isort", "black" },
     },
     -- The options you set here will be merged with the builtin formatters.
     -- You can also define any custom formatters here.
