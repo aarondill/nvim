@@ -13,6 +13,7 @@ return {
     large_file_cutoff = 2000,
     large_file_overrides = { providers = { "lsp" } },
     filetypes_denylist = consts.ignored_filetypes,
+    disable_keymaps = true, -- Disable the default <a-n> and <a-p> maps
   },
   config = function(_, opts)
     require("illuminate").configure(opts)
