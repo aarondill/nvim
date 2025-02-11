@@ -1,19 +1,12 @@
 local consts = require("consts")
 local create_autocmd = require("utils.create_autocmd")
 local map = require("utils.map")
-require("utils.pr_merged").on_lazy("RRethy/vim-illuminate", 218)
-
 -- Automatically highlights other instances of the word under your cursor.
 -- This works with LSP, Treesitter, and regexp matching to find the other
 -- instances.
 ---@type LazySpec
 return {
-  -- A fork until RRethy/vim-illuminate#218 is merged
-  "rockyzhang24/vim-illuminate",
-  branch = "fix-encoding",
-  -- end fork
-
-  -- "RRethy/vim-illuminate",
+  "RRethy/vim-illuminate",
   event = "LazyFile",
   opts = {
     delay = 200,
