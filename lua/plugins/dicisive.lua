@@ -12,6 +12,7 @@ return {
       "FileType",
       vim.schedule_wrap(function(ev) ---@param ev EventInfo
         local ft, buf = ev.match, ev.buf
+        if not vim.api.nvim_buf_is_valid(buf) then return end
         if ft ~= "csv" and ft ~= "tsv" then -- none-csv filetypes, don't align
           if not vim.b[buf]._activated_descive then return end -- don't import if not needed
           vim.b[buf]._activated_descive = nil
