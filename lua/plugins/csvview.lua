@@ -23,6 +23,7 @@ return {
       if not vim.api.nvim_buf_is_valid(ev.buf) then return end
       return require("csvview").enable(ev.buf)
     end, "Enable csvview", { pattern = { "csv", "tsv" } })
+    vim.api.nvim_set_hl(0, "CsvViewDelimiter", { fg = "#Fb4b4b" })
   end,
   ft = { "csv", "tsv" },
   cmd = { "CsvViewEnable", "CsvViewDisable", "CsvViewToggle" },
