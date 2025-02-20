@@ -74,8 +74,8 @@ map("n", "[q", vim.cmd.cprev, "Previous quickfix")
 map("n", "]q", vim.cmd.cnext, "Next quickfix")
 map({ "n", "v" }, "<leader>cf", require("utils.format").format, "Format")
 -- diagnostic
-map("n", "]d", vim.diagnostic.goto_next, "Next Diagnostic")
-map("n", "[d", vim.diagnostic.goto_prev, "Prev Diagnostic")
+map("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, "Next Diagnostic")
+map("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, "Prev Diagnostic")
 map("n", "gl", function() return vim.diagnostic.open_float({ focusable = true }) end, "Diagnostic")
 -- toggle options
 
