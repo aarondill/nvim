@@ -158,15 +158,12 @@ map("n", "Y", "y$", "Yank until EOL")
 
 -- Quick save and quit
 map("n", "<leader>qq", "<cmd>qa<cr>", "Quit all")
-map("n", "<leader>wq", function()
-  local should_write = vim.o.bt:len() == 0 and vim.o.modifiable and not vim.readonly
-  return should_write and "<cmd>wq<cr>" or "<cmd>q<cr>"
-end, "Save and exit", { expr = true })
+map("n", "<leader>wq", "ZZ", "Save and exit")
 
 -- Quick quit
-map("n", "<leader>q!", vim.cmd.q, "Exit without saving")
+map("n", "<leader>q!", "ZQ", "Exit without saving")
 -- Quit without shift
-map("n", "<leader>q1", vim.cmd.q, "Exit without saving")
+map("n", "<leader>q1", "ZQ", "Exit without saving")
 
 -- Terminal allow escape to exit insert
 map("t", "<Esc>", "<C-\\><C-n>", "Exit insert")
