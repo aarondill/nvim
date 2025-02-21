@@ -96,8 +96,16 @@ vim.schedule(function()
     :totable()
   local i = math.random(1, #keys)
   local k = keys[i]
-  local msg = ('%smap "%s"'):format(k.mode or "", k.lhsraw) .. ": " .. (k.desc or k.rhs)
-  require("utils.notifications").info(msg, { title = "Keymap", timeout = 5 * 1000 })
+  local ml, mll = vim.g.mapleader or "\\", vim.g.maplocalleader or "\\"
+  do -- NOTE: Technically, <Leader> can be used anywhwere, but it's convention to put it at the start of the mapping. It's impossible to know whether it was intended to be <Leader> or the content.
+    local lhs = k.lhs:gsub("^" .. vim.pesc(ml), "<Leader>") -- replace mapleader with <Leader>
+    if ml ~= mll then -- replace maplocalleader with <LocalLeader>
+      lhs = lhs:gsub("^" .. vim.pesc(mll), "<LocalLeader>")
+    end
+    k.lhs = lhs:gsub(" ", "<Space>") -- replace spaces with <Space>
+  end
+  local msg = ("%smap %s"):format(k.mode or "", k.lhs) .. ": " .. (k.desc or k.rhs)
+  require("utils.notifications").info(msg, { title = "Keymap", timeout = 30 * 1000 })
 end)
 
 vim.schedule(_start_notifs_timer) -- start the timer after we're done with everything
