@@ -73,74 +73,90 @@ end
 
 ---@type LazySpec
 return {
-  "nvim-lualine/lualine.nvim",
-  event = "VeryLazy",
-  opts = {
-    extensions = { "neo-tree", "lazy", "fugitive", "man", "trouble" },
-    options = {
-      always_divide_middle = true,
-      disabled_filetypes = { statusline = { "alpha", "dashboard", "starter", "nvdash" } },
-      globalstatus = true,
-      ignore_focus = {},
-      refresh = { statusline = 1000, tabline = 1000, winbar = 1000 },
-      theme = "auto",
+  {
+    "nvim-lualine/lualine.nvim",
+    event = "VeryLazy",
+    opts = {
+      extensions = { "neo-tree", "lazy", "fugitive", "man", "trouble" },
+      options = {
+        always_divide_middle = true,
+        disabled_filetypes = { statusline = { "alpha", "dashboard", "starter", "nvdash" } },
+        globalstatus = true,
+        ignore_focus = {},
+        refresh = { statusline = 1000, tabline = 1000, winbar = 1000 },
+        theme = "auto",
+      },
+      sections = { -- LEFT SIDE:
+        lualine_a = { "mode" },
+        lualine_b = { "branch" }, -- Tabnine is added here later
+        lualine_c = {
+          { "diagnostics", symbols = icons.lualine.diagnostics_symbols },
+          {
+            "filename",
+            path = 1,
+            symbols = icons.lualine.filename_symbols,
+            separator = "-",
+            ---Fix E539 when opening java files. Source: https://github.com/nvim-lualine/lualine.nvim/issues/820#issuecomment-1742621370
+            fmt = function(str) ---@param str string
+              local fn = vim.fn.expand("%:~:.") --[[@as string]]
+              if vim.startswith(fn, "jdt://") then return fn:gsub("?.*$", "") end
+              return str
+            end,
+          },
+          "filetype",
+          {
+            function() return require("nvim-navic").get_location() end,
+            cond = function() return package.loaded["nvim-navic"] and require("nvim-navic").is_available() end,
+          },
+        },
+        -- RIGHT SIDE:
+        lualine_x = {
+          { -- Display keys as they're pressed
+            function() return require("noice").api.status.command.get() end,
+            cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
+            color = getfg("Statement"),
+          },
+          { -- Display recording status (q)
+            function() return require("noice").api.status.mode.get() end,
+            cond = function() return package.loaded["noice"] and require("noice").api.status.mode.has() end,
+            color = getfg("Constant"),
+          },
+          { -- Debug status
+            function() return icons.debug .. require("dap").status() end,
+            cond = function() return package.loaded["dap"] and require("dap").status() ~= "" end,
+            color = getfg("Debug"),
+          },
+          { -- Lazy.nvim update status
+            require("lazy.status").updates,
+            cond = require("lazy.status").has_updates,
+            color = getfg("Special"),
+          },
+          -- File information
+          "encoding",
+          "fileformat",
+          wordcount,
+        },
+        lualine_y = {
+          get_current_lsp,
+          { "progress", separator = " ", padding = { left = 1, right = 0 } },
+          { "location", padding = { left = 0, right = 1 } },
+        },
+        lualine_z = { time },
+      },
     },
-    sections = { -- LEFT SIDE:
-      lualine_a = { "mode" },
-      lualine_b = { "branch" }, -- Tabnine is added here later
-      lualine_c = {
-        { "diagnostics", symbols = icons.lualine.diagnostics_symbols },
-        {
-          "filename",
-          path = 1,
-          symbols = icons.lualine.filename_symbols,
-          separator = "-",
-          ---Fix E539 when opening java files. Source: https://github.com/nvim-lualine/lualine.nvim/issues/820#issuecomment-1742621370
-          fmt = function(str) ---@param str string
-            local fn = vim.fn.expand("%:~:.") --[[@as string]]
-            if vim.startswith(fn, "jdt://") then return fn:gsub("?.*$", "") end
-            return str
-          end,
-        },
-        "filetype",
-        {
-          function() return require("nvim-navic").get_location() end,
-          cond = function() return package.loaded["nvim-navic"] and require("nvim-navic").is_available() end,
-        },
-      },
-      -- RIGHT SIDE:
-      lualine_x = {
-        { -- Display keys as they're pressed
-          function() return require("noice").api.status.command.get() end,
-          cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
-          color = getfg("Statement"),
-        },
-        { -- Display recording status (q)
-          function() return require("noice").api.status.mode.get() end,
-          cond = function() return package.loaded["noice"] and require("noice").api.status.mode.has() end,
-          color = getfg("Constant"),
-        },
-        { -- Debug status
-          function() return icons.debug .. require("dap").status() end,
-          cond = function() return package.loaded["dap"] and require("dap").status() ~= "" end,
-          color = getfg("Debug"),
-        },
-        { -- Lazy.nvim update status
-          require("lazy.status").updates,
-          cond = require("lazy.status").has_updates,
-          color = getfg("Special"),
-        },
-        -- File information
-        "encoding",
-        "fileformat",
-        wordcount,
-      },
-      lualine_y = {
-        get_current_lsp,
-        { "progress", separator = " ", padding = { left = 1, right = 0 } },
-        { "location", padding = { left = 0, right = 1 } },
-      },
-      lualine_z = { time },
-    },
+  },
+  {
+    "lualine.nvim",
+    optional = true,
+    opts = function(_, opts)
+      opts = vim.tbl_deep_extend("keep", opts or {}, { sections = { lualine_b = {} } })
+      table.insert(opts.sections.lualine_b, require("lazy.core.config").spec.plugins["supermaven-nvim"] and {
+        function()
+          if package.loaded["supermaven-nvim"] then return "🦸 Supermaven" end
+          return "🔄 Supermaven"
+        end,
+      } or "tabnine")
+      return opts
+    end,
   },
 }

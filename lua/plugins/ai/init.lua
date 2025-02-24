@@ -14,13 +14,13 @@ local function internet()
   return ok
 end
 
----@type LazySpec
-return {
-  { import = "plugins.ai" },
+local this = assert(require("lazy.core.config").spec.importing, "spec not found")
+local mods = {}
+require("lazy.core.util").lsmod(this, function(modname)
+  if modname ~= this then table.insert(mods, { import = modname }) end
+end)
+
+return vim.list_extend(mods, { ---@type LazySpec
   { "supermaven-nvim", optional = true, cond = internet },
-  {
-    "tabnine-nvim",
-    optional = true,
-    cond = function() return not internet() end,
-  },
-}
+  { "tabnine-nvim", optional = true, cond = function() return not internet() end },
+})

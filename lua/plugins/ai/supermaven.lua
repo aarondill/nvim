@@ -3,7 +3,16 @@ local flatten = require("utils.flatten")
 return {
   "supermaven-inc/supermaven-nvim",
   main = "supermaven-nvim",
-  event = { "LazyFile" },
+  event = "InsertEnter",
+  config = function(_, opts)
+    local r = require ---HACK: Don't load cmp with supermaven. I don't want its integration.
+    require = function(...)
+      if select(1, ...) == "cmp" then error("Thou shall not use cmp with Supermaven") end
+      return r(...)
+    end
+    require("supermaven-nvim").setup(opts)
+    require = r
+  end,
   cmd = flatten({
     { "SupermavenUseFree", "SupermavenLogout", "SupermavenUsePro" },
     { "SupermavenStart", "SupermavenStop", "SupermavenRestart", "SupermavenStatus" },
