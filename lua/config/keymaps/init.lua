@@ -1,3 +1,4 @@
+local create_autocmd = require("utils.create_autocmd")
 local get_vtext = require("utils.vtext")
 local map = require("utils.map")
 local notifications = require("utils.notifications")
@@ -226,8 +227,16 @@ map("n", "<Leader>..", "<Cmd>cd! ..<CR>", "cd up a level [..]")
 
 -- Edit closest
 map("n", "<Leader>erm", function() require("utils.edit_closest")("README.md") end, "[E]dit closest [R]EAD[M]E.md")
-
 map("n", "<Leader>epj", function() require("utils.edit_closest")("package.json") end, "[E]dit closest [p]ackage.[j]son")
+
+create_autocmd({ "FileType" }, function(ev)
+  map("n", "o", function()
+    local line = vim.api.nvim_get_current_line()
+    local is_comment = line:find("^%s*//") or line:find("^%s*/%*") or line:find("^%s*#")
+    if is_comment then return "o" end
+    return line:find("[^,{[]%s*$") and "A,<cr>" or "o"
+  end, { buffer = ev.buf, expr = true })
+end, { pattern = { "json", "jsonc", "json5" } })
 
 map({ "i", "n" }, "<F1>", "<NOP>", "Disable help shortcut key")
 
