@@ -2,4 +2,4 @@
 ---@generic T
 ---@param ... T[]
 ---@return T[]
-return function(...) return vim.iter({ ... }):flatten():totable() end
+return function(...) return vim.iter({ ... }):flatten(math.huge):totable() end
