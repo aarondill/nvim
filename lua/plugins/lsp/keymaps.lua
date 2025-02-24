@@ -3,6 +3,46 @@ local M = {}
 
 local function has_plugin(p) return require("lazy.core.config").spec.plugins[p] ~= nil end
 
+local function find(word, ...)
+  for _, str in ipairs({ ... }) do
+    local match_start, match_end = string.find(word, str)
+    if match_start then return str, match_start, match_end end
+  end
+end
+local function open_help(tag) return pcall(vim.cmd.help, tag) end
+---open vim help docs if vim.api or vim.fn, otherwise lsp hover
+local function hover()
+  local ft = vim.bo.filetype
+  if ft ~= "lua" and ft ~= "vim" then return vim.lsp.buf.hover() end
+  local word
+  do --- get the word under cursor
+    local original_iskeyword = vim.bo.iskeyword
+    vim.bo.iskeyword = vim.bo.iskeyword .. ",."
+    word = vim.fn.expand("<cword>")
+    vim.bo.iskeyword = original_iskeyword
+  end
+
+  local match, _, end_idx = find(word, "api.", "vim.api.")
+  if match and end_idx then
+    local r = open_help(word:sub(end_idx + 1))
+    if r then return end
+  end
+
+  match, _, end_idx = find(word, "fn.", "vim.fn.")
+  if match and end_idx then
+    local r = open_help(word:sub(end_idx + 1) .. "()")
+    if r then return end
+  end
+
+  vim.notify("word: " .. word)
+  match, _, end_idx = find(word, "^vim.([a-zA-Z_.]+)")
+  if match and end_idx then
+    local r = open_help(word:sub(1, end_idx))
+    if r then return end
+  end
+  return vim.lsp.buf.hover()
+end
+
 ---@param client integer|vim.lsp.Client
 ---@param buffer? integer
 function M.apply(client, buffer)
@@ -29,7 +69,7 @@ function M.apply(client, buffer)
     { "gr", "<cmd>Telescope lsp_references<cr>", desc = "References" },
     { "gI", telescope_builtin("lsp_implementations"), desc = "Goto Implementation" },
     { "gy", telescope_builtin("lsp_type_definitions"), desc = "Goto T[y]pe Definition" },
-    { "K", vim.lsp.buf.hover, desc = "Hover" },
+    { "K", hover, desc = "Hover" },
     { "gK", vim.lsp.buf.signature_help, desc = "Signature Help" },
     { "<leader>ca", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" } },
     {
