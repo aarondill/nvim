@@ -158,6 +158,13 @@ create_autocmd({ "BufEnter", "TermOpen" }, function(e)
   vim.cmd.startinsert()
 end, { desc = "Enter terminal mode when entering a terminal buffer", group = augroup })
 
+create_autocmd("BufEnter", function(e)
+  local rtp = vim.split(vim.o.runtimepath, ",")
+  local match = vim.iter(rtp):find(function(dir) return vim.startswith(e.file, dir) end)
+  if match == nil then return end
+  vim.b[e.buf].autoformat = false
+end, { desc = "Disabled auto-format in runtimepath", group = augroup })
+
 create_autocmd("BufNewFile", function(e)
   local extension = vim.fn.fnamemodify(e.file, ":e")
   if extension == "" then return end
