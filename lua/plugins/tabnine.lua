@@ -1,3 +1,4 @@
+local flatten = require("utils.flatten")
 local use_upstream = true
 
 ---@type LazySpec
@@ -18,20 +19,11 @@ return {
     branch = use_upstream and "master" or "all_together_now",
     build = "./dl_binaries.sh",
     event = "LazyFile",
-    cmd = {
-      "TabnineChat",
-      "TabnineChatClear",
-      "TabnineChatClose",
-      "TabnineChatNew",
-      "TabnineDisable",
-      "TabnineEnable",
-      "TabnineHub",
-      "TabnineHubUrl",
-      "TabnineLogin",
-      "TabnineLogout",
-      "TabnineStatus",
-      "TabnineToggle",
-    },
+    cmd = flatten(
+      { "TabnineChat", "TabnineChatClear", "TabnineChatClose", "TabnineChatNew", "TabnineDisable" },
+      { "TabnineEnable", "TabnineHub", "TabnineHubUrl", "TabnineLogin" },
+      { "TabnineLogout", "TabnineStatus", "TabnineToggle" }
+    ),
     main = "tabnine",
     opts = {
       disable_auto_comment = false, -- I already handle this. Default: true
