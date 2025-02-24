@@ -84,6 +84,7 @@ end, "Close lazy.nvim when done installing", { pattern = "LazyDone", once = true
 local icons = require("config.icons")
 require("lazy").setup({
   ui = { icons = icons.lazy_nvim.ui.icons },
+  change_detection = { enabled = false },
   ---@type table -- Force it. The type is wrong.
   dev = {
     -- directory where you store your local plugin projects
