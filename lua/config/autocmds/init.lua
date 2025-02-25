@@ -172,6 +172,21 @@ create_autocmd({ "BufEnter", "TermOpen" }, function(e)
   vim.cmd.startinsert()
 end, { desc = "Enter terminal mode when entering a terminal buffer", group = augroup })
 
+create_autocmd({ "TermOpen" }, function(e)
+  local buf = e.buf
+  local init_time = vim.uv.hrtime()
+  create_autocmd("TermClose", function()
+    if vim.v.event.status ~= 0 then return end
+    if vim.bo[buf].buftype ~= "terminal" then return end
+    if vim.bo[buf].ft ~= "" then return end
+    local elapsed = (vim.uv.hrtime() - init_time) / 1e9 -- nanoseconds to seconds
+    -- don't close if it takes less than 5 seconds
+    -- This allows :term ls to work, while :term sh will close automatically
+    if elapsed < 5 then return end
+    vim.cmd.bdelete({ buf, bang = true })
+  end, { group = augroup, buffer = buf, once = true })
+end, { desc = "Close terminal buffers when done", group = augroup })
+
 -- Any directory in rtp, except config, is assumed to be a plugin
 create_autocmd("BufEnter", function(e)
   local rtp = vim.split(vim.o.runtimepath, ",")
