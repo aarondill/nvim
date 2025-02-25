@@ -60,8 +60,22 @@ create_autocmd({ "FileType" }, "setlocal conceallevel=0", { group = augroup, pat
 create_autocmd({ "BufWritePre" }, function(event)
   if event.match:match("^%w%w+://") then return end
   local file = vim.loop.fs_realpath(event.match) or event.match
-  return vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
+  vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
 end, "Create directories while saving", { group = augroup })
+
+create_autocmd({ "FileType" }, function(event)
+  local buf = event.buf
+  if vim.bo[buf].filetype ~= "" then return end
+  create_autocmd({ "BufWritePost" }, function()
+    if vim.bo[buf].filetype ~= "" then return true end
+    -- If the filetype is empty we should try to detect the new filetype
+    vim.cmd.filetype("detect")
+    if vim.bo[buf].filetype ~= "" then
+      notifications.info("Filetype set to " .. vim.bo[event.buf].filetype)
+      return true -- we have a filetype, we don't need this anymore
+    end
+  end, "Redetect filetypes when saving", { group = augroup, nested = true, buffer = buf })
+end, "Detect empty file type when saving", { group = augroup })
 
 ---------------------------------------------------------------
 ---------------------------------------------------------------
@@ -158,9 +172,13 @@ create_autocmd({ "BufEnter", "TermOpen" }, function(e)
   vim.cmd.startinsert()
 end, { desc = "Enter terminal mode when entering a terminal buffer", group = augroup })
 
+-- Any directory in rtp, except config, is assumed to be a plugin
 create_autocmd("BufEnter", function(e)
   local rtp = vim.split(vim.o.runtimepath, ",")
-  local match = vim.iter(rtp):find(function(dir) return vim.startswith(e.file, dir) end)
+  local config = vim.fn.stdpath("config")
+  local match = vim
+    .iter(rtp)
+    :find(function(dir) return vim.startswith(e.file, dir) and not vim.startswith(dir, config) end)
   if match == nil then return end
   vim.b[e.buf].autoformat = false
 end, { desc = "Disabled auto-format in runtimepath", group = augroup })
