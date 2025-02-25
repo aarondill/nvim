@@ -22,19 +22,18 @@ local function hover()
     vim.bo.iskeyword = original_iskeyword
   end
 
-  local match, _, end_idx = find(word, "api.", "vim.api.")
+  local match, _, end_idx = find(word, "^api.", "^vim.api.")
   if match and end_idx then
     local r = open_help(word:sub(end_idx + 1))
     if r then return end
   end
 
-  match, _, end_idx = find(word, "fn.", "vim.fn.")
+  match, _, end_idx = find(word, "^fn.", "^vim.fn.")
   if match and end_idx then
     local r = open_help(word:sub(end_idx + 1) .. "()")
     if r then return end
   end
 
-  vim.notify("word: " .. word)
   match, _, end_idx = find(word, "^vim.([a-zA-Z_.]+)")
   if match and end_idx then
     local r = open_help(word:sub(1, end_idx))
