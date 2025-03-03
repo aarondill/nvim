@@ -15,20 +15,6 @@ local function set_colorscheme(colorscheme)
   return false
 end
 
---I don't like background colors. Don't set it.
-create_autocmd("ColorScheme", function()
-  return vim
-    .iter({
-      { "Normal", "NormalNC", "SignColumn", "FoldColumn" },
-      {
-        { "NotifyDEBUGBody", "NotifyDEBUGBorder", "NotifyERRORBody", "NotifyERRORBorder", "NotifyINFOBody" },
-        { "NotifyINFOBorder", "NotifyTRACEBody", "NotifyTRACEBorder", "NotifyWARNBody", "NotifyWARNBorder" },
-      },
-    })
-    :flatten(2)
-    :each(function(hl) vim.cmd.hi(hl, "guibg=NONE", "ctermbg=NONE") end)
-end, { desc = "Remove background colors from colorscheme" })
-
 local function load_colorscheme()
   ---@type fun()|string|(fun()|string)[]
   local colorscheme = { "tokyonight" }
