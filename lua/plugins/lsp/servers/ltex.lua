@@ -43,6 +43,29 @@ do
   if ok then dictionary_en_us = lines end
 end
 
+if false then ---Example .lazy.lua for spanish workspace
+  --- This file loads before config/options.lua, so we need to wait to do this
+  vim.api.nvim_create_autocmd("User", {
+    ---Neovim doesn´t come with spanish dictionaries, so just disable spellchecking
+    callback = function() vim.opt.spell = false end,
+    pattern = "VeryLazy",
+    once = true,
+  })
+  --- Override the ltex language to spanish (Needs ngrams downloaded!)
+  return { ---@type LazySpec
+    "neovim/nvim-lspconfig",
+    opts = function(_, opts)
+      opts = vim.tbl_deep_extend("keep", opts or {}, { servers = { ltex = { settings = { ltex = {} } } } })
+      opts.servers.ltex.settings.ltex.language = "es"
+      local d = opts.servers.ltex.settings.ltex.languageModel
+      if not d or not vim.loop.fs_stat(vim.fs.joinpath(d, "es")) then
+        vim.notify("Warning: Spanish language model not found", vim.log.levels.WARN)
+      end
+      return opts
+    end,
+  }
+end
+
 ---@type LazySpec
 return {
   "neovim/nvim-lspconfig",
