@@ -12,22 +12,30 @@ assert(thisdir, "Could not find thisdir")
 
 local function download_ltex_ngram()
   if not root_safe then return end -- Don't download into later inaccessible home
-  local url = [[https://languagetool.org/download/ngram-data/ngrams-en-20150817.zip]]
-  --- Already downloaded
-  if vim.loop.fs_stat(vim.fs.joinpath(ngrams_dir, "en")) then return end
+  ---Map of directories to urls
+  local urls = {
+    en = [[https://languagetool.org/download/ngram-data/ngrams-en-20150817.zip]],
+    es = [[https://languagetool.org/download/ngram-data/ngrams-es-20150915.zip]],
+  }
+  for lang, url in pairs(urls) do
+    --- Already downloaded
+    if vim.loop.fs_stat(vim.fs.joinpath(ngrams_dir, lang)) then return end
 
-  vim.fn.mkdir(chachedir, "p")
-  vim.fn.mkdir(ngrams_dir, "p")
+    vim.fn.mkdir(chachedir, "p")
+    vim.fn.mkdir(ngrams_dir, "p")
 
-  vim.system({ vim.fs.joinpath(thisdir, "ltex-dl.sh"), url, ngrams_dir }, {
-    cwd = chachedir,
-    detach = true,
-    timeout = 30 * 60 * 1000, -- minutes
-  }, function(st)
-    if st.code == 75 then return end -- already running
-    if st.code ~= 0 or st.signal ~= 0 then return notifications.error("ltex download failed: " .. (st.stderr or "")) end
-    return notifications.info("ltex download complete")
-  end)
+    vim.system({ vim.fs.joinpath(thisdir, "ltex-dl.sh"), url, ngrams_dir }, {
+      cwd = chachedir,
+      detach = true,
+      timeout = 30 * 60 * 1000, -- minutes
+    }, function(st)
+      if st.code == 75 then return end -- already running
+      if st.code ~= 0 or st.signal ~= 0 then
+        return notifications.error("ltex download failed: " .. (st.stderr or ""))
+      end
+      return notifications.info("ltex download complete")
+    end)
+  end
 end
 local dictionary_en_us
 do
