@@ -45,12 +45,14 @@ local function realpath(path, must_exist)
   if not rpath then return nil end
   return vim.fs.normalize(rpath, { expand_env = false })
 end
+---@param buf number
+---@return string?
 local function bufpath(buf) return realpath(vim.api.nvim_buf_get_name(assert(buf))) end
 
 function M.detectors.cwd() return vim.loop.cwd() end
 
 function M.detectors.gitdir(buf)
-  local bdir = vim.fs.dirname(bufpath(buf))
+  local bdir = vim.fs.dirname(bufpath(buf)) or vim.loop.cwd()
   local o = vim.system({ "git", "rev-parse", "--show-toplevel" }, { cwd = bdir, stderr = false, timeout = 1000 }):wait()
   if o.code ~= 0 then return nil end
   return o.stdout
@@ -71,7 +73,7 @@ end
 
 function M.detectors.lsp(buf)
   local bpath = bufpath(buf)
-  if not bpath then return {} end
+  if not bpath then return nil end
   local roots = {} ---@type string[]
   -- only check workspace folders, since we're not interested in clients running in single file mode
   for _, client in pairs(vim.lsp.get_clients({ bufnr = buf })) do
@@ -129,8 +131,9 @@ function M.detect(opts)
   return ret
 end
 
-function M.info()
-  local roots = M.detect({ all = true })
+---@param buf number?
+function M.info(buf)
+  local roots = M.detect({ all = true, buf = buf })
   local lines = {} ---@type string[]
   local first = true
   for _, root in ipairs(roots) do
@@ -154,27 +157,38 @@ end
 -- * lsp root_dir
 -- * root pattern of filename of the current buffer
 -- * root pattern of cwd
----@param opts? {normalize?:boolean}
+---@param opts? {normalize?:boolean, buf?:number}
 ---@return string
 function M.get(opts)
-  local buf = vim.api.nvim_get_current_buf()
+  opts = opts or {}
+  local buf = opts.buf or vim.api.nvim_get_current_buf()
   local ret = M.cache[buf]
   if not ret then
-    local roots = M.detect({ all = false })
+    local roots = M.detect({ all = false, buf = buf })
     ret = roots[1] and roots[1].paths[1] or vim.loop.cwd()
     M.cache[buf] = ret
   end
-  if opts and opts.normalize then return ret end
+  if opts.normalize then return ret end
   return is_win and ret:gsub("/", "\\") or ret
 end
 
-function M.git()
-  local root = M.get()
+---Returns the git root directory of the current buffer
+---Note: this may not be the same as `git rev-parse --show-toplevel` if the buffer is in a submodule!
+---@param buf number?
+---@param submodules? boolean If true, always return the git root directory of the current buffer, even if it's in a submodule
+---@return string?
+function M.git(buf, submodules)
+  local root = M.get({ buf = buf })
+  if submodules == true then -- use git rev-parse --show-toplevel
+    local r = M.detectors.gitdir(buf or vim.api.nvim_get_current_buf())
+    if type(r) == "table" then return r[1] end
+    return r
+  end -- Use .git directory (which may be collapsed if submodule)
   local git_dir = vim.fs.find(".git", { path = root, type = "directory", upward = true })[1]
-  return git_dir and vim.fs.dirname(git_dir) or root
+  return vim.fs.dirname(git_dir) or root
 end
 
-vim.api.nvim_create_user_command("RootInfo", M.info, { desc = "Roots for the current buffer" })
+vim.api.nvim_create_user_command("RootInfo", function() return M.info() end, { desc = "Roots for the current buffer" })
 vim.api.nvim_create_autocmd({ "LspAttach", "BufWritePost", "DirChanged" }, {
   group = vim.api.nvim_create_augroup("root_cache", { clear = true }),
   callback = function(event) M.cache[event.buf] = nil end,
