@@ -12,23 +12,62 @@ M.cache = {}
 ---@field paths string[]
 ---@field spec RootSpec
 
----@alias RootFn fun(buf: number): (string|string[])
+---@alias RootFn fun(buf: number): (string|string[]|nil)
 
 ---@alias RootSpec string|string[]|RootFn
 
 ---@type RootSpec[]
-M.spec = { "lsp", require("consts").root_markers, "cwd" }
+M.spec = {
+  "lsp",
+  "gitdir",
+  "tmpsh",
+  require("consts").root_markers,
+  "cwd",
+}
 
+---@type table<string, RootFn>
 M.detectors = {}
 
-function M.detectors.cwd() return { vim.loop.cwd() } end
-
-local function realpath(path)
+---@param path string
+---@param must_exist? boolean (default: true) if true, returns nil if the path doesn't exist. Otherwise, returns the path *if* it's parent directory exists.
+---@return string? rpath nil is returned if the path is empty
+local function realpath(path, must_exist)
   if path == "" or path == nil then return nil end
-  local rpath = vim.loop.fs_realpath(path)
-  return vim.fs.normalize(rpath or path, { expand_env = false })
+  local rpath
+  if must_exist == false then -- Only parent must exist, so join the realpath(dirname(p))/basename(p)
+    local parent = vim.fs.dirname(path)
+    local preal = vim.loop.fs_realpath(parent)
+    if not preal then return nil end
+    rpath = vim.fs.joinpath(preal, vim.fs.basename(path))
+  else
+    rpath = vim.loop.fs_realpath(path)
+  end
+  if not rpath then return nil end
+  return vim.fs.normalize(rpath, { expand_env = false })
 end
 local function bufpath(buf) return realpath(vim.api.nvim_buf_get_name(assert(buf))) end
+
+function M.detectors.cwd() return vim.loop.cwd() end
+
+function M.detectors.gitdir(buf)
+  local bdir = vim.fs.dirname(bufpath(buf))
+  local o = vim.system({ "git", "rev-parse", "--show-toplevel" }, { cwd = bdir, stderr = false, timeout = 1000 }):wait()
+  if o.code ~= 0 then return nil end
+  return o.stdout
+end
+
+---A custom detector for detecting the root of a temporary shell
+---Information here: ~/.local/bin/tmpsh
+function M.detectors.tmpsh(buf)
+  if vim.env.TMPSH ~= "1" then return {} end
+  assert(vim.env.TMPSH_ROOT, "TMPSH_ROOT is not set")
+  --- This must be a directory.
+  local rpath = realpath(vim.env.TMPSH_ROOT)
+  if not rpath then return nil end
+  local bpath = bufpath(buf) or (vim.loop.cwd() .. "/")
+  -- Add a trailing slash to make sure that startswith() works. realpath() returns a path without a trailing slash.
+  return vim.startswith(bpath, rpath .. "/") and rpath or nil
+end
 
 function M.detectors.lsp(buf)
   local bpath = bufpath(buf)
@@ -41,19 +80,21 @@ function M.detectors.lsp(buf)
     end
   end
   return vim.tbl_filter(function(path)
-    path = realpath(path)
+    path = path and realpath(path)
     if not path then return false end
     return vim.startswith(bpath, path)
   end, roots)
 end
 
+---@param buf number
 ---@param patterns string[]|string
-function M.detectors.pattern(buf, patterns)
+---@return string?
+function M.pattern(buf, patterns)
   patterns = type(patterns) == "string" and { patterns } or patterns
   local path = bufpath(buf) or vim.loop.cwd()
   local pattern = vim.fs.find(patterns, { path = path, upward = true })[1]
-  if not pattern then return {} end
-  return { vim.fs.dirname(pattern) }
+  if not pattern then return nil end
+  return vim.fs.dirname(pattern)
 end
 
 ---@param spec RootSpec
@@ -61,7 +102,7 @@ end
 function M.resolve(spec)
   if M.detectors[spec] then return M.detectors[spec] end
   if type(spec) == "function" then return spec end
-  return function(buf) return M.detectors.pattern(buf, spec) end
+  return function(buf) return M.pattern(buf, spec) end
 end
 
 ---@param opts? { buf?: number, spec?: RootSpec[], all?: boolean }
@@ -72,9 +113,8 @@ function M.detect(opts)
 
   local ret = {} ---@type Root[]
   for _, spec in ipairs(opts.spec) do
-    local paths = M.resolve(spec)(opts.buf)
-    paths = paths or {}
-    paths = type(paths) == "table" and paths or { paths }
+    local path = M.resolve(spec)(opts.buf) or {}
+    local paths = type(path) == "table" and path or { path } ---@type string[]
     local roots = {} ---@type string[]
     for _, p in ipairs(paths) do
       local pp = realpath(p)
