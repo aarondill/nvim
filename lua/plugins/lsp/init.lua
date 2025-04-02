@@ -135,7 +135,7 @@ return {
     ft = "lua",
     cmd = "LazyDev",
     ---@module 'lazydev'
-    ---@type lazydev.Config
+    ---@type lazydev.Config|{}
     opts = {
       enabled = function(root_dir) -- Default to off unless `lazydev_enabled` is set to true or we're under ~/.config/nvim
         if vim.g.lazydev_enabled or root_dir == vim.fn.expand("~/.config/nvim") then return true end

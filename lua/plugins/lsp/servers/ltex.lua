@@ -71,15 +71,16 @@ return {
   "neovim/nvim-lspconfig",
   optional = true,
   init = download_ltex_ngram,
-  ---@type PluginLspOpts
+  ---@type PluginLspOpts | {}
   opts = {
     servers = {
+      ---@type lspconfig.options.ltex|{}
       ltex = {
+        filetypes = { "latex", "tex", "bib", "markdown", "gitcommit", "text" }, -- No more HTML
         mason = true, -- auto install
         settings = {
-          ltex = {
+          ltex = { ---@type _.lspconfig.settings.ltex.Ltex|{}
             enabled = true,
-            checkFrequency = 1000,
             language = "en-US",
             languageModel = ngrams_dir,
             dictionary = { ["en-US"] = dictionary_en_us },
