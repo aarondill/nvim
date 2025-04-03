@@ -34,11 +34,11 @@ return {
   "rktjmp/highlight-current-n.nvim",
   opts = { highlight_group = "IncSearch" },
   init = function()
-    vim.opt.hlsearch = false
+    vim.o.hlsearch = false
     local augroup = vim.api.nvim_create_augroup("ClearSearchHL", { clear = true })
     -- only see hlsearch /while/ searching
     create_autocmd({ "CmdlineEnter", "CmdlineLeave" }, function(ev)
-      vim.opt.hlsearch = ev.event == "CmdlineEnter" -- enable on enter, disable on exit
+      vim.o.hlsearch = ev.event == "CmdlineEnter" -- enable on enter, disable on exit
     end, { pattern = { "/", "\\?" }, group = augroup })
     -- apply n|N highlighting to the first search result
     create_autocmd("CmdlineLeave", function() require("highlight_current_n")["/,?"]() end, {

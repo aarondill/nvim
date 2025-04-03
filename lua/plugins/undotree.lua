@@ -9,6 +9,6 @@ return {
     vim.g.undotree_SetFocusWhenToggle = 1 -- Focus the tree!
     vim.g.undotree_ShortIndicators = 1 -- Shorter indicators pls
     vim.g.undotree_SplitWidth = 24 -- wider window pls
-    vim.opt.undofile = true
+    vim.o.undofile = true
   end,
 }

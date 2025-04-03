@@ -47,7 +47,7 @@ if false then ---Example .lazy.lua for spanish workspace
   --- This file loads before config/options.lua, so we need to wait to do this
   vim.api.nvim_create_autocmd("User", {
     ---Neovim doesn´t come with spanish dictionaries, so just disable spellchecking
-    callback = function() vim.opt.spell = false end,
+    callback = function() vim.o.spell = false end,
     pattern = "VeryLazy",
     once = true,
   })

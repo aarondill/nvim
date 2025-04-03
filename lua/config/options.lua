@@ -1,144 +1,145 @@
 -- Options are automatically loaded before lazy.nvim startup
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
-local opt = vim.opt
+local o, g = vim.o, vim.g
 
 --- This has to be set before loading lazy
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+g.mapleader = vim.keycode("<Space>")
+g.maplocalleader = vim.keycode("<Space>")
 
 -- Allows you to re-use the same window and switch from an unsaved buffer
 -- without saving it first. Also allows you to keep an undo history for
 -- multiple files when re-using the same window in this way. Vim will complain
 -- if you try to quit without saving, and swap files will keep you safe if your
 -- computer crashes.
-opt.hidden = true
+o.hidden = true
 
 -- Better command-line completion
-opt.wildmenu = true
+o.wildmenu = true
 
 -- Show partial commands in the last line of the screen
-opt.showcmd = true
+o.showcmd = true
 
 -- Highlight searches (use <C-L> to temporarily turn off highlighting
-opt.hlsearch = true
+o.hlsearch = true
 
 -- When soft-wrapping lines, break at word boundaries
-opt.linebreak = true
+o.linebreak = true
 
 -- Use case insensitive search, except when using capital letters
-opt.ignorecase = true
-opt.smartcase = true
+o.ignorecase = true
+o.smartcase = true
 
 -- When opening a new line and no filetype-specific indenting is enabled, keep
 -- the same indent as the line you're currently on. Useful for READMEs, etc.
-opt.autoindent = true
+o.autoindent = true
 -- Stop certain movements from always going to the first character of a line.
 -- While this behaviour deviates from that of Vi, it does what most users
 -- coming from other editors would expect.
-opt.startofline = false
+o.startofline = false
 
-opt.ruler = true -- Display the cursor position on the last line of the screen or in the status line of a window
-opt.backspace = "indent,eol,start" -- Allow backspacing over autoindent, line breaks and start of insert action
-opt.laststatus = 2 -- Always display the status line, even if only one window is displayed
-opt.visualbell = true -- Use visual bell instead of beeping when doing something wrong
-opt.cmdheight = 2 -- Set the command window height to 2 lines, to avoid many cases of having to press <Enter> to continue"
-opt.number = true -- Display line numbers on the left
-opt.relativenumber = true -- Display numbers relative to the curser
--- opt.pastetoggle = "<F11>" -- Use <F11> to toggle between 'paste' and 'nopaste'
-opt.updatetime = 100 -- Decrease updatetime for vim-gitgutter. Impacts swp file delay.
-opt.scrolloff = 5 -- Auto-scroll up or down to keep context above/below cursor
-opt.wrap = false -- turn off word-wrap
-opt.sidescrolloff = 5 -- Auto-scroll L/R to keep context in view
-opt.sidescroll = 1 -- Improve scrolling with nowrap
-opt.foldmethod = "marker" -- Set the fold method to obey comments
-opt.incsearch = true -- Turn on incremenetal search in vim
-opt.autowrite = false -- Disable auto write
+o.ruler = true -- Display the cursor position on the last line of the screen or in the status line of a window
+o.backspace = "indent,eol,start" -- Allow backspacing over autoindent, line breaks and start of insert action
+o.laststatus = 2 -- Always display the status line, even if only one window is displayed
+o.visualbell = true -- Use visual bell instead of beeping when doing something wrong
+o.cmdheight = 2 -- Set the command window height to 2 lines, to avoid many cases of having to press <Enter> to continue"
+o.number = true -- Display line numbers on the left
+o.relativenumber = true -- Display numbers relative to the curser
+-- o.pastetoggle = "<F11>" -- Use <F11> to toggle between 'paste' and 'nopaste'
+o.updatetime = 100 -- Decrease updatetime for vim-gitgutter. Impacts swp file delay.
+o.scrolloff = 5 -- Auto-scroll up or down to keep context above/below cursor
+o.wrap = false -- turn off word-wrap
+o.sidescrolloff = 5 -- Auto-scroll L/R to keep context in view
+o.sidescroll = 1 -- Improve scrolling with nowrap
+o.foldmethod = "marker" -- Set the fold method to obey comments
+o.incsearch = true -- Turn on incremenetal search in vim
+o.autowrite = false -- Disable auto write
 
 -- Instead of failing a command because of unsaved changes, instead raise a
 -- dialogue asking if you wish to save changed files.
-opt.confirm = true
+o.confirm = true
 -- And reset the terminal code for the visual bell. If visualbell is set, and
 -- this line is also included, vim will neither flash nor beep. If visualbell
 -- is unset, this does nothing.
-opt.vb = false
+o.vb = false
 
 --Never time out on mappings
-opt.timeout = true
-opt.timeoutlen = 1000
--- opt.timeout = false
+o.timeout = true
+o.timeoutlen = 1000
+-- o.timeout = false
 
 -- Quickly time out on keycodes
-opt.ttimeout = true
-opt.ttimeoutlen = 40
+o.ttimeout = true
+o.ttimeoutlen = 40
 
 -- Set tab and >> to be 2 spaces
-opt.shiftwidth = 2
-opt.softtabstop = 2
-opt.expandtab = true
+o.shiftwidth = 2
+o.softtabstop = 2
+o.expandtab = true
 
 -- Use s/match/sub/g by default
-opt.gdefault = true
+o.gdefault = true
 
 local root_safe = require("utils.root_safe")
 if root_safe then
   local dir = vim.env.HOME .. "/.cache/vimtmp"
   if not vim.fn.isdirectory(dir) then vim.fn.mkdir(dir, "p") end
-  opt.directory = dir -- Move the swap file
+  o.directory = dir -- Move the swap file
 end
 
 -- Reset to default value
 if vim.fn.executable("rg") == 1 then
-  opt.grepprg = "rg --vimgrep --smart-case --hidden"
-  opt.grepformat = "%f:%l:%c:%m"
+  o.grepprg = "rg --vimgrep --smart-case --hidden"
+  o.grepformat = "%f:%l:%c:%m"
 end
 
 -- Disable providers
-vim.g.loaded_python3_provider = 0
-vim.g.loaded_perl_provider = 0
-vim.g.loaded_ruby_provider = 0
+g.loaded_python3_provider = 0
+g.loaded_perl_provider = 0
+g.loaded_ruby_provider = 0
 
 ---Apparetly the tty has issues when the title is set. The screen goes blank.
-opt.title = not require("utils.is_tty")()
-opt.titlestring = "nvim: %t %a%r%m"
+o.title = not require("utils.is_tty")()
+o.titlestring = "nvim: %t %a%r%m"
 -- HACK: This is a reasonable title to set, but we should be able to restore the previous.
-opt.titleold = vim.loop.os_get_passwd().username .. ": " .. vim.fn.fnamemodify(vim.loop.cwd(), ":~") ---@diagnostic disable-line: assign-type-mismatch
+o.titleold = vim.loop.os_get_passwd().username .. ": " .. vim.fn.fnamemodify(vim.loop.cwd() or "", ":~") ---@diagnostic disable-line: assign-type-mismatch
 
 --- Disable checking for capital letters at start of sentance (this is frustrating in git commit messages)
-opt.spellcapcheck = ""
+o.spellcapcheck = ""
 
-vim.g.autoformat = true -- Enable LazyVim auto format
+g.autoformat = true -- Enable LazyVim auto format
 
-vim.opt.foldlevel = 99
-opt.clipboard = "unnamedplus" -- Sync with system clipboard
-opt.completeopt = "menu,menuone,noselect"
-opt.conceallevel = 2 -- Hide * markup for bold and italic, but not markers with substitutions
-opt.cursorline = true -- Enable highlighting of the current line
-opt.formatoptions = "jcroqlnt" -- tcqj
-opt.inccommand = "nosplit" -- preview incremental substitute
-opt.list = true -- Show some invisible characters (tabs...
-opt.mouse = "a" -- Enable mouse mode
-opt.pumblend = 10 -- Popup blend
-opt.pumheight = 10 -- Maximum number of entries in a popup
-opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" }
-opt.shiftround = true -- Round indent
-opt.shortmess:append({ W = true, I = true, c = true, C = true })
-opt.showmode = false -- Dont show mode since we have a statusline
-opt.signcolumn = "yes" -- Always show the signcolumn, otherwise it would shift the text each time
-opt.smartindent = true -- Insert indents automatically
-opt.spelloptions = "camel"
-opt.spelllang = { "en" }
-opt.splitbelow = true -- Put new windows below current
-opt.splitkeep = "screen"
-opt.splitright = true -- Put new windows right of current
-opt.tabstop = 2 -- Number of spaces tabs count for
-opt.termguicolors = true -- True color support
-opt.undofile = true
-opt.undolevels = 10000
-opt.virtualedit = "block" -- Allow cursor to move where there is no text in visual block mode
-opt.wildmode = "longest:full,full" -- Command-line completion mode
-opt.winminwidth = 5 -- Minimum window width
-opt.fillchars = {
+o.foldlevel = 99
+o.clipboard = "unnamedplus" -- Sync with system clipboard
+o.completeopt = "menu,menuone,noselect"
+o.conceallevel = 2 -- Hide * markup for bold and italic, but not markers with substitutions
+o.cursorline = true -- Enable highlighting of the current line
+o.formatoptions = "jcroqlnt" -- tcqj
+o.inccommand = "nosplit" -- preview incremental substitute
+o.list = true -- Show some invisible characters (tabs...
+o.mouse = "a" -- Enable mouse mode
+o.pumblend = 10 -- Popup blend
+o.pumheight = 10 -- Maximum number of entries in a popup
+o.shiftround = true -- Round indent
+o.showmode = false -- Dont show mode since we have a statusline
+o.signcolumn = "yes" -- Always show the signcolumn, otherwise it would shift the text each time
+o.smartindent = true -- Insert indents automatically
+o.spelloptions = "camel"
+o.spelllang = "en"
+o.splitbelow = true -- Put new windows below current
+o.sessionoptions = "buffers,curdir,tabpages,winsize,help,globals,skiprtp,folds"
+o.splitkeep = "screen"
+o.splitright = true -- Put new windows right of current
+o.tabstop = 2 -- Number of spaces tabs count for
+o.termguicolors = true -- True color support
+o.undofile = true
+o.undolevels = 10000
+o.virtualedit = "block" -- Allow cursor to move where there is no text in visual block mode
+o.wildmode = "longest:full,full" -- Command-line completion mode
+o.winminwidth = 5 -- Minimum window width
+---TODO: Use vim.o when it supports this syntax
+---See: https://github.com/neovim/neovim/issues/20107
+vim.opt.fillchars = {
   foldopen = "",
   foldclose = "",
   -- fold = "⸱",
@@ -147,3 +148,4 @@ opt.fillchars = {
   diff = "╱",
   eob = " ",
 }
+vim.opt.shortmess:append({ W = true, I = true, c = true, C = true })

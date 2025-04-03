@@ -99,7 +99,7 @@ local function lndoc(src, dest)
     assert(vim.uv.fs_symlink(src_doc, dest_doc))
   end
   vim.cmd.helptags(dest_doc)
-  vim.opt.rtp:append(dest_dir)
+  vim.o.runtimepath = table.concat({ vim.o.runtimepath, dest_dir }, ",")
 end
 
 create_autocmd("User", function()
@@ -130,7 +130,7 @@ create_autocmd("User", function(ev)
 
   ---- This is disabled because it breaks multiple instances!
   -- assert(vim.fn.delete(dir, "rf") == 0, "failed to rm doc_path")
-  vim.opt.rtp:remove(dir)
+  vim.o.rtp = vim.iter(vim.split(vim.o.rtp, ",")):filter(function(p) return p ~= dir end):join(",")
 end, "Unload documentation when lazy loading plugins", { pattern = "LazyLoad", group = augroup })
 
 create_autocmd({ "FileType" }, function()
