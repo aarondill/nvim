@@ -12,7 +12,7 @@ create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, function()
   return vim.cmd.checktime()
 end, { group = augroup })
 -- Highlight on yank
-create_autocmd("TextYankPost", function() return vim.highlight.on_yank() end, { group = augroup })
+create_autocmd("TextYankPost", function() return vim.hl.on_yank() end, { group = augroup })
 -- resize splits if window got resized
 create_autocmd({ "VimResized" }, function()
   local current_tab = vim.fn.tabpagenr()

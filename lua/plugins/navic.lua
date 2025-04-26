@@ -8,9 +8,9 @@ return {
   lazy = true,
   init = function()
     vim.g.navic_silence = true
-    return create_autocmd("LspAttach", function(args)
+    create_autocmd("LspAttach", function(args)
       local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
-      if not client.supports_method("textDocument/documentSymbol") then return end
+      if not client:supports_method("textDocument/documentSymbol") then return end
       return require("nvim-navic").attach(client, args.buf)
     end)
   end,
