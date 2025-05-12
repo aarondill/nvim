@@ -19,8 +19,8 @@ return {
   {
     "williamboman/mason-lspconfig.nvim",
     dependencies = { "mason.nvim" },
-    opts_extend = { "ensure_installed" },
-    opts = { ensure_installed = {} },
+    opts_extend = { "ensure_installed", "automatic_enable.exclude" },
+    opts = { ensure_installed = {}, automatic_enable = { exclude = {} } },
   },
   --- Import the configuration from lsp servers
   --- NOTE: This *must* be after mason-lspconfig.nvim, since it relies on opts_extend
