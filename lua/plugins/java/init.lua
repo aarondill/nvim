@@ -9,7 +9,8 @@ assert(type(cache) == "string")
 local function jdtls_config_dir(project_name) return vim.fs.joinpath(cache, "jdtls", project_name, "config") end
 local function jdtls_workspace_dir(project_name) return vim.fs.joinpath(cache, "jdtls", project_name, "workspace") end
 
-vim.lsp.config("jdtls", {
+---@type vim.lsp.ClientConfig
+local o = {
   -- How to find the root dir for a given filename.
   root_markers = consts.root_markers,
   cmd = { "jdtls" },
@@ -27,7 +28,8 @@ vim.lsp.config("jdtls", {
       },
     },
   },
-})
+}
+vim.lsp.config("jdtls", o)
 
 ---@type LazySpec
 return {
@@ -60,8 +62,8 @@ return {
         vim.b._has_run_jdtls_attach = 1
         local config = vim.lsp.config.jdtls -- handles capabilities
 
-        local fname = vim.api.nvim_buf_get_name(0)
-        local root_dir = require("jdtls.setup").find_root(config.root_markers, fname)
+        local root_dir = config.root_dir
+        if type(root_dir) ~= "string" then root_dir = vim.fs.root(0, config.root_markers) end
         config = vim.tbl_deep_extend("force", config, { root_dir = root_dir })
         -- How to find the project name for a given root dir.
         local project_name = vim.fs.basename(root_dir)
