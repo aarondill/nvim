@@ -3,9 +3,8 @@
 return {
   "neovim/nvim-lspconfig",
   optional = true,
-  ---@type PluginLspOpts
   opts = {
-    servers = {
+    servers = { --- TODO: Better way to do this?
       bashls = { mason = true },
       jdtls = { mason = true },
       jsonls = { mason = true },

@@ -66,27 +66,27 @@ if false then ---Example .lazy.lua for spanish workspace
   }
 end
 
+download_ltex_ngram() -- On startup, download the language model
+
+vim.lsp.config("ltex", { ---@type vim.lsp.Config
+  filetypes = { "latex", "tex", "bib", "markdown", "gitcommit", "text" }, -- No more HTML
+  settings = {
+    ltex = {
+      enabled = true,
+      language = "en-US",
+      languageModel = ngrams_dir,
+      dictionary = { ["en-US"] = dictionary_en_us },
+    },
+  },
+})
+
 ---@type LazySpec
 return {
   "neovim/nvim-lspconfig",
   optional = true,
-  init = download_ltex_ngram,
-  ---@type PluginLspOpts | {}
   opts = {
     servers = {
-      ---@type lspconfig.options.ltex|{}
-      ltex = {
-        filetypes = { "latex", "tex", "bib", "markdown", "gitcommit", "text" }, -- No more HTML
-        mason = true, -- auto install
-        settings = {
-          ltex = { ---@type _.lspconfig.settings.ltex.Ltex|{}
-            enabled = true,
-            language = "en-US",
-            languageModel = ngrams_dir,
-            dictionary = { ["en-US"] = dictionary_en_us },
-          },
-        },
-      },
+      ltex = { mason = true }, -- auto install
     },
   },
 }

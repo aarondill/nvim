@@ -69,12 +69,7 @@ return {
         opts.capabilities or {}
       )
 
-      local function setup(server)
-        local server_opts = vim.tbl_deep_extend("force", { capabilities = capabilities }, opts.servers[server] or {})
-        local f = opts.setup[server] or opts.setup["*"]
-        if f and f(server, server_opts) then return end
-        return require("lspconfig")[server].setup(server_opts)
-      end
+      vim.lsp.config("*", { capabilities = capabilities })
 
       local ensure_installed = {} ---@type string[]
       ---For preconfigured servers
@@ -86,16 +81,14 @@ return {
           -- If mason is true, install/setup the server
           -- If mason is nil, setup the server if it is installed through mason-lspconfig
           if server_opts.mason == false then
-            setup(server)
+            vim.lsp.enable(server)
           elseif server_opts.mason == true then
             ensure_installed[#ensure_installed + 1] = server
           end
         end
       end
 
-      local mlsp = require("mason-lspconfig")
-      mlsp.setup({ ensure_installed = ensure_installed })
-      mlsp.setup_handlers({ setup })
+      require("mason-lspconfig").setup({ ensure_installed = ensure_installed })
     end,
   },
   { "williamboman/mason-lspconfig.nvim", dependencies = { "mason.nvim" } },
