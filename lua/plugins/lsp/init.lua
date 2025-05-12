@@ -3,7 +3,6 @@ local keymaps = require("plugins.lsp.keymaps")
 
 ---@type table<integer, boolean>
 local lsp_initialized_buffers = {}
-local remap = keymaps.apply
 ---@param args EventInfo
 local function LspAttach(args)
   if lsp_initialized_buffers[args.buf] then return end
@@ -12,43 +11,33 @@ local function LspAttach(args)
     buffer = args.buf,
     desc = "Organize imports",
   })
-  return remap(args.data.client_id, args.buf)
+  return keymaps.apply(args.data.client_id, args.buf)
 end
-
----@class _.lspconfig.options
----Default is `true` for all servers.
----@field enabled? boolean
----Pass `false` to disable mason-lspconfig.
----Pass `true` to enable mason-lspconfig, and auto install the server.
----Pass `nil` to use mason-lspconfig, but not install the server.
----@field mason? boolean
 
 ---@type LazySpec
 return {
-  { import = "plugins.lsp.servers" }, -- Import the configuration from lsp servers
+  {
+    "williamboman/mason-lspconfig.nvim",
+    dependencies = { "mason.nvim" },
+    opts_extend = { "ensure_installed" },
+    opts = { ensure_installed = {} },
+  },
+  --- Import the configuration from lsp servers
+  --- NOTE: This *must* be after mason-lspconfig.nvim, since it relies on opts_extend
+  { import = "plugins.lsp.servers" },
   {
     "neovim/nvim-lspconfig",
     event = "LazyFile",
     dependencies = { -- load these before lspconfig
       "folke/neoconf.nvim",
       "mason.nvim",
-      "williamboman/mason-lspconfig.nvim",
+      "mason-lspconfig.nvim",
     },
-    ---@class PluginLspOpts
-    opts = {
-      ---@type lsp.ServerCapabilities
-      capabilities = {}, -- add any global capabilities here
-      ---@type lspconfig.options|{}
-      servers = {},
-      ---Return true to skip setting up the server with lspconfig
-      ---@type table<string, fun(server:string, opts:_.lspconfig.options): boolean?>
-      setup = {},
-    },
-    config = function(_, opts) ---@param opts PluginLspOpts
+    config = function()
       require("utils.format").register(require("plugins.lsp.formatter").formatter())
       create_autocmd("LspAttach", LspAttach)
 
-      -- diagnostics
+      --- Diagnostics
       local icons = require("config.icons").lazyvim.icons
       local signs = {
         DiagnosticSignError = icons.diagnostics.Error,
@@ -60,38 +49,16 @@ return {
         vim.fn.sign_define(name, { texthl = name, text = text, numhl = "" })
       end
 
+      --- Capabilities
       local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
       local capabilities = vim.tbl_deep_extend(
         "force",
-        {},
         vim.lsp.protocol.make_client_capabilities(),
-        has_cmp and cmp_nvim_lsp.default_capabilities() or {},
-        opts.capabilities or {}
+        has_cmp and cmp_nvim_lsp.default_capabilities() or {}
       )
-
       vim.lsp.config("*", { capabilities = capabilities })
-
-      local ensure_installed = {} ---@type string[]
-      ---For preconfigured servers
-      for server, server_opts in pairs(opts.servers) do
-        ---@type _.lspconfig.options
-        server_opts = server_opts
-        if server_opts.enabled ~= false then
-          -- If mason is false, manually setup the server
-          -- If mason is true, install/setup the server
-          -- If mason is nil, setup the server if it is installed through mason-lspconfig
-          if server_opts.mason == false then
-            vim.lsp.enable(server)
-          elseif server_opts.mason == true then
-            ensure_installed[#ensure_installed + 1] = server
-          end
-        end
-      end
-
-      require("mason-lspconfig").setup({ ensure_installed = ensure_installed })
     end,
   },
-  { "williamboman/mason-lspconfig.nvim", dependencies = { "mason.nvim" } },
   {
     "williamboman/mason.nvim",
     cmd = "Mason",

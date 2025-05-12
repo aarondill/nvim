@@ -60,7 +60,7 @@ function M.apply(client, buffer)
     rename_is_expr = true
   end
 
-  ---@type ({mode?:string[]|string,[1]: string|string[], [2]: string|fun():any?, desc:string, cond: any})[]
+  ---@type ({mode?:string[]|string,[1]: string|string[], [2]: string|(fun():any?), desc:string, cond: any})[]
   local keys = {
     { "<leader>sl", "<cmd>LspInfo<cr>", desc = "[S]how [L]sp Info" },
     { "gd", telescope_builtin("lsp_definitions"), desc = "Goto Definition" },

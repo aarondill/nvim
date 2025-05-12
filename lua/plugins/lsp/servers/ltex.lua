@@ -80,13 +80,8 @@ vim.lsp.config("ltex", { ---@type vim.lsp.Config
   },
 })
 
----@type LazySpec
-return {
-  "neovim/nvim-lspconfig",
+return { ---@type LazySpec
+  "williamboman/mason-lspconfig.nvim",
   optional = true,
-  opts = {
-    servers = {
-      ltex = { mason = true }, -- auto install
-    },
-  },
+  opts = { ensure_installed = { "ltex" } },
 }

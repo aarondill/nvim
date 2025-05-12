@@ -10,13 +10,8 @@ vim.lsp.config("lua_ls", { ---@type vim.lsp.Config
     },
   },
 })
----@type LazySpec
-return {
-  "neovim/nvim-lspconfig",
+return { ---@type LazySpec
+  "williamboman/mason-lspconfig.nvim",
   optional = true,
-  opts = {
-    servers = {
-      lua_ls = { mason = true }, -- auto install
-    },
-  },
+  opts = { ensure_installed = { "lua_ls" } },
 }

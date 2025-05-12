@@ -1,17 +1,16 @@
 --- Automatically install servers
----@type LazySpec
-return {
-  "neovim/nvim-lspconfig",
+return { ---@type LazySpec
+  "williamboman/mason-lspconfig.nvim",
   optional = true,
   opts = {
-    servers = { --- TODO: Better way to do this?
-      bashls = { mason = true },
-      jdtls = { mason = true },
-      jsonls = { mason = true },
-      lua_ls = { mason = true },
-      taplo = { mason = true },
-      ts_ls = { mason = true },
-      vimls = { mason = true },
+    ensure_installed = {
+      "bashls",
+      "jdtls",
+      "jsonls",
+      "lua_ls",
+      "taplo",
+      "ts_ls",
+      "vimls",
     },
   },
 }
