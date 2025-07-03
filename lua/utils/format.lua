@@ -33,19 +33,20 @@ end
 
 ---@param buf? integer
 ---@param all? boolean return even inactive formatters (default: false)
----@return (Formatter|{active:boolean,resolved:string[]})[]
+---@return  (Formatter|{active:boolean,resolved:string[]})[] formatters,boolean have_active
 function M.resolve(buf, all)
   buf = buf or vim.api.nvim_get_current_buf()
-  local have_primary = false
+  local have_primary, have_active = false, false
   ---@param formatter Formatter
   local ret = vim.tbl_map(function(formatter)
     local sources = formatter.sources(buf)
     local active = #sources > 0 and (not formatter.primary or not have_primary)
     if active and formatter.primary then have_primary = true end
+    if active then have_active = true end
     return setmetatable({ active = active, resolved = sources }, { __index = formatter })
   end, M.formatters)
-  if all then return ret end
-  return vim.tbl_filter(function(formatter) return formatter.active end, ret)
+  if all then return ret, have_active end
+  return vim.tbl_filter(function(formatter) return formatter.active end, ret), have_active
 end
 
 ---@param buf? integer
@@ -62,17 +63,27 @@ function M.info(buf)
       (baf == nil and "inherit") or (baf and "enabled") or "disabled"
     ),
   }
-  local have = false
-  for _, formatter in ipairs(M.resolve(buf, true)) do
+  local formatters, have_active = M.resolve(buf, true)
+  for _, formatter in ipairs(formatters) do
     if #formatter.resolved > 0 then
-      have = true
-      lines[#lines + 1] = "\n# " .. formatter.name .. (formatter.active and " ***(active)***" or "")
+      lines[#lines + 1] = ""
+      lines[#lines + 1] = "# " .. formatter.name .. (formatter.active and " ***(active)***" or "")
       for _, line in ipairs(formatter.resolved) do
         lines[#lines + 1] = ("- [%s] **%s**"):format(formatter.active and "x" or " ", line)
       end
     end
   end
-  if not have then lines[#lines + 1] = "\n***No formatters available for this buffer.***" end
+  if have_active then
+    local active = vim.tbl_filter(function(formatter) return formatter.active end, formatters)
+    lines[#lines + 1] = ""
+    lines[#lines + 1] = "# Active formatters in order"
+    for _, formatter in ipairs(active) do
+      lines[#lines + 1] = ("- **%s** (priority %d)"):format(formatter.name, formatter.priority)
+    end
+  else
+    lines[#lines + 1] = ""
+    lines[#lines + 1] = "***No formatters available for this buffer.***"
+  end
   notifications.info(lines, { title = ("Formatting (%s)"):format((enabled and "enabled" or "disabled")) })
 end
 
