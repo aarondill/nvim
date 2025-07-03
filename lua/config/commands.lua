@@ -57,4 +57,8 @@ vim.api.nvim_create_user_command("LspCapabilities", function()
   vim.tbl_map(loop, clients)
 end, {})
 
-vim.api.nvim_create_user_command("OrganizeImports", function() return require("utils.organize_imports")(true) end, {})
+vim.api.nvim_create_user_command(
+  "OrganizeImports",
+  function() return require("utils.organize_imports").organize_imports(0, true) end,
+  {}
+)

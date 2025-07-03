@@ -7,10 +7,6 @@ local lsp_initialized_buffers = {}
 local function LspAttach(args)
   if lsp_initialized_buffers[args.buf] then return end
   lsp_initialized_buffers[args.buf] = true
-  create_autocmd("BufWritePre", require("utils.organize_imports"), {
-    buffer = args.buf,
-    desc = "Organize imports",
-  })
   return keymaps.apply(args.data.client_id, args.buf)
 end
 
@@ -35,6 +31,7 @@ return {
     },
     config = function()
       require("utils.format").register(require("plugins.lsp.formatter").formatter())
+      require("utils.format").register(require("utils.organize_imports").formatter())
       create_autocmd("LspAttach", LspAttach)
 
       --- Diagnostics

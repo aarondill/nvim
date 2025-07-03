@@ -73,7 +73,7 @@ function M.apply(client, buffer)
     { "<leader>ca", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" } },
     {
       "<leader>co",
-      function() return require("utils.organize_imports")(true) end,
+      function() return require("utils.organize_imports").organize_imports(0, true) end,
       desc = "Organize Imports",
       mode = { "n" },
     },
