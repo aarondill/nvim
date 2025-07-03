@@ -10,7 +10,7 @@ function M.formatter(opts)
   local ret = { ---@type Formatter
     name = "LSP",
     primary = true,
-    priority = 1,
+    priority = 90, -- After conform
     format = function(buf) M.format(vim.tbl_extend("force", filter, { bufnr = buf })) end,
     sources = function(buf)
       local clients = vim.lsp.get_clients(vim.tbl_extend("force", filter, { bufnr = buf }))

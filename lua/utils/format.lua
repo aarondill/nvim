@@ -6,10 +6,15 @@ local M = setmetatable({}, {
 })
 
 ---@class Formatter
+---The display name of the formatter
 ---@field name string
+---Whether this formatter is the primary formatter for the buffer (only one primary formatter will be used)
 ---@field primary? boolean
+---The function to call to format the buffer
 ---@field format fun(bufnr:number): any?
+---The function to get the sources for the formatter, return empty array if can't format
 ---@field sources fun(bufnr:number):string[]
+---The priority of the formatter, formatters with higher priority will be used first (and run first)
 ---@field priority number
 
 M.formatters = {} ---@type Formatter[]
