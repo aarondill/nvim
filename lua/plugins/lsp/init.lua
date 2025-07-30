@@ -84,7 +84,6 @@ return {
     "folke/neoconf.nvim",
     cmd = "Neoconf",
     opts = {},
-    dependencies = { "nvim-lspconfig" },
   },
   --- Lazy Dev
   {

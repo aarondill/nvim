@@ -32,16 +32,16 @@ create_autocmd("LspAttach", function(ev)
   require("utils.format").register(formatter)
 end)
 
+vim.lsp.config("eslint", { ---@type vim.lsp.Config
+  settings = {
+    eslint = { -- helps eslint find the eslintrc when it's placed in a subfolder instead of the cwd root
+      workingDirectories = { mode = "auto" },
+    },
+  },
+})
+
 ---@type LazySpec
 return {
-  "neovim/nvim-lspconfig",
-  opts = {
-    servers = {
-      eslint = {
-        settings = {
-          -- helps eslint find the eslintrc when it's placed in a subfolder instead of the cwd root
-          workingDirectories = { mode = "auto" },
-        },
       },
     },
   },

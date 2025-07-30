@@ -52,18 +52,21 @@ if false then ---Example .lazy.lua for spanish workspace
     once = true,
   })
   --- Override the ltex language to spanish (Needs ngrams downloaded!)
-  return { ---@type LazySpec
-    "neovim/nvim-lspconfig",
-    opts = function(_, opts)
-      opts = vim.tbl_deep_extend("keep", opts or {}, { servers = { ltex = { settings = { ltex = {} } } } })
-      opts.servers.ltex.settings.ltex.language = "es"
-      local d = opts.servers.ltex.settings.ltex.languageModel
-      if not d or not vim.loop.fs_stat(vim.fs.joinpath(d, "es")) then
-        vim.notify("Warning: Spanish language model not found", vim.log.levels.WARN)
-      end
-      return opts
-    end,
-  }
+  vim.lsp.config("ltex", { ---@type vim.lsp.Config
+    settings = {
+      before_init = function(params, config)
+        local d = config.settings.ltex.languageModel
+        if not d or not vim.loop.fs_stat(vim.fs.joinpath(d, "es")) then
+          vim.notify("Warning: Spanish language model not found", vim.log.levels.WARN)
+        end
+      end,
+      ltex = {
+        language = "es",
+        languageModel = ngrams_dir,
+        dictionary = { ["en-US"] = dictionary_en_us },
+      },
+    },
+  })
 end
 
 download_ltex_ngram() -- On startup, download the language model
