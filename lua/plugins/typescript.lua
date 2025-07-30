@@ -37,11 +37,8 @@ return {
   },
   { -- add typescript to treesitter
     "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      opts = opts or {}
-      opts.ensure_installed = opts.ensure_installed or {}
-      local ensure_installed = { "typescript", "tsx", "styled" }
-      vim.list_extend(opts.ensure_installed, ensure_installed)
-    end,
+    opts = {
+      ensure_installed = { "typescript", "tsx", "styled" },
+    },
   },
 }

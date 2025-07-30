@@ -1,29 +1,22 @@
 local flatten = require("utils.flatten")
-local mason_ensure_installed = flatten({
-  { "cspell", "eslint-lsp", "eslint_d", "prettier" },
-  { "shellcheck", "vint", "gitlint" },
-})
-local treesitter_ensure_installed = { "dockerfile", "git_config", "jsdoc", "make", "toml", "vimdoc", "java" }
-
 ---@type LazySpec
 return {
   {
     "nvim-treesitter/nvim-treesitter",
     optional = true,
-    opts = function(_, opts)
-      opts = vim.tbl_deep_extend("keep", opts or {}, { ensure_installed = {} })
-      vim.list_extend(opts.ensure_installed, treesitter_ensure_installed)
-      return opts
-    end,
+    opts = {
+      ensure_installed = { "dockerfile", "git_config", "jsdoc", "make", "toml", "vimdoc", "java" },
+    },
   },
   {
     "williamboman/mason.nvim",
     optional = true,
-    opts = function(_, opts)
-      opts = vim.tbl_deep_extend("keep", opts or {}, { ensure_installed = {} })
-      vim.list_extend(opts.ensure_installed, mason_ensure_installed)
-      return opts
-    end,
+    opts = {
+      ensure_installed = flatten({
+        { "cspell", "eslint-lsp", "eslint_d", "prettier" },
+        { "shellcheck", "vint", "gitlint" },
+      }),
+    },
   },
   {
     "mfussenegger/nvim-lint",
