@@ -28,6 +28,7 @@ return {
     ---@type table<string, string[]>
     linters_by_ft = {
       fish = { "fish" },
+      ["*"] = { "cspell" },
     },
     -- extension to easily override linter options or add custom linters.
     ---@type table<string,Linter|fun():Linter>
