@@ -1,4 +1,5 @@
 local notifications = require("utils.notifications")
+local ignored_filetypes = require("consts").ignored_filetypes
 local function debounce(ms, fn)
   fn = vim.schedule_wrap(fn)
   local timer -- don't initialize the timer until first call
@@ -55,11 +56,15 @@ return {
     lint.linters_by_ft = opts.linters_by_ft
 
     local function dolint()
+      local ft = vim.bo.filetype
+      if not vim.bo.modifiable then return end -- Don't lint if buffer is not modifiable
+      if not ft or ft == "" then return end
+      if vim.tbl_contains(ignored_filetypes, ft) then return end -- Ignored filetypes, never lint
       -- Use nvim-lint's logic first:
       -- * checks if linters exist for the full filetype first
       -- * otherwise will split filetype by "." and add all those linters
       -- * this differs from conform.nvim which only uses the first filetype that has a formatter
-      local names = lint._resolve_linter_by_ft(vim.bo.filetype)
+      local names = lint._resolve_linter_by_ft(ft)
 
       -- Add fallback linters.
       if #names == 0 then vim.list_extend(names, lint.linters_by_ft["_"] or {}) end
