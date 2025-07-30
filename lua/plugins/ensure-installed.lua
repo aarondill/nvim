@@ -12,10 +12,7 @@ return {
     "williamboman/mason.nvim",
     optional = true,
     opts = {
-      ensure_installed = flatten({
-        { "cspell", "eslint-lsp", "eslint_d", "prettier" },
-        { "shellcheck", "vint", "gitlint" },
-      }),
+      ensure_installed = { "cspell", "prettier", "shellcheck", "vint", "gitlint" },
     },
   },
   {

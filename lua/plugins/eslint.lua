@@ -40,9 +40,10 @@ vim.lsp.config("eslint", { ---@type vim.lsp.Config
   },
 })
 
----@type LazySpec
 return {
-      },
-    },
+  "williamboman/mason.nvim",
+  optional = true,
+  opts = {
+    ensure_installed = { "eslint-lsp" },
   },
 }
