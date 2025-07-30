@@ -54,7 +54,7 @@ end
 function M.formatter(opts)
   ---@type Formatter
   local ret = {
-    name = "Organize Imports",
+    name = "Organize Imports (LSP)",
     primary = false,
     priority = 3000, -- This should run before other formatters (since it messes up whitespace)
     format = M.organize_imports,
