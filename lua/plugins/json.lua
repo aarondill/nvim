@@ -1,3 +1,19 @@
+---@type vim.lsp.Config
+local o = {
+  before_init = function(params, config)
+    vim.tbl_deep_extend("keep", config, { settings = { json = { schemas = {} } } })
+    config.settings.json.schemas =
+      vim.list_extend(config.settings.json.schemas or {}, require("schemastore").json.schemas())
+  end,
+  settings = {
+    json = {
+      format = { enable = true },
+      validate = { enable = true },
+    },
+  },
+}
+vim.lsp.config("jsonls", o)
+
 ---@type LazySpec
 return {
   { -- add json to treesitter
@@ -9,19 +25,5 @@ return {
   { -- yaml schema support
     "b0o/SchemaStore.nvim",
     version = false,
-  },
-  { -- correctly setup lspconfig
-    "neovim/nvim-lspconfig",
-    opts = {
-      servers = { -- make sure mason installs the server
-        jsonls = {
-          on_new_config = function(new_config) -- lazy-load schemastore when needed
-            new_config.settings.json.schemas = new_config.settings.json.schemas or {}
-            vim.list_extend(new_config.settings.json.schemas, require("schemastore").json.schemas())
-          end,
-          settings = { json = { format = { enable = true }, validate = { enable = true } } },
-        },
-      },
-    },
   },
 }
