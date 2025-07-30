@@ -26,6 +26,11 @@ end
 return {
   "nvim-telescope/telescope.nvim",
   cmd = "Telescope",
+  init = function()
+    if vim.fn.argc() == 0 then -- if no args, then open the find_files picker
+      vim.defer_fn(t.telescope("find_files"), 0)
+    end
+  end,
   version = false, -- telescope did only one release, so use HEAD for now
   dependencies = {
     {
