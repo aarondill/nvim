@@ -6,8 +6,8 @@ local root = require("utils.root")
 local function on_rename(from, to)
   local clients = vim.lsp.get_clients()
   for _, client in ipairs(clients) do
-    if client.supports_method("workspace/willRenameFiles") then
-      local resp = client.request_sync("workspace/willRenameFiles", {
+    if client:supports_method("workspace/willRenameFiles") then
+      local resp = client:request_sync("workspace/willRenameFiles", {
         files = {
           {
             oldUri = vim.uri_from_fname(from),

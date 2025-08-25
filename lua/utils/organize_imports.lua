@@ -21,7 +21,7 @@ local function get_clients(bufnr, force)
   local clients = vim.lsp.get_clients({ bufnr = bufnr })
   -- This client does not support the workspace/executeCommand method
   local supported = vim.tbl_filter(
-    function(client) return client.supports_method("workspace/executeCommand", bufnr) end,
+    function(client) return client:supports_method("workspace/executeCommand", bufnr) end,
     clients
   )
   if force then return supported end
