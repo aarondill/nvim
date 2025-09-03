@@ -53,7 +53,7 @@ return {
   -- to select the text inside, change or modify the surrounding characters,
   -- and more.
   {
-    "echasnovski/mini.surround",
+    "nvim-mini/mini.surround",
     keys = function(_, keys) ---@param keys LazyKeysSpec[]
       -- Populate the keys based on the user's options
       local plugin = require("lazy.core.config").spec.plugins["mini.surround"]
@@ -95,7 +95,7 @@ return {
   },
   ---- auto pairs
   -- {
-  --   "echasnovski/mini.pairs",
+  --   "nvim-mini/mini.pairs",
   --   event = "VeryLazy",
   --   opts = {},
   --   keys = {
@@ -112,7 +112,7 @@ return {
   -- },
   -- comments
   {
-    "echasnovski/mini.comment",
+    "nvim-mini/mini.comment",
     dependencies = {
       { "JoosepAlviste/nvim-ts-context-commentstring", opts = { enable_autocmd = false }, lazy = true },
     },
@@ -126,15 +126,15 @@ return {
     },
   },
   {
-    "echasnovski/mini.extra",
+    "nvim-mini/mini.extra",
     optional = true, -- Don't load unless it's being used as dependency
     config = true, -- call setup. Strickly speaking, this is not necessary; but the docs say to do it
   },
   -- Better text-objects
   {
-    "echasnovski/mini.ai",
+    "nvim-mini/mini.ai",
     event = "VeryLazy",
-    dependencies = "echasnovski/mini.extra",
+    dependencies = "nvim-mini/mini.extra",
     opts = function()
       local ai = require("mini.ai")
       local gen_ai_spec = require("mini.extra").gen_ai_spec

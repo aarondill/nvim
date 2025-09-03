@@ -12,6 +12,6 @@ return {
     "MunifTanjim/nui.nvim",
     -- "nvim-tree/nvim-web-devicons",
     --Webdevicons is replaced by mini.icons
-    "echasnovski/mini.icons",
+    "nvim-mini/mini.icons",
   },
 }

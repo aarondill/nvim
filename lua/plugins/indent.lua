@@ -17,7 +17,7 @@ return {
     main = "ibl",
   },
   { -- highligh current scope
-    "echasnovski/mini.indentscope",
+    "nvim-mini/mini.indentscope",
     version = false,
     event = "LazyFile",
     opts = {

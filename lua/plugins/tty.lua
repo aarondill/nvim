@@ -6,7 +6,7 @@ if not is_tty() then return {} end
 return {
 
   {
-    "echasnovski/mini.icons",
+    "nvim-mini/mini.icons",
     opts = { style = "ascii" },
   },
   {
