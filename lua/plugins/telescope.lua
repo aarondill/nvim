@@ -1,4 +1,4 @@
-local t = require("utils.telescope")
+local t = require("utils").telescope
 
 ---@param name string
 ---@param fn fun(name:string)
@@ -19,7 +19,7 @@ local function lazy_action(m)
   return function(...) return require("telescope.actions")[m](...) end
 end
 local function vbuiltin(m)
-  return function() require("telescope.builtin")[m]({ default_text = require("utils.vtext")() }) end
+  return function() require("telescope.builtin")[m]({ default_text = require("utils").vtext() }) end
 end
 
 ---@type LazySpec
@@ -28,7 +28,7 @@ return {
   cmd = "Telescope",
   init = function()
     if vim.fn.argc() == 0 then -- if no args, then open the find_files picker
-      vim.defer_fn(t.telescope("find_files"), 0)
+      vim.defer_fn(t("find_files"), 0)
     end
   end,
   version = false, -- telescope did only one release, so use HEAD for now
@@ -44,11 +44,11 @@ return {
   },
   keys = function()
     local keys = {
-      { "<leader>/", t.telescope("live_grep"), desc = "Grep (root dir)" },
+      { "<leader>/", t("live_grep"), desc = "Grep (root dir)" },
       { "<leader>:", "<cmd>Telescope command_history<cr>", desc = "Command History" },
-      { "<leader><space>", t.telescope("find_files"), desc = "Find Files (root dir)" },
+      { "<leader><space>", t("find_files"), desc = "Find Files (root dir)" },
       -- find
-      { "<leader>ff", t.telescope("find_files"), desc = "Find Files (root dir)" },
+      { "<leader>ff", t("find_files"), desc = "Find Files (root dir)" },
       { "<leader>fb", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "Buffers" },
       { "<leader>fg", "<cmd>Telescope git_files<cr>", desc = "Find Files (git-files)" },
       { "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent" },
@@ -66,8 +66,8 @@ return {
       { "<leader>sM", vbuiltin("man_pages"), desc = "Man Pages", mode = "v" },
       { "<leader>sm", "<cmd>Telescope marks<cr>", desc = "Jump to Mark" },
       { "<leader>so", "<cmd>Telescope vim_options<cr>", desc = "Options" },
-      { "<leader>sw", t.telescope("grep_string", { word_match = "-w" }), desc = "Word (root dir)" },
-      { "<leader>sw", t.telescope("grep_string"), mode = "v", desc = "Selection (root dir)" },
+      { "<leader>sw", t("grep_string", { word_match = "-w" }), desc = "Word (root dir)" },
+      { "<leader>sw", t("grep_string"), mode = "v", desc = "Selection (root dir)" },
       { "<leader>sc", "<cmd>Telescope colorscheme enable_preview=true<cr>", desc = "Colorscheme with preview" },
     }
 

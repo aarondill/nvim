@@ -35,7 +35,7 @@ return {
       auto_install = true,
       highlight = { enable = true },
       indent = { enable = true },
-      ensure_installed = require("utils.flatten")(
+      ensure_installed = require("utils").flatten(
         { "bash", "c", "diff", "html", "javascript", "jsdoc", "json", "jsonc" },
         { "lua", "luadoc", "luap", "markdown", "markdown_inline", "python", "query", "regex", "toml" },
         { "tsx", "typescript", "vim", "vimdoc", "xml", "yaml" }

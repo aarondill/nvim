@@ -1,5 +1,4 @@
 local create_autocmd = require("utils.create_autocmd")
-local is_tty = require("utils.is_tty")
 local notifications = require("utils.notifications")
 local function call_or_colorscheme(colorscheme)
   if type(colorscheme) == "function" then return colorscheme() end
@@ -18,7 +17,7 @@ end
 local function load_colorscheme()
   ---@type fun()|string|(fun()|string)[]
   local colorscheme = { "tokyonight" }
-  if is_tty() then colorscheme = { "wildcharm", "pablo" } end
+  if require("utils").is_tty() then colorscheme = { "wildcharm", "pablo" } end
   local ok, err = set_colorscheme(colorscheme)
   if not ok then
     notifications.error("Could not load your colorscheme: " .. err)

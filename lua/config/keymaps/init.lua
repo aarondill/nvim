@@ -1,5 +1,4 @@
 local create_autocmd = require("utils.create_autocmd")
-local get_vtext = require("utils.vtext")
 local map = require("utils.map")
 local notifications = require("utils.notifications")
 local text = require("utils.text")
@@ -12,7 +11,7 @@ end
 ---@param input string
 local function line_not_empty(input) ---@return fun(): string?
   return function()
-    local vtext = get_vtext() or get_cursorline_contents()
+    local vtext = require("utils").vtext() or get_cursorline_contents()
     if not vtext then return end
     if not vtext:find("^%s*$") then return input end -- not empty
   end
@@ -191,7 +190,7 @@ map("x", "<F9>", "zf", "Create Fold")
 map("n", "<leader>ds", "<cmd>DiffSaved<cr>", "Show the [d]iff with last [s]ave")
 
 map("v", "<leader>rr", function()
-  local t = get_vtext()
+  local t = require("utils").vtext()
   assert(t, "No visual selection")
   return [[:<C-u>%s/\V]] .. vim.fn.escape(t, "/\\") .. "/"
 end, { desc = "open :%s// with selection", expr = true })
@@ -226,8 +225,8 @@ map("n", "<Leader>cc", "<Cmd>cd! %:h<CR>", "[c]d to [c]urrent buffer path")
 map("n", "<Leader>..", "<Cmd>cd! ..<CR>", "cd up a level [..]")
 
 -- Edit closest
-map("n", "<Leader>erm", function() require("utils.edit_closest")("README.md") end, "[E]dit closest [R]EAD[M]E.md")
-map("n", "<Leader>epj", function() require("utils.edit_closest")("package.json") end, "[E]dit closest [p]ackage.[j]son")
+map("n", "<Leader>erm", function() require("utils").edit_closest("README.md") end, "[E]dit closest [R]EAD[M]E.md")
+map("n", "<Leader>epj", function() require("utils").edit_closest("package.json") end, "[E]dit closest [p]ackage.[j]son")
 
 create_autocmd({ "FileType" }, function(ev)
   map("n", "o", function()

@@ -14,7 +14,7 @@ return {
     {
       "gf",
       function()
-        local cursor_file = require("utils.vtext")() or vim.fn.expand("<cfile>")
+        local cursor_file = require("utils").vtext() or vim.fn.expand("<cfile>")
         if not cursor_file:match("^https?://") then return "gf" end
         -- Found a url. Use gx to open it!
         return "gx"

@@ -1,4 +1,4 @@
-local cmd = require("utils.flatten")(
+local cmd = require("utils").flatten(
   { "GitBlameOpenCommitURL", "GitBlameToggle", "GitBlameEnable", "GitBlameDisable" },
   { "GitBlameCopySHA", "GitBlameCopyCommitURL", "GitBlameOpenFileURL", "GitBlameCopyFileURL" }
 )

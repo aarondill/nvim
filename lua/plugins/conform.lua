@@ -1,5 +1,5 @@
 ---Taken from `prettier -h`
-local prettier_parsers = require("utils.flatten")(
+local prettier_parsers = require("utils").flatten(
   { "flow", "babel", "babel-flow", "babel-ts", "typescript", "acorn", "espree", "meriyah", "css", "less" },
   { "scss", "json", "json5", "jsonc", "json-stringify", "graphql", "markdown", "mdx" },
   { "vue", "yaml", "glimmer", "html", "angular", "lwc" }
@@ -14,6 +14,15 @@ local prettier_ft_overrides = {
 
 do ---@module "conform"
   local _ = nil
+end
+
+---@return {size: integer, tabs: boolean}
+local function get_indent(buf) ---@param buf integer?
+  local expandtab = vim.api.nvim_get_option_value("expandtab", { buf = buf }) ---@type boolean
+  local shiftwidth = vim.api.nvim_get_option_value("shiftwidth", { buf = buf }) ---@type integer
+
+  if not expandtab or shiftwidth == 0 then return { size = 1, tabs = true } end -- If using tab indentation, use tabs
+  return { size = shiftwidth, tabs = false } -- Use spaces, according to the current settings
 end
 
 ---@type LazySpec
@@ -37,8 +46,7 @@ return {
       ---@type conform.FormatterConfigOverride
       stylua = {
         prepend_args = function(_self, ctx)
-          local bufutils = require("utils.buf")
-          local i = bufutils.get_indent(ctx.buf)
+          local i = get_indent(ctx.buf)
           if i.tabs then return { "--indent-type", "Tabs" } end
           return {
             "--indent-width",
@@ -53,8 +61,7 @@ return {
       ---@type conform.FormatterConfigOverride
       shfmt = {
         prepend_args = function(_self, ctx)
-          local bufutils = require("utils.buf")
-          local i = bufutils.get_indent(ctx.buf)
+          local i = get_indent(ctx.buf)
           return { "-i", i.tabs and 0 or i.size }
         end,
       },

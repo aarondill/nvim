@@ -1,4 +1,3 @@
-local is_tty = require("utils.is_tty")
 local close = { "n", "q", "<cmd>DiffviewClose<cr>", { desc = "Close the diffview" } }
 ---@type LazySpec
 return {
@@ -17,7 +16,7 @@ return {
     "DiffviewRefresh",
   },
   opts = {
-    use_icons = not is_tty(),
+    use_icons = not require("utils").is_tty(),
     keymaps = {
       file_panel = { close },
       view = { close },

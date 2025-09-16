@@ -1,4 +1,4 @@
-local t = require("utils.telescope")
+local t = require("utils").telescope
 math.randomseed(os.time())
 for _ = 1, 10 do
   math.random()
@@ -26,7 +26,7 @@ return {
         header = header,
         center = {
           {
-            action = t.telescope("find_files"),
+            action = t("find_files"),
             desc = " Find file",
             icon = " ",
             key = "f",
@@ -38,13 +38,13 @@ return {
             key = "n",
           },
           {
-            action = "Telescope oldfiles",
+            action = t("oldfiles"),
             desc = " Recent files",
             icon = " ",
             key = "r",
           },
           {
-            action = "Telescope live_grep",
+            action = t("live_grep"),
             desc = " Find text",
             icon = " ",
             key = "g",

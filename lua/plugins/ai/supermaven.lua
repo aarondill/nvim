@@ -1,4 +1,3 @@
-local flatten = require("utils.flatten")
 ---@type LazySpec
 return {
   "supermaven-inc/supermaven-nvim",
@@ -13,7 +12,7 @@ return {
     require("supermaven-nvim").setup(opts)
     require = r
   end,
-  cmd = flatten({
+  cmd = require("utils").flatten({
     { "SupermavenUseFree", "SupermavenLogout", "SupermavenUsePro" },
     { "SupermavenStart", "SupermavenStop", "SupermavenRestart", "SupermavenStatus" },
   }),

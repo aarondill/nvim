@@ -1,6 +1,5 @@
 local consts = require("consts")
 local create_autocmd = require("utils.create_autocmd")
-local flatten = require("utils.flatten")
 local h = require("plugins.java.hierarchy")
 
 local cache = vim.fn.stdpath("cache")
@@ -51,7 +50,7 @@ return {
         desc = "Show Class Hierarchy (subtypes)",
       },
     },
-    cmd = flatten(
+    cmd = require("utils").flatten(
       { "JdtBytecode", "JdtCompile", "JdtJol", "JdtJshell", "JdtRestart" },
       { "JdtSetRuntime", "JdtShowLogs", "JdtShowMavenActiveProfiles" },
       { "JdtUpdateConfig", "JdtUpdateMavenActiveProfiles", "JdtWipeDataAndRestart" }

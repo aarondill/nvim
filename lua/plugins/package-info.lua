@@ -1,5 +1,4 @@
 local create_autocmd = require("utils.create_autocmd")
-local is_tty = require("utils.is_tty")
 local function lazy_method(m)
   return function() return require("package-info")[m]() end
 end
@@ -8,7 +7,7 @@ return {
   {
     "vuki656/package-info.nvim",
     opts = {
-      icons = { enable = not is_tty() },
+      icons = { enable = not require("utils").is_tty() },
       hide_up_to_date = true, -- It hides up to date versions when displaying virtual text
       -- Can be `npm`, `yarn`, or `pnpm`. Used for `delete`, `install` etc...
       -- The plugin will try to auto-detect the package manager based on

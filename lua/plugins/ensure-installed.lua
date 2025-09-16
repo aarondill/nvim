@@ -1,4 +1,3 @@
-local flatten = require("utils.flatten")
 ---@type LazySpec
 return {
   {

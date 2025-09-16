@@ -99,7 +99,7 @@ g.loaded_perl_provider = 0
 g.loaded_ruby_provider = 0
 
 ---Apparetly the tty has issues when the title is set. The screen goes blank.
-o.title = not require("utils.is_tty")()
+o.title = not require("utils").is_tty()
 o.titlestring = "nvim: %t %a%r%m"
 -- HACK: This is a reasonable title to set, but we should be able to restore the previous.
 o.titleold = vim.uv.os_get_passwd().username .. ": " .. vim.fn.fnamemodify(vim.uv.cwd() or "", ":~") ---@diagnostic disable-line: assign-type-mismatch
