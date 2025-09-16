@@ -35,7 +35,7 @@ return {
       create_autocmd("LspAttach", LspAttach)
 
       --- Diagnostics
-      local icons = require("config.icons").lazyvim.icons
+      local icons = require("config.icons")
       local signs = {
         DiagnosticSignError = icons.diagnostics.Error,
         DiagnosticSignWarn = icons.diagnostics.Warn,

@@ -9,7 +9,7 @@ return {
       diagnostics = "nvim_lsp",
       always_show_bufferline = false,
       diagnostics_indicator = function(_, _, diag)
-        local icons = require("config.icons").lazyvim.icons.diagnostics
+        local icons = require("config.icons").diagnostics
         local ret = {}
         if diag.error then ret[#ret + 1] = icons.Error .. diag.error end
         if diag.warning then ret[#ret + 1] = icons.Warn .. diag.warning end

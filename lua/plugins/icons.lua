@@ -21,5 +21,4 @@ return {
   { "lewis6991/gitsigns.nvim", opts = icons.gitsigns, optional = true },
   { "nvim-telescope/telescope.nvim", opts = icons.telescope, optional = true },
   { "folke/noice.nvim", opts = icons.noice, optional = true },
-  { "LazyVim/LazyVim", opts = icons.lazyvim, optional = true },
 }

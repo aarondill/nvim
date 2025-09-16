@@ -69,7 +69,7 @@ return {
         sources = cmp.config.sources({ { name = "nvim_lsp" }, { name = "path" } }, { { name = "buffer" } }),
         formatting = { ---@type cmp.FormattingConfig|{}
           format = function(_, item)
-            local icons = require("config.icons").lazyvim.icons.kinds
+            local icons = require("config.icons").kinds
             if icons[item.kind] then item.kind = icons[item.kind] .. item.kind end
             return item
           end,
