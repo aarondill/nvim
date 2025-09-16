@@ -13,7 +13,7 @@ return { ---@type LazySpec
       "vimls",
       "rust_analyzer",
       -- "tailwindcss",
-      "ltex",
+      "ltex_plus",
     },
   },
 }

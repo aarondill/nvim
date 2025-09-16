@@ -56,7 +56,7 @@ if false then
     once = true,
   })
   --- Override the ltex language to spanish (Needs ngrams downloaded!)
-  vim.lsp.config("ltex", { ---@type vim.lsp.Config
+  vim.lsp.config("ltex_plus", { ---@type vim.lsp.Config
     settings = {
       before_init = function(params, config)
         local d = config.settings.ltex.languageModel
