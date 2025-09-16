@@ -11,6 +11,9 @@ return { ---@type LazySpec
       "taplo",
       "ts_ls",
       "vimls",
+      "rust_analyzer",
+      -- "tailwindcss",
+      "ltex",
     },
   },
 }

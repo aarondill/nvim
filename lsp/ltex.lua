@@ -43,7 +43,8 @@ do
   if ok then dictionary_en_us = lines end
 end
 
-if false then ---Example .lazy.lua for spanish workspace
+---- Example .lazy.lua for spanish workspace ----
+if false then
   --- This file loads before config/options.lua, so we need to wait to do this
   vim.api.nvim_create_autocmd("User", {
     ---Neovim doesn´t come with spanish dictionaries, so just disable spellchecking
@@ -64,10 +65,11 @@ if false then ---Example .lazy.lua for spanish workspace
     },
   })
 end
+---- End example .lazy.lua for spanish workspace ----
 
 download_ltex_ngram() -- On startup, download the language model
 
-vim.lsp.config("ltex", { ---@type vim.lsp.Config
+return { ---@type vim.lsp.Config
   filetypes = { "latex", "tex", "bib", "markdown", "gitcommit", "text" }, -- No more HTML
   settings = {
     ltex = {
@@ -77,10 +79,4 @@ vim.lsp.config("ltex", { ---@type vim.lsp.Config
       dictionary = { ["en-US"] = dictionary_en_us },
     },
   },
-})
-
-return { ---@type LazySpec
-  "williamboman/mason-lspconfig.nvim",
-  optional = true,
-  opts = { ensure_installed = { "ltex" } },
 }

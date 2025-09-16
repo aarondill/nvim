@@ -1,4 +1,4 @@
-vim.lsp.config("tailwindcss", { ---@type vim.lsp.Config
+return { ---@type vim.lsp.Config
   settings = {
     scss = { validate = false },
     editor = {
@@ -21,10 +21,4 @@ vim.lsp.config("tailwindcss", { ---@type vim.lsp.Config
       },
     },
   },
-})
-
-return { ---@type LazySpec
-  "williamboman/mason-lspconfig.nvim",
-  optional = true,
-  -- opts = { ensure_installed = { "tailwindcss" } },
 }

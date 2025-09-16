@@ -1,4 +1,4 @@
-vim.lsp.config("lua_ls", { ---@type vim.lsp.Config
+return { ---@type vim.lsp.Config
   settings = {
     Lua = {
       workspace = { checkThirdParty = false },
@@ -9,9 +9,4 @@ vim.lsp.config("lua_ls", { ---@type vim.lsp.Config
       },
     },
   },
-})
-return { ---@type LazySpec
-  "williamboman/mason-lspconfig.nvim",
-  optional = true,
-  opts = { ensure_installed = { "lua_ls" } },
 }
