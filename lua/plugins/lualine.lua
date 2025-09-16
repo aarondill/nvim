@@ -78,7 +78,7 @@ return {
         lualine_a = { "mode" },
         lualine_b = { "branch" }, -- Tabnine is added here later
         lualine_c = {
-          { "diagnostics", symbols = icons.lualine.diagnostics_symbols },
+          { "diagnostics", symbols = icons.diagnostics },
           {
             "filename",
             path = 1,

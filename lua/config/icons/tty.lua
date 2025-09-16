@@ -12,7 +12,6 @@ return {
     },
     -- Note: This can't be passed to lualine.opts because of *_symbols
     filename_symbols = { modified = " M ", readonly = "RO ", unnamed = "" },
-    diagnostics_symbols = { error = "X ", warn = "! ", hint = "> ", info = "I " },
   },
   ["package-info"] = {
     icons = {
@@ -62,7 +61,7 @@ return {
       untracked = { text = "?" },
     },
   },
-  diagnostics = { Error = "X ", Warn = "! ", Hint = "> ", Info = "I " },
+  diagnostics = { error = "X ", warn = "! ", hint = "> ", info = "I " },
   kinds = {
     Array = "[] ",
     Boolean = "",

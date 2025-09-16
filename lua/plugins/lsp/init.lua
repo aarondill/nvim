@@ -37,10 +37,10 @@ return {
       --- Diagnostics
       local icons = require("config.icons")
       local signs = {
-        DiagnosticSignError = icons.diagnostics.Error,
-        DiagnosticSignWarn = icons.diagnostics.Warn,
-        DiagnosticSignHint = icons.diagnostics.Hint,
-        DiagnosticSignInfo = icons.diagnostics.Info,
+        DiagnosticSignError = icons.diagnostics.error,
+        DiagnosticSignWarn = icons.diagnostics.warn,
+        DiagnosticSignHint = icons.diagnostics.hint,
+        DiagnosticSignInfo = icons.diagnostics.info,
       }
       for name, text in pairs(signs) do
         vim.fn.sign_define(name, { texthl = name, text = text, numhl = "" })

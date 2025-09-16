@@ -11,8 +11,8 @@ return {
       diagnostics_indicator = function(_, _, diag)
         local icons = require("config.icons").diagnostics
         local ret = {}
-        if diag.error then ret[#ret + 1] = icons.Error .. diag.error end
-        if diag.warning then ret[#ret + 1] = icons.Warn .. diag.warning end
+        if diag.error then ret[#ret + 1] = icons.error .. diag.error end
+        if diag.warning then ret[#ret + 1] = icons.warn .. diag.warning end
         return table.concat(ret, " ")
       end,
       offsets = {

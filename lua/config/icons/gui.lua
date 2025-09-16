@@ -47,9 +47,8 @@ local M = {
     },
     -- Note: This can't be passed to lualine.opts because of *_symbols
     filename_symbols = { modified = "  ", readonly = "󰌾 ", unnamed = "" },
-    diagnostics_symbols = { error = " ", hint = " ", info = " ", warn = " " },
   },
-  diagnostics = { Error = " ", Hint = " ", Info = " ", Warn = " " },
+  diagnostics = { error = " ", hint = " ", info = " ", warn = " " },
   kinds = {
     Array = " ",
     Boolean = " ",

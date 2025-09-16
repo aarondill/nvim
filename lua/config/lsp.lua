@@ -1,18 +1,18 @@
+local icons = require("config.icons").diagnostics
 vim.diagnostic.config({
   underline = true,
   update_in_insert = false,
   virtual_text = {
     spacing = 4,
     source = "if_many",
-    prefix = "●",
-    -- -- Return the icon corresponding to the severity
-    -- prefix = vim.fn.has("nvim-0.10.0") == 0 and "●" or function(diagnostic) ---@param diagnostic vim.Diagnostic
-    --   local icons = require("config.icons").diagnostics
-    --   local severity_str = vim.diagnostic.severity[diagnostic.severity]
-    --   for d, icon in pairs(icons) do
-    --     if severity_str == d:upper() then return icon end
-    --   end
-    -- end,
+    -- Return the icon corresponding to the severity
+    prefix = function(diagnostic) ---@param diagnostic vim.Diagnostic
+      local severity_str = vim.diagnostic.severity[diagnostic.severity]
+      for d, icon in pairs(icons) do
+        if severity_str == d:upper() then return icon end
+      end
+      return "●"
+    end,
   },
   float = {
     prefix = "",
@@ -26,10 +26,10 @@ vim.diagnostic.config({
   severity_sort = true,
   signs = {
     text = {
-      [vim.diagnostic.severity.ERROR] = require("config.icons").diagnostics.Error,
-      [vim.diagnostic.severity.WARN] = require("config.icons").diagnostics.Warn,
-      [vim.diagnostic.severity.HINT] = require("config.icons").diagnostics.Hint,
-      [vim.diagnostic.severity.INFO] = require("config.icons").diagnostics.Info,
+      [vim.diagnostic.severity.ERROR] = icons.error,
+      [vim.diagnostic.severity.WARN] = icons.warn,
+      [vim.diagnostic.severity.HINT] = icons.hint,
+      [vim.diagnostic.severity.INFO] = icons.info,
     },
   },
 })
