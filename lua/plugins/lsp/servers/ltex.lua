@@ -60,11 +60,7 @@ if false then ---Example .lazy.lua for spanish workspace
           vim.notify("Warning: Spanish language model not found", vim.log.levels.WARN)
         end
       end,
-      ltex = {
-        language = "es",
-        languageModel = ngrams_dir,
-        dictionary = { ["en-US"] = dictionary_en_us },
-      },
+      ltex = { language = "es" },
     },
   })
 end
