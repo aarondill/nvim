@@ -303,6 +303,8 @@ map("c", "<c-e>", "<End>", "End of line")
 --- Enter opens command line
 map({ "n", "v" }, "<CR>", ":", "Enter command line")
 
+map("n", "<leader>sf", "<cmd>FormatInfo<cr>", "[S]how [F]ormatter Info")
+
 --- Require the tab keymaps
 local this = ...
 require("lazy.core.util").lsmod(this, function(mod)

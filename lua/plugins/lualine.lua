@@ -46,18 +46,6 @@ local function get_current_lsp()
     if source then table.insert(active_clients, source) end
   end
 
-  -- Only if it's been required before
-  local lazyformat = package.loaded["lazyvim.util.format"] ~= nil and require("lazyvim.util.format") or nil
-  if lazyformat and lazyformat.enabled() then
-    local formatters = lazyformat.resolve()
-    for _, formatter in ipairs(formatters) do
-      if formatter.active and #formatter.resolved > 0 then
-        local s = ("%s[%s]"):format(formatter.name, table.concat(formatter.resolved, ","))
-        table.insert(active_clients, s)
-      end
-    end
-  end
-
   if package.loaded["lint"] then
     local lint = require("lint")
     local formatters = lint._resolve_linter_by_ft(buf_ft)
