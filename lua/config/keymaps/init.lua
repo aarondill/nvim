@@ -251,7 +251,7 @@ end, "Yank the filename of current buffer")
 
 map("n", "<Leader>yp", function()
   local res = vim.fn.expand("%:p")
-  res = res == "" and vim.loop.cwd() or res
+  res = res == "" and vim.uv.cwd() or res
   if not res or res == "" then return end
   vim.fn.setreg("+", res)
   return notifications.info(res, { title = "yanked filepath" })

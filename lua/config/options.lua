@@ -102,7 +102,7 @@ g.loaded_ruby_provider = 0
 o.title = not require("utils.is_tty")()
 o.titlestring = "nvim: %t %a%r%m"
 -- HACK: This is a reasonable title to set, but we should be able to restore the previous.
-o.titleold = vim.loop.os_get_passwd().username .. ": " .. vim.fn.fnamemodify(vim.loop.cwd() or "", ":~") ---@diagnostic disable-line: assign-type-mismatch
+o.titleold = vim.uv.os_get_passwd().username .. ": " .. vim.fn.fnamemodify(vim.uv.cwd() or "", ":~") ---@diagnostic disable-line: assign-type-mismatch
 
 --- Disable checking for capital letters at start of sentance (this is frustrating in git commit messages)
 o.spellcapcheck = ""

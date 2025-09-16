@@ -33,7 +33,7 @@ return {
     },
     {
       "<leader>E",
-      function() require("neo-tree.command").execute({ toggle = true, dir = vim.loop.cwd() }) end,
+      function() require("neo-tree.command").execute({ toggle = true, dir = vim.uv.cwd() }) end,
       desc = "Explorer NeoTree (cwd)",
     },
     {
@@ -55,7 +55,7 @@ return {
     if vim.fn.argc(-1) == 1 then -- if only one argument
       local dir = assert(vim.fn.argv(0))
       assert(type(dir) == "string")
-      local stat = vim.loop.fs_stat(dir)
+      local stat = vim.uv.fs_stat(dir)
       if not stat or stat.type ~= "directory" then return end
       require("neo-tree") -- load neotree to take over netrw
     end

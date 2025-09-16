@@ -12,7 +12,9 @@ end
 package.path = package.path:gsub("^%./%?%.lua;", "")
 package.cpath = package.cpath:gsub("^%./%?%.so;", "")
 
-require("future") -- Fowards compatability
+-- Fowards compatability:
+table.pack = table.pack or function(...) return { n = select("#", ...), ... } end
+table.unpack = table.unpack or unpack
 
 --- Wait until after config is loaded before starting notification timer
 local _start_notifs_timer ---@type function?
@@ -54,7 +56,7 @@ require("lazy.core.util").lsmod("config", require)
 
 --- Handle regenerating helptags in new VIMRUNTIMEs
 local rt = os.getenv("VIMRUNTIME")
-if rt and vim.loop.fs_access(rt, "W") then
+if rt and vim.uv.fs_access(rt, "W") then
   --- Regen the helptags
   vim.cmd.helptags(vim.fs.joinpath(rt, "doc"))
 end

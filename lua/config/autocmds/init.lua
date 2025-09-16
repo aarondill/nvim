@@ -59,7 +59,7 @@ create_autocmd({ "FileType" }, "setlocal conceallevel=0", { group = augroup, pat
 -- Auto create dir when saving a file, in case some intermediate directory does not exist
 create_autocmd({ "BufWritePre" }, function(event)
   if event.match:match("^%w%w+://") then return end
-  local file = vim.loop.fs_realpath(event.match) or event.match
+  local file = vim.uv.fs_realpath(event.match) or event.match
   vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
 end, "Create directories while saving", { group = augroup })
 

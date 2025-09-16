@@ -1,6 +1,6 @@
 local notifications = require("utils.notifications")
 
-local is_win = vim.loop.os_uname().sysname:find("Windows") ~= nil
+local is_win = vim.uv.os_uname().sysname:find("Windows") ~= nil
 
 ---@overload fun(): string
 local M = setmetatable({}, { __call = function(m) return m.get() end })
@@ -36,11 +36,11 @@ local function realpath(path, must_exist)
   local rpath
   if must_exist == false then -- Only parent must exist, so join the realpath(dirname(p))/basename(p)
     local parent = vim.fs.dirname(path)
-    local preal = vim.loop.fs_realpath(parent)
+    local preal = vim.uv.fs_realpath(parent)
     if not preal then return nil end
     rpath = vim.fs.joinpath(preal, vim.fs.basename(path))
   else
-    rpath = vim.loop.fs_realpath(path)
+    rpath = vim.uv.fs_realpath(path)
   end
   if not rpath then return nil end
   return vim.fs.normalize(rpath, { expand_env = false })
@@ -49,10 +49,10 @@ end
 ---@return string?
 local function bufpath(buf) return realpath(vim.api.nvim_buf_get_name(assert(buf))) end
 
-function M.detectors.cwd() return vim.loop.cwd() end
+function M.detectors.cwd() return vim.uv.cwd() end
 
 function M.detectors.gitdir(buf)
-  local bdir = vim.fs.dirname(bufpath(buf)) or vim.loop.cwd()
+  local bdir = vim.fs.dirname(bufpath(buf)) or vim.uv.cwd()
   local o = vim.system({ "git", "rev-parse", "--show-toplevel" }, { cwd = bdir, stderr = false, timeout = 1000 }):wait()
   if o.code ~= 0 then return nil end
   return o.stdout
@@ -66,7 +66,7 @@ function M.detectors.tmpsh(buf)
   --- This must be a directory.
   local rpath = realpath(vim.env.TMPSH_ROOT)
   if not rpath then return nil end
-  local bpath = bufpath(buf) or (vim.loop.cwd() .. "/")
+  local bpath = bufpath(buf) or (vim.uv.cwd() .. "/")
   -- Add a trailing slash to make sure that startswith() works. realpath() returns a path without a trailing slash.
   return vim.startswith(bpath, rpath .. "/") and rpath or nil
 end
@@ -93,7 +93,7 @@ end
 ---@return string?
 function M.pattern(buf, patterns)
   patterns = type(patterns) == "string" and { patterns } or patterns
-  local path = bufpath(buf) or vim.loop.cwd()
+  local path = bufpath(buf) or vim.uv.cwd()
   local pattern = vim.fs.find(patterns, { path = path, upward = true })[1]
   if not pattern then return nil end
   return vim.fs.dirname(pattern)
@@ -165,7 +165,7 @@ function M.get(opts)
   local ret = M.cache[buf]
   if not ret then
     local roots = M.detect({ all = false, buf = buf })
-    ret = roots[1] and roots[1].paths[1] or vim.loop.cwd()
+    ret = roots[1] and roots[1].paths[1] or vim.uv.cwd()
     M.cache[buf] = ret
   end
   if opts.normalize then return ret end

@@ -22,7 +22,7 @@ local function download_ltex_ngram()
   }
   for lang, url in pairs(urls) do
     --- Already downloaded
-    if vim.loop.fs_stat(vim.fs.joinpath(ngrams_dir, lang)) then return end
+    if vim.uv.fs_stat(vim.fs.joinpath(ngrams_dir, lang)) then return end
 
     vim.fn.mkdir(chachedir, "p")
     vim.fn.mkdir(ngrams_dir, "p")
@@ -60,7 +60,7 @@ if false then
     settings = {
       before_init = function(params, config)
         local d = config.settings.ltex.languageModel
-        if not d or not vim.loop.fs_stat(vim.fs.joinpath(d, "es")) then
+        if not d or not vim.uv.fs_stat(vim.fs.joinpath(d, "es")) then
           vim.notify("Warning: Spanish language model not found", vim.log.levels.WARN)
         end
       end,
