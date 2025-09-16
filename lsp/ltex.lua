@@ -10,7 +10,10 @@ local ngrams_dir = vim.fs.joinpath(chachedir, "ngrams")
 local thisdir = debug.getinfo(1, "S").source:match("@(.*)/")
 assert(thisdir, "Could not find thisdir")
 
+local has_run = false
 local function download_ltex_ngram()
+  if has_run then return end -- Only run once
+  has_run = true
   if not root_safe then return end -- Don't download into later inaccessible home
   ---Map of directories to urls
   local urls = {
