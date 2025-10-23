@@ -76,10 +76,11 @@ function M.detectors.lsp(buf)
   if not bpath then return nil end
   local roots = {} ---@type string[]
   -- only check workspace folders, since we're not interested in clients running in single file mode
-  for _, client in pairs(vim.lsp.get_clients({ bufnr = buf })) do
-    for _, ws in pairs(client.config.workspace_folders or {}) do
+  for _, client in ipairs(vim.lsp.get_clients({ bufnr = buf })) do
+    for _, ws in ipairs(client.config.workspace_folders or {}) do
       roots[#roots + 1] = vim.uri_to_fname(ws.uri)
     end
+    if client.config.root_dir then roots[#roots + 1] = client.config.root_dir end
   end
   return vim.tbl_filter(function(path)
     path = path and realpath(path)
