@@ -43,7 +43,7 @@ do -- delay notifications till vim.notify was replaced or after 500ms
   end) -- wait till vim.notify has been replaced
   _start_notifs_timer = function()
     if not timer then return end -- If this is called after the check has fired, then we're good
-    timer:start(500, 0, replay) -- or if it took more than 500ms, then something went wrong
+    timer:start(2000, 0, replay) -- or if it took more than 2 sec, then something went wrong
     _start_notifs_timer = nil -- only run this once/gc
   end
 end
