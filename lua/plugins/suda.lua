@@ -1,6 +1,6 @@
 ---@type LazySpec
 return {
-  "lambdalisue/suda.vim",
+  "lambdalisue/vim-suda",
   cond = vim.fn.executable(vim.g["suda#executable"] or "sudo") == 1,
   cmd = { "SudaRead", "SudaWrite" },
   -- init = function()
