@@ -3,6 +3,9 @@ math.randomseed(os.time())
 for _ = 1, 10 do
   math.random()
 end
+require("utils.create_autocmd")("StdinReadPre", function() -- don't open dashboard on reading from stdin
+  vim.g.read_from_stdin = 1
+end)
 ---@type LazySpec
 return {
   "nvimdev/dashboard-nvim",

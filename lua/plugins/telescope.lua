@@ -28,7 +28,14 @@ return {
   cmd = "Telescope",
   init = function()
     if vim.fn.argc() == 0 then -- if no args, then open the find_files picker
-      vim.defer_fn(t("find_files"), 0)
+      local read_from_stdin = false
+      require("utils.create_autocmd")("StdinReadPre", function()
+        read_from_stdin = true -- don't open treesitter on reading from stdin
+      end)
+      require("utils.create_autocmd")("VimEnter", function()
+        if read_from_stdin then return end
+        vim.defer_fn(t("find_files"), 0)
+      end)
     end
   end,
   version = false, -- telescope did only one release, so use HEAD for now
