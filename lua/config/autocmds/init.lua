@@ -32,6 +32,13 @@ create_autocmd({ "VimResized" }, function()
   vim.cmd("tabnext " .. current_tab)
 end, { group = augroup })
 
+create_autocmd("VimEnter", function()
+  vim
+    .iter(vim.api.nvim_list_bufs())
+    :filter(function(buf) return vim.api.nvim_buf_get_name(buf) == "" end)
+    :each(function(buf) vim.bo[buf].modified = false end)
+end, "Don't set modified on open files at enter (reading from stdin)", { group = augroup, once = true })
+
 -- go to last visited line when opening a buffer
 create_autocmd("BufReadPost", function(event)
   local exclude = { "gitcommit" }
