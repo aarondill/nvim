@@ -7,6 +7,9 @@ local o, g = vim.o, vim.g
 g.mapleader = vim.keycode("<Space>")
 g.maplocalleader = vim.keycode("<Space>")
 
+-- Leave me alone. Why is this a forced thing in nvim?
+g.markdown_recommended_style = 0
+
 -- Allows you to re-use the same window and switch from an unsaved buffer
 -- without saving it first. Also allows you to keep an undo history for
 -- multiple files when re-using the same window in this way. Vim will complain
