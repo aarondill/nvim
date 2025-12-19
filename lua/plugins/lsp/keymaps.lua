@@ -62,7 +62,6 @@ function M.apply(client, buffer)
 
   ---@type ({mode?:string[]|string,[1]: string|string[], [2]: string|(fun():any?), desc:string, cond: any})[]
   local keys = {
-    { "<leader>sl", "<cmd>LspInfo<cr>", desc = "[S]how [L]sp Info" },
     { "gd", telescope_builtin("lsp_definitions"), desc = "Goto Definition" },
     { "gD", vim.lsp.buf.declaration, desc = "Goto declaration" },
     { "gr", "<cmd>Telescope lsp_references<cr>", desc = "References" },

@@ -29,6 +29,9 @@ return {
       "mason.nvim",
       "mason-lspconfig.nvim",
     },
+    keys = {
+      { "<leader>sl", "<cmd>LspInfo<cr>", desc = "[S]how [L]sp Info" },
+    },
     config = function()
       require("utils.format").register(require("plugins.lsp.formatter").formatter())
       require("utils.format").register(require("utils.organize_imports").formatter())
