@@ -124,5 +124,5 @@ return {
       }
     end,
   },
-  { "justinsgithub/wezterm-types", lazy = true },
+  -- { "justinsgithub/wezterm-types", lazy = true },
 }
