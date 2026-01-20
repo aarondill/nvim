@@ -2,6 +2,13 @@ local create_autocmd = require("utils.create_autocmd")
 local notifications = require("utils.notifications")
 local root_safe = require("utils.root_safe")
 
+local git_version = vim.version.parse(vim.fn.system("git --version"):match("(%d+%.%d+)"), { strict = false })
+if not git_version then
+  notifications.error("Could not determine git version. Please ensure git is installed.")
+  return
+end
+local git_supports_partial = vim.version.ge(git_version, { 2, 19, 0 })
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
   if not root_safe then
@@ -9,7 +16,9 @@ if not vim.uv.fs_stat(lazypath) then
   end
   -- bootstrap lazy.nvim
   -- stylua: ignore
-  vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath })
+  local cmd = { "git", "clone", git_supports_partial and "--filter=blob:none" or nil, "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath }
+  cmd = vim.iter(cmd):filter(function(v) return v ~= nil end):totable()
+  vim.fn.system(cmd)
 end
 vim.o.runtimepath = table.concat({ vim.o.runtimepath, vim.env.LAZY or lazypath }, ",")
 
@@ -96,7 +105,7 @@ require("lazy").setup({
   git = {
     timeout = 120, -- kill processes that take more than 2 minutes
     url_format = "https://github.com/%s.git",
-    filter = true,
+    filter = git_supports_partial, -- Try to make it work with older git versions. Note, this is not directly supported, so it may break.
   },
   spec = {
     { import = "plugins" }, -- Import /lua/plugins
