@@ -103,6 +103,10 @@ require("lazy").setup({
     fallback = false, -- Fallback to git when local plugin doesn't exist
   },
   git = {
+    throttle = { -- throttle any ssh connection
+      enabled = os.getenv("SSH_TTY") ~= nil,
+      rate = 10,
+    },
     timeout = 120, -- kill processes that take more than 2 minutes
     url_format = "https://github.com/%s.git",
     filter = git_supports_partial, -- Try to make it work with older git versions. Note, this is not directly supported, so it may break.
