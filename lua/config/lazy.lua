@@ -105,7 +105,7 @@ require("lazy").setup({
   git = {
     throttle = { -- throttle any ssh connection
       enabled = os.getenv("SSH_TTY") ~= nil,
-      rate = 10,
+      rate = 6,
     },
     timeout = 120, -- kill processes that take more than 2 minutes
     url_format = "https://github.com/%s.git",
