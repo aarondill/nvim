@@ -19,9 +19,7 @@ return {
           update_names = true,
         },
         hex = {
-          enable = true,
-          rrggbbaa = true,
-          aarrggbb = true,
+          default = true,
         },
         css_fn = true,
       },
