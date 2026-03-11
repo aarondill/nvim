@@ -37,7 +37,9 @@ return {
   config = function(plugin, opts)
     vim.o.fillchars = [[eob: ,fold: ,foldopen:▼,foldsep: ,foldclose:>]]
     vim.o.foldcolumn = "1"
-    return require(plugin.main).setup(opts)
+    vim.o.foldmethod = "manual"
+    require(plugin.main).setup(opts)
+    vim.o.foldlevel = 4
   end,
   opts = {
     fold_virt_text_handler = handler,

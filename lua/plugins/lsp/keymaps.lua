@@ -12,6 +12,8 @@ end
 local function open_help(tag) return pcall(vim.cmd.help, tag) end
 ---open vim help docs if vim.api or vim.fn, otherwise lsp hover
 local function hover()
+  if require("ufo").peekFoldedLinesUnderCursor() then return end
+
   local ft = vim.bo.filetype
   if ft ~= "lua" and ft ~= "vim" then return vim.lsp.buf.hover() end
   local word
