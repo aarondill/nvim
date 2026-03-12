@@ -39,7 +39,7 @@ return {
     vim.o.foldcolumn = "1"
     vim.o.foldmethod = "manual"
     require(plugin.main).setup(opts)
-    vim.o.foldlevel = 4
+    vim.o.foldlevel = 99
   end,
   opts = {
     fold_virt_text_handler = handler,
