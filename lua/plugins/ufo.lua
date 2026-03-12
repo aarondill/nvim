@@ -36,7 +36,7 @@ return {
   main = "ufo",
   config = function(plugin, opts)
     vim.o.fillchars = [[eob: ,fold: ,foldopen:▼,foldsep: ,foldclose:>]]
-    vim.o.foldcolumn = "1"
+    vim.o.foldcolumn = "0"
     vim.o.foldmethod = "manual"
     require(plugin.main).setup(opts)
     vim.o.foldlevel = 99
