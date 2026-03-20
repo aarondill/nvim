@@ -271,11 +271,8 @@ map({ "n", "x" }, "\\", "@:", "Backslash redoes the last command")
 -- map("n", "<C-CR>", term(true), "Terminal (root dir)")
 -- map("n", "<C-;>", term(false), "Terminal (cwd dir)")
 
-map("x", "<C-/>", function()
-  -- If :Telescope command doesn't exist, call :grep instead
-  if vim.fn.exists(":Telescope") == 2 then return "<Cmd>Telescope grep_string<Cr>" end
-  return ":<C-u>grep <C-r><C-w>"
-end, "Grep for the selected string", { expr = true })
+--- Note: this gets overridden by treesitter config
+map("x", "<C-/>", ":<C-u>grep <C-r><C-w>", "Grep for the selected string")
 
 map("n", "<bs>", function()
   if vim.fn.getreg("#") == "" then return "<cmd>bn<cr>" end

@@ -73,9 +73,12 @@ return {
       { "<leader>sM", vbuiltin("man_pages"), desc = "Man Pages", mode = "v" },
       { "<leader>sm", "<cmd>Telescope marks<cr>", desc = "Jump to Mark" },
       { "<leader>so", "<cmd>Telescope vim_options<cr>", desc = "Options" },
+      { "<leader>sc", "<cmd>Telescope colorscheme enable_preview=true<cr>", desc = "Colorscheme with preview" },
       { "<leader>sw", t("grep_string", { word_match = "-w" }), desc = "Word (root dir)" },
       { "<leader>sw", t("grep_string"), mode = "v", desc = "Selection (root dir)" },
-      { "<leader>sc", "<cmd>Telescope colorscheme enable_preview=true<cr>", desc = "Colorscheme with preview" },
+      { "<leader>/", t("grep_string"), mode = "v", desc = "Selection (root dir)" },
+      { "<C-/>", t("grep_string", { word_match = "-w" }), desc = "Word (root dir)" },
+      { "<C-/>", t("grep_string"), mode = "v", desc = "Selection (root dir)" },
     }
 
     local has_trouble = require("lazy.core.config").plugins["trouble.nvim"]
