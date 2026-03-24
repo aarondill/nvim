@@ -7,6 +7,10 @@ return {
     foldtext = {
       disableOnFt = require("consts").ignored_filetypes,
     },
+    autoFold = {
+      enabled = true,
+      kinds = { "imports" }, ---@type lsp.FoldingRangeKind[]
+    },
   },
   init = function()
     vim.opt.foldlevel = 99
