@@ -102,6 +102,9 @@ require("lazy").setup({
     url_format = "https://github.com/%s.git",
     filter = true,
   },
+  rocks = {
+    enabled = false,
+  },
   spec = {
     { import = "plugins" }, -- Import /lua/plugins
   },
