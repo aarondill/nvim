@@ -9,7 +9,7 @@ return {
     build = (not jit.os:find("Windows"))
         and "echo 'NOTE: jsregexp is optional, so not a big deal if it fails to build'; make install_jsregexp"
       or nil,
-    dependencies = { "rafamadriz/friendly-snippets", "nvim-cmp" },
+    dependencies = { "rafamadriz/friendly-snippets" },
     opts = { history = true, delete_check_events = "TextChanged" },
     -- Note: <tab> in insert is handled in keymaps.lua
     keys = {
@@ -24,14 +24,6 @@ return {
   {
     "rafamadriz/friendly-snippets",
     config = function(self) return require("luasnip.loaders.from_vscode").lazy_load({ paths = self._.dir }) end,
-  },
-  {
-    "nvim-cmp",
-    dependencies = { "saadparwaiz1/cmp_luasnip" },
-    opts = function(_, opts)
-      opts.snippet = { expand = function(args) require("luasnip").lsp_expand(args.body) end }
-      table.insert(opts.sources, { name = "luasnip" })
-    end,
   },
   {
     "chrisgrieser/nvim-scissors",
