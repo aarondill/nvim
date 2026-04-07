@@ -18,6 +18,7 @@ return {
           auto_brackets = { enabled = false },
         },
         menu = {
+          border = "rounded",
           draw = {
             treesitter = { "lsp" },
           },
@@ -25,6 +26,9 @@ return {
         documentation = {
           auto_show = true,
           auto_show_delay_ms = 200,
+          window = {
+            border = "rounded",
+          },
         },
       },
       sources = {
