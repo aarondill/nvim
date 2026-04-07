@@ -51,10 +51,12 @@ return {
 
       --- Capabilities
       local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+      local has_blink, blink = pcall(require, "blink.cmp")
       local capabilities = vim.tbl_deep_extend(
         "force",
         vim.lsp.protocol.make_client_capabilities(),
-        has_cmp and cmp_nvim_lsp.default_capabilities() or {}
+        has_cmp and cmp_nvim_lsp.default_capabilities() or {},
+        has_blink and blink.get_lsp_capabilities() or {}
       )
       vim.lsp.config("*", { capabilities = capabilities })
     end,
@@ -111,18 +113,6 @@ return {
         { path = "wezterm-types", mods = { "wezterm" } },
       },
     },
-  },
-  { -- optional completion source for require statements and module annotations
-    "hrsh7th/nvim-cmp",
-    optional = true,
-    opts = function(_, opts)
-      _ = _ ---@module 'cmp'
-      opts.sources = opts.sources or {} ---@type cmp.SourceConfig[]
-      opts.sources[#opts.sources + 1] = {
-        name = "lazydev",
-        group_index = 0, -- set group index to 0 to skip loading LuaLS completions
-      }
-    end,
   },
   -- { "justinsgithub/wezterm-types", lazy = true },
 }
