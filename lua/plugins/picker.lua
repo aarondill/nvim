@@ -1,3 +1,4 @@
+if false then _ = require("snacks") end
 local picker = require("utils").picker
 
 local function vpicker(m)
@@ -8,8 +9,17 @@ end
 ---@type LazySpec
 return {
   "folke/snacks.nvim",
+  ---@type snacks.Config
   opts = {
     picker = {
+      win = {
+        input = {
+          keys = {
+            -- reset c-u to delete line instead of scroll up
+            ["<C-u>"] = { "<c-u>", mode = { "i" }, expr = true, desc = "delete line" },
+          },
+        },
+      },
       files = {
         hidden = true,
         ignored = true,
