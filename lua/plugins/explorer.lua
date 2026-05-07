@@ -4,7 +4,19 @@ return {
   ---@type snacks.Config
   opts = {
     explorer = {},
-    picker = { sources = { explorer = {} } },
+    picker = {
+      sources = {
+        explorer = {
+          win = {
+            list = {
+              keys = {
+                ["o"] = "confirm", -- overwrite 'o' to open the file in editor
+              },
+            },
+          },
+        },
+      },
+    },
   },
   keys = {
     { "<leader>ee", function() require("snacks.explorer").open() end, desc = "Toggle Explorer" },
