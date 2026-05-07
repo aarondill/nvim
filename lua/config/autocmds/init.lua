@@ -174,11 +174,6 @@ create_autocmd("BufRead", function(ev)
   vim.bo[ev.buf].modifiable = not vim.bo[ev.buf].readonly
 end, { desc = "Make read-only files non-modifiable", group = augroup })
 
-create_autocmd({ "BufEnter", "TermOpen" }, function(e)
-  if vim.bo[e.buf].buftype ~= "terminal" then return end
-  vim.cmd.startinsert()
-end, { desc = "Enter terminal mode when entering a terminal buffer", group = augroup })
-
 create_autocmd({ "TermOpen" }, function(e)
   local buf = e.buf
   local init_time = vim.uv.hrtime()
