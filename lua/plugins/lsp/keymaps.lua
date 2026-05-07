@@ -41,15 +41,13 @@ local function hover()
   end
   return vim.lsp.buf.hover()
 end
+local p = require("utils").picker
 
 ---@param client integer|vim.lsp.Client
 ---@param buffer? integer
 function M.apply(client, buffer)
   if type(client) == "number" then client = assert(vim.lsp.get_client_by_id(client)) end
   buffer = buffer or vim.api.nvim_get_current_buf()
-  local function telescope_builtin(key)
-    return function() return require("telescope.builtin")[key]({ reuse_win = true }) end
-  end
   local source_action = function()
     return vim.lsp.buf.code_action({ context = { only = { "source" }, diagnostics = {} } })
   end
@@ -62,11 +60,11 @@ function M.apply(client, buffer)
 
   ---@type ({mode?:string[]|string,[1]: string|string[], [2]: string|(fun():any?), desc:string, cond: any})[]
   local keys = {
-    { "gd", telescope_builtin("lsp_definitions"), desc = "Goto Definition" },
+    { "gd", p("lsp_definitions"), desc = "Goto Definition" },
     { "gD", vim.lsp.buf.declaration, desc = "Goto declaration" },
-    { "gr", "<cmd>Telescope lsp_references<cr>", desc = "References" },
-    { "gI", telescope_builtin("lsp_implementations"), desc = "Goto Implementation" },
-    { "gy", telescope_builtin("lsp_type_definitions"), desc = "Goto T[y]pe Definition" },
+    { "gr", p("lsp_references"), desc = "References" },
+    { "gI", p("lsp_implementations"), desc = "Goto Implementation" },
+    { "gy", p("lsp_type_definitions"), desc = "Goto T[y]pe Definition" },
     { "K", hover, desc = "Hover" },
     { "gK", vim.lsp.buf.signature_help, desc = "Signature Help" },
     { "<leader>ca", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" } },

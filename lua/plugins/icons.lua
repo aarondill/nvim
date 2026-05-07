@@ -19,6 +19,5 @@ return {
   { "vuki656/package-info.nvim", opts = icons["package-info"], optional = true },
   { "nvim-neo-tree/neo-tree.nvim", opts = icons["neo-tree"], optional = true },
   { "lewis6991/gitsigns.nvim", opts = icons.gitsigns, optional = true },
-  { "nvim-telescope/telescope.nvim", opts = icons.telescope, optional = true },
   { "folke/noice.nvim", opts = icons.noice, optional = true },
 }

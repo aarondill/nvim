@@ -49,7 +49,6 @@ return {
       },
     },
   }, -- }}}
-  telescope = { defaults = { prompt_prefix = "> ", selection_caret = "> " } },
   flash_prompt = "Flash: ",
   gitsigns = {
     signs = {

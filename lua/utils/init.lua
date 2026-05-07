@@ -50,15 +50,14 @@ function M.is_tty()
   return not vim.env.DISPLAY
 end
 
--- this will return a function that calls telescope. cwd will default to the root
--- for `files`, git_files or find_files will be chosen depending on .git
-function M.telescope(builtin, opts) ---@param builtin string
+-- this will return a function that calls snacks.picker. cwd will default to the root
+function M.picker(builtin, opts) ---@param builtin string
   local root = require("utils.root")
   local params = { builtin, opts } -- save original values of params
-  return function()
+  return function(opts2)
     builtin, opts = table.unpack(params)
-    opts = vim.tbl_deep_extend("force", { cwd = root.get() }, opts or {})
-    return require("telescope.builtin")[builtin](opts)
+    opts = vim.tbl_deep_extend("force", { cwd = root.get() }, opts or {}, opts2 or {})
+    return require("snacks.picker")[builtin](opts)
   end
 end
 

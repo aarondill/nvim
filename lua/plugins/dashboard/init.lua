@@ -1,4 +1,4 @@
-local t = require("utils").telescope
+local p = require("utils").picker
 math.randomseed(os.time())
 for _ = 1, 10 do
   math.random()
@@ -29,7 +29,7 @@ return {
         header = header,
         center = {
           {
-            action = t("find_files"),
+            action = p("files"),
             desc = " Find file",
             icon = " ",
             key = "f",
@@ -41,13 +41,13 @@ return {
             key = "n",
           },
           {
-            action = t("oldfiles"),
+            action = p("recent"),
             desc = " Recent files",
             icon = " ",
             key = "r",
           },
           {
-            action = t("live_grep"),
+            action = p("grep"),
             desc = " Find text",
             icon = " ",
             key = "g",

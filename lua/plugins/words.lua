@@ -13,7 +13,7 @@ return {
     },
   },
   keys = {
-    { "]]", function() require("snacks.words").jump(1, true) end, desc = "Next Reference" },
-    { "[[", function() require("snacks.words").jump(-1, true) end, desc = "Prev Reference" },
+    { "]]", function() require("snacks.words").jump(vim.v.count1, true) end, desc = "Next Reference" },
+    { "[[", function() require("snacks.words").jump(-vim.v.count1, true) end, desc = "Prev Reference" },
   },
 }

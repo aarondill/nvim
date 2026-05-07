@@ -86,7 +86,6 @@ local M = {
     Value = " ",
     Variable = " ",
   },
-  telescope = { defaults = { prompt_prefix = " ", selection_caret = " " } },
   gitsigns = {
     signs = {
       add = { text = "▎" },

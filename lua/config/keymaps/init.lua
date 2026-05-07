@@ -263,9 +263,6 @@ map({ "n", "x" }, "\\", "@:", "Backslash redoes the last command")
 -- map("n", "<C-CR>", term(true), "Terminal (root dir)")
 -- map("n", "<C-;>", term(false), "Terminal (cwd dir)")
 
---- Note: this gets overridden by treesitter config
-map("x", "<C-/>", ":<C-u>grep <C-r><C-w>", "Grep for the selected string")
-
 map("n", "<bs>", function()
   if vim.fn.getreg("#") == "" then return "<cmd>bn<cr>" end
   return "<c-^>"
