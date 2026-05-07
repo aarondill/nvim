@@ -27,7 +27,6 @@ return {
   },
   {
     "chrisgrieser/nvim-scissors",
-    dependencies = "nvim-telescope/telescope.nvim",
     opts = { ---@type pluginConfig | {}
       snippetDir = snippet_dir,
       jsonFormatter = vim.fn.executable("jq") == 1 and "jq" or "none",

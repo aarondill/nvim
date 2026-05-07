@@ -15,7 +15,7 @@ return {
       -- provided one, if nothing is provided it will use `yarn`
       package_manager = "pnpm",
     },
-    dependencies = { "MunifTanjim/nui.nvim", "nvim-telescope/telescope.nvim" },
+    dependencies = { "MunifTanjim/nui.nvim" },
     event = "BufEnter package.json",
     keys = {
       { "<leader>ns", lazy_method("show"), desc = "Show package versions" }, -- Show dependency versions
@@ -26,8 +26,6 @@ return {
     },
     config = function(_, opts)
       require("package-info").setup(opts)
-      require("telescope").load_extension("package_info")
-
       -- Setup colors correctly
       local augroup = vim.api.nvim_create_augroup("package_info_augroup", { clear = true })
       create_autocmd("ColorScheme", "highlight PackageInfoOutdatedVersion guifg=red guibg=NONE", { group = augroup })

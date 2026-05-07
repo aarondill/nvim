@@ -78,7 +78,7 @@ function M.apply(client, buffer)
     },
     { "<leader>cA", source_action, desc = "Source Action" },
     { "<leader>cc", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "v" } },
-    { "<leader>cC", vim.lsp.codelens.refresh, desc = "Refresh & Display Codelens" },
+    { "<leader>cC", function() vim.lsp.codelens.enable(true) end, desc = "Refresh & Display Codelens" },
     { { "<leader>cr", "<f2>" }, rename_rhs, desc = "Rename", expr = rename_is_expr },
   }
 

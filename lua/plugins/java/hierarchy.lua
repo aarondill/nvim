@@ -1,9 +1,9 @@
 local M = {}
 
----Loads all matches to the quickfix list then opens a telescope picker
+---Loads all matches to the quickfix list then opens a picker
 ---@param result lsp.TypeHierarchyItem[]|nil
 ---@param ctx {params: {item: lsp.TypeHierarchyItem}}
-function M.telescope_hierarchy(_, result, ctx)
+function M.select_hierarchy(_, result, ctx)
   if not result then return end
   table.insert(result, 1, ctx.params.item) -- insert the given item at the start of the list
   vim.ui.select(result, {
@@ -16,12 +16,12 @@ function M.telescope_hierarchy(_, result, ctx)
   }, function(item) ---@param item lsp.TypeHierarchyItem?
     if not item then return end -- ensure no nil index
     item.range = item.selectionRange -- We prefer to jump at the selectionRange
-    vim.lsp.util.jump_to_location(item, "utf-8", true)
+    vim.lsp.util.show_document(item, "utf-8", { focus = true, reuse_win = true })
   end)
 end
 
 function M.type_hierarchy(method, handler)
-  local params = vim.lsp.util.make_position_params()
+  local params = vim.lsp.util.make_position_params(0, "utf-8")
   local prepare_method = "textDocument/prepareTypeHierarchy"
   vim.lsp.buf_request(0, prepare_method, params, function(_, result)
     if not result then return end

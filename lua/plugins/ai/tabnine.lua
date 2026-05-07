@@ -29,7 +29,7 @@ return {
     dismiss_keymap = false, -- Default: "<C-]>"
     debounce_ms = 500, -- Faster pls. Default: 800
     suggestion_color = { gui = "#808080", cterm = 244 },
-    exclude_filetypes = require("consts").ignored_filetypes, -- Default: { "TelescopePrompt" }
+    exclude_filetypes = require("consts").ignored_filetypes,
     codelens_enabled = false,
   },
   -- Note: <tab> is handled in keymaps.lua,

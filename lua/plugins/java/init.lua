@@ -41,12 +41,12 @@ return {
     keys = { --- Mappings -- <leader>j is java
       {
         "<leader>jh",
-        function() return h.type_hierarchy("typeHierarchy/supertypes", h.telescope_hierarchy) end,
+        function() return h.type_hierarchy("typeHierarchy/supertypes", h.select_hierarchy) end,
         desc = "Show Class Hierarchy (supertypes)",
       },
       {
         "<leader>jH",
-        function() return h.type_hierarchy("typeHierarchy/subtypes", h.telescope_hierarchy) end,
+        function() return h.type_hierarchy("typeHierarchy/subtypes", h.select_hierarchy) end,
         desc = "Show Class Hierarchy (subtypes)",
       },
     },
