@@ -26,18 +26,6 @@ return {
       },
     },
   },
-  init = function()
-    if vim.fn.argc() == 0 then -- if no args, then open the files
-      local read_from_stdin = false
-      require("utils.create_autocmd")("StdinReadPre", function()
-        read_from_stdin = true -- don't open treesitter on reading from stdin
-      end)
-      require("utils.create_autocmd")("VimEnter", function()
-        if read_from_stdin then return end
-        vim.defer_fn(picker("files"), 0)
-      end)
-    end
-  end,
   keys = {
     { "<leader>:", picker("command_history"), desc = "Command History" },
     { "<leader><space>", picker("files"), desc = "Find Files (root dir)" },

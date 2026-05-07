@@ -1,90 +1,87 @@
-local p = require("utils").picker
+if false then _ = require("snacks") end
 math.randomseed(os.time())
 for _ = 1, 10 do
   math.random()
 end
-require("utils.create_autocmd")("StdinReadPre", function() -- don't open dashboard on reading from stdin
-  vim.g.read_from_stdin = 1
-end)
----@type LazySpec
+local headers = require("plugins.dashboard.headers")
+local lines = headers[math.random(1, #headers)] -- array of lines
+local header = vim.iter(lines):join("\n")
+
 return {
-  "nvimdev/dashboard-nvim",
-  event = { "VimEnter", "StdinReadPre" },
-  opts = function()
-    local headers = require("plugins.dashboard.headers")
-    local header = headers[math.random(1, #headers)]
-    while #header < 20 do
-      table.insert(header, 1, "")
-      table.insert(header, "")
-    end
-
-    local opts = {
-      theme = "doom",
-      hide = {
-        -- this is taken care of by lualine
-        -- enabling this messes up the actual laststatus setting after loading a file
-        statusline = false,
-      },
-      config = {
-        header = header,
-        center = {
-          {
-            action = p("files"),
-            desc = " Find file",
-            icon = " ",
-            key = "f",
-          },
-          {
-            action = "ene | startinsert",
-            desc = " New file",
-            icon = " ",
-            key = "n",
-          },
-          {
-            action = p("recent"),
-            desc = " Recent files",
-            icon = " ",
-            key = "r",
-          },
-          {
-            action = p("grep"),
-            desc = " Find text",
-            icon = " ",
-            key = "g",
-          },
-          {
-            action = 'lua require("persistence").load()',
-            desc = " Restore Session",
-            icon = " ",
-            key = "s",
-          },
-          {
-            action = "Lazy",
-            desc = " Lazy",
-            icon = "󰒲 ",
-            key = "l",
-          },
-          {
-            action = "qa",
-            desc = " Quit",
-            icon = " ",
-            key = "q",
-          },
+  "folke/snacks.nvim",
+  event = "VeryLazy",
+  ---@type snacks.Config
+  opts = {
+    dashboard = {
+      sections = {
+        { section = "header" },
+        { section = "keys", gap = 1, padding = 1 },
+        { pane = 2, icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1, limit = 8 },
+        {
+          pane = 2,
+          icon = " ",
+          title = "Recent Files",
+          section = "recent_files",
+          indent = 2,
+          padding = 1,
+          limit = 8,
         },
-        footer = function()
-          local stats = require("lazy").stats()
-          local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-          return { "⚡ Neovim loaded " .. stats.loaded .. "/" .. stats.count .. " plugins in " .. ms .. "ms" }
+        function()
+          return {
+            pane = 2,
+            icon = " ",
+            desc = "Browse Repo",
+            enabled = Snacks.git.get_root() ~= nil,
+            padding = 1,
+            key = "b",
+            action = function() Snacks.gitbrowse() end,
+          }
         end,
+        function()
+          local in_git = Snacks.git.get_root() ~= nil
+          local cmds = {
+            {
+              title = "Open Issues",
+              cmd = "gh issue list -L 3",
+              key = "i",
+              action = function() vim.fn.jobstart("gh issue list --web", { detach = true }) end,
+              icon = " ",
+              height = 7,
+            },
+            {
+              icon = " ",
+              title = "Open PRs",
+              cmd = "gh pr list -L 3",
+              key = "P",
+              action = function() vim.fn.jobstart("gh pr list --web", { detach = true }) end,
+              height = 7,
+            },
+            {
+              icon = " ",
+              title = "Git Status",
+              cmd = "git --no-pager diff --stat -B -M -C",
+              height = 10,
+            },
+          }
+          return vim.tbl_map(
+            function(cmd)
+              return vim.tbl_extend("force", {
+                pane = 2,
+                section = "terminal",
+                enabled = in_git,
+                padding = 1,
+                ttl = 5 * 60,
+                indent = 3,
+              }, cmd)
+            end,
+            cmds
+          )
+        end,
+        { section = "startup" },
       },
-    }
-
-    -- Space out the keys
-    for _, button in ipairs(opts.config.center) do
-      button.desc = button.desc .. string.rep(" ", 43 - #button.desc)
-      button.key_format = "  %s"
-    end
-
-    return opts
-  end,
+      preset = {
+        header = header,
+      },
+    },
+  },
 }
