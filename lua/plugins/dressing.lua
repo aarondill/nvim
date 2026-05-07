@@ -1,18 +1,16 @@
--- better vim.ui
+if false then _ = require("snacks") end
 ---@type LazySpec
 return {
-  "stevearc/dressing.nvim",
-  lazy = true,
+  "folke/snacks.nvim",
   init = function()
     ---@diagnostic disable-next-line: duplicate-set-field
-    vim.ui.select = function(...)
-      require("dressing")
-      return vim.ui.select(...)
-    end
-    ---@diagnostic disable-next-line: duplicate-set-field
     vim.ui.input = function(...)
-      -- require("lazy").load({ plugins = { "dressing.nvim" } })
+      require("snacks.input") -- Lazy load snacks.input
       return vim.ui.input(...)
     end
   end,
+  ---@type snacks.Config
+  opts = {
+    input = {},
+  },
 }

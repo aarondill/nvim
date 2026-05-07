@@ -1,11 +1,11 @@
----@alias BigFileConfig config
-
+if false then _ = require("snacks") end
 ---@type LazySpec
 return {
-  "LunarVim/bigfile.nvim",
-  ---@type BigFileConfig|{}
-  opts = { filesize = 1 },
-  -- event = "LazyFile",
+  "folke/snacks.nvim",
   lazy = false,
   priority = 2000,
+  ---@type snacks.Config
+  opts = {
+    bigfile = {},
+  },
 }

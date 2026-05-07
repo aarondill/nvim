@@ -1,34 +1,18 @@
-local root = require("utils.root")
-local current = 2
+if false then _ = require("snacks") end
 ---@type LazySpec
 return {
-  "CRAG666/betterTerm.nvim",
-  opts = {},
+  "folke/snacks.nvim",
+  opts = {
+    terminal = {},
+  },
   keys = {
-    -- toggle firts term
-    {
-      "<C-'>",
-      function() require("betterTerm").open() end,
-      mode = { "n", "t" },
-      desc = "Open terminal",
-    },
-    -- Override the C-CR mapping too (ideally would open in root)
+    { "<C-'>", function() require("snacks.terminal").toggle() end, mode = { "n", "t" }, desc = "Toggle terminal" },
     {
       "<C-CR>",
-      function() require("betterTerm").open(nil, { cwd = root.get() }) end,
+      function() require("snacks.terminal").toggle(nil, { cwd = require("utils.root").get() }) end,
       mode = { "n", "t" },
-      "Terminal (root dir)",
+      desc = "Terminal (root dir)",
     },
-    -- Select term focus
-    { "<leader>tt", function() require("betterTerm").select() end, desc = "Select terminal" },
-    -- Create new term
-    {
-      "<leader>tn",
-      function()
-        require("betterTerm").open(current)
-        current = current + 1
-      end,
-      desc = "New terminal",
-    },
+    { "<leader>tn", function() require("snacks.terminal").open() end, desc = "New Terminal" },
   },
 }

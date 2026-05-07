@@ -107,7 +107,7 @@ vim.schedule(function()
     k.lhs = lhs:gsub(" ", "<Space>") -- replace spaces with <Space>
   end
   local msg = ("%smap %s"):format(k.mode or "", k.lhs) .. ": " .. (k.desc or k.rhs)
-  require("utils.notifications").info(msg, { title = "Keymap", timeout = 30 * 1000 })
+  require("utils.notifications").info(msg, { title = "Keymap", timeout = 15 * 1000 })
 end)
 
 vim.schedule(_start_notifs_timer) -- start the timer after we're done with everything

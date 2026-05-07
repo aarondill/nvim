@@ -1,35 +1,12 @@
-local create_autocmd = require("utils.create_autocmd")
+if false then _ = require("snacks") end
 ---@type LazySpec
 return {
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    event = "LazyFile",
-    opts = {
-      indent = {
-        char = "│",
-        tab_char = "│",
-      },
-      scope = { enabled = false },
-      exclude = {
-        filetypes = require("consts").ignored_filetypes,
-      },
+  "folke/snacks.nvim",
+  event = "LazyFile",
+  ---@type snacks.Config
+  opts = {
+    indent = {
+      filter = function(buf) return not vim.tbl_contains(require("consts").ignored_filetypes, vim.bo[buf].filetype) end,
     },
-    main = "ibl",
-  },
-  { -- highligh current scope
-    "nvim-mini/mini.indentscope",
-    version = false,
-    event = "LazyFile",
-    opts = {
-      symbol = "│",
-      options = { try_as_border = true },
-    },
-    init = function()
-      create_autocmd(
-        "FileType",
-        function() vim.b.miniindentscope_disable = true end,
-        { pattern = require("consts").ignored_filetypes }
-      )
-    end,
   },
 }
