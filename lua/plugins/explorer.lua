@@ -5,6 +5,7 @@ return {
   opts = {
     explorer = {},
     picker = {
+      hidden = true,
       sources = {
         explorer = {
           win = {
