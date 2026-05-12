@@ -23,7 +23,7 @@ return {
   { import = "plugins.lsp.servers" },
   {
     "neovim/nvim-lspconfig",
-    event = "LazyFile",
+    lazy = false, -- don't lazy load it so that vim doesn't complain about missing keys in lsp/
     dependencies = { -- load these before lspconfig
       "folke/neoconf.nvim",
       "mason.nvim",
