@@ -285,6 +285,21 @@ map("i", "<c-e>", "<End>", "End of line")
 map("c", "<c-a>", "<Home>", "Beginning of line")
 map("c", "<c-e>", "<End>", "End of line")
 
+map({ "x", "o", "n" }, "<c-space>", function()
+  if vim.treesitter.get_parser(nil, nil, { error = false }) then
+    require("vim.treesitter._select").select_parent(vim.v.count1)
+  else
+    vim.lsp.buf.selection_range(vim.v.count1)
+  end
+end, "Expand incremental selection")
+map({ "x", "o" }, "<bs>", function()
+  if vim.treesitter.get_parser(nil, nil, { error = false }) then
+    require("vim.treesitter._select").select_child(vim.v.count1)
+  else
+    vim.lsp.buf.selection_range(-vim.v.count1)
+  end
+end, "Decrement selection")
+
 --- Enter opens command line
 map({ "n", "v" }, "<CR>", ":", "Enter command line")
 
