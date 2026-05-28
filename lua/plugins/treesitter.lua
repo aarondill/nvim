@@ -11,6 +11,9 @@ return {
     "romus204/tree-sitter-manager.nvim",
     event = "LazyFile",
     cmd = { "TSManager", "TSInstall", "TSUninstall" },
+    keys = {
+      { "<leader>sp", "<cmd>TSManager<cr>", desc = "[S]how Treesitter [P]arsers." },
+    },
     opts = {
       auto_install = true,
       ensure_installed = require("utils").flatten({
