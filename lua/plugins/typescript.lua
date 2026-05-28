@@ -35,10 +35,4 @@ return {
       end)
     end,
   },
-  { -- add typescript to treesitter
-    "nvim-treesitter/nvim-treesitter",
-    opts = {
-      ensure_installed = { "typescript", "tsx", "styled" },
-    },
-  },
 }

@@ -1,13 +1,6 @@
 ---@type LazySpec
 return {
   {
-    "nvim-treesitter/nvim-treesitter",
-    optional = true,
-    opts = {
-      ensure_installed = { "dockerfile", "git_config", "jsdoc", "make", "toml", "vimdoc", "java" },
-    },
-  },
-  {
     "williamboman/mason.nvim",
     optional = true,
     opts = {

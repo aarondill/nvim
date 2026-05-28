@@ -15,15 +15,7 @@ local o = {
 vim.lsp.config("jsonls", o)
 
 ---@type LazySpec
-return {
-  { -- add json to treesitter
-    "nvim-treesitter/nvim-treesitter",
-    opts = {
-      ensure_installed = { "json", "json5", "jsonc" },
-    },
-  },
-  { -- yaml schema support
-    "b0o/SchemaStore.nvim",
-    version = false,
-  },
+return { -- yaml schema support
+  "b0o/SchemaStore.nvim",
+  version = false,
 }
