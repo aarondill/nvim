@@ -8,10 +8,11 @@ return {
     end,
   },
   { -- syntax highlighting.
-    "arborist-ts/arborist.nvim",
-    lazy = false,
-    cmd = { "Arborist", "ArboristInstall", "ArboristUpdate", "ArboristClean" },
+    "romus204/tree-sitter-manager.nvim",
+    event = "LazyFile",
+    cmd = { "TSManager", "TSInstall", "TSUninstall" },
     opts = {
+      auto_install = true,
       ensure_installed = require("utils").flatten({
         { "bash", "c", "diff", "dockerfile", "git_config", "html", "java", "javascript", "jsdoc", "json" },
         { "json5", "lua", "luadoc", "luap", "make", "markdown", "markdown_inline", "python", "query" },
