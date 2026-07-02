@@ -25,7 +25,7 @@ M.providers[#M.providers + 1] = {
 --- LuaSnip
 M.providers[#M.providers + 1] = {
   active = function() return package.loaded["luasnip"] and require("luasnip").jumpable(1) end,
-  run = function() return require("luasnip").jump(1) end,
+  run = function() require("luasnip").jump(1) end,
 }
 
 map("i", "<tab>", function()
@@ -34,5 +34,6 @@ map("i", "<tab>", function()
   end
   return "<tab>"
 end, "Tab completion in insert mode", { expr = true })
+map("i", "<s-tab>", "<tab>", "Force literal tab in insert mode")
 
 return M
