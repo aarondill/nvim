@@ -17,9 +17,13 @@ end
 
 local function wordcount()
   local wordcount_dict = vim.fn.wordcount()
-  local words, chars = wordcount_dict.words, wordcount_dict.chars
-  local lines = vim.fn.line("$")
-  -- local mins = tostring(math.ceil(words / 200)) -- 200 wpm
+
+  local words = wordcount_dict.visual_words or wordcount_dict.words
+  local chars = wordcount_dict.visual_chars or wordcount_dict.chars
+  local lines = wordcount_dict.visual_words -- visual?
+      and (math.abs(vim.fn.line(".") - vim.fn.line("v")) + 1) -- :
+    or vim.fn.line("$")
+
   return ("%dw%dc%dl"):format(words, chars, lines)
 end
 local function time() return icons.clock .. os.date("%R") end
