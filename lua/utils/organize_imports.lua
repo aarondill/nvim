@@ -10,41 +10,42 @@ M.server_commands = {
   default = "source.organizeImports",
   ["ts_ls"] = "_typescript.organizeImports",
   ["jdtls"] = function() require("jdtls").organize_imports() end,
-  -- Source: https://github.com/mrcjkb/rustaceanvim/issues/259#issuecomment-2674029681
-  -- Needed until https://github.com/rust-lang/rust-analyzer/issues/5131 is merged
-  ["rust_analyzer"] = function(client, bufnr)
-    local last_line = vim.api.nvim_buf_get_lines(bufnr, -2, -1, false)[1]
-    if not last_line then return end -- if there's no lines, there's no point in organizing.
-    local params = vim.lsp.util.make_given_range_params( -- full file
-      { 1, 0 },
-      { vim.api.nvim_buf_line_count(bufnr), #last_line - 1 },
-      bufnr,
-      "utf-16"
-    )
-    ---@diagnostic disable-next-line: inject-field -- it's wrong
-    params.context =
-      { diagnostics = {}, only = { "quickfix" }, triggerKind = vim.lsp.protocol.CodeActionTriggerKind.Invoked }
-
-    local actions = client:request_sync("textDocument/codeAction", params, 1000, bufnr)
-    if not actions or actions.err then return end -- don't log error, the use will probably (need to) try again laster
-    local action = vim.iter(actions.result):find(function(a) return a.title == "Remove all unused imports" end) --- @type lsp.CodeAction[]
-    if not action then return end
-
-    local resolve = assert(client:request_sync("codeAction/resolve", action, 1000, bufnr))
-    if resolve.err then return error(resolve.err.code .. ": " .. resolve.err.message) end
-    if resolve.result.edit then vim.lsp.util.apply_workspace_edit(resolve.result.edit, client.offset_encoding) end
-
-    -- client:request("textDocument/codeAction", params, function(err, result) --- @param result? lsp.CodeAction[]
-    --   if err then error(err.code .. ": " .. err.message) end
-    --   if not result then return end
-    --   local action = vim.iter(result):find(function(a) return a.title == "Remove all unused imports" end) --- @type lsp.CodeAction[]
-    --   if not action then return end
-    --   client:request("codeAction/resolve", action, function(err_resolve, resolved_action)
-    --     if err_resolve then error(err_resolve.code .. ": " .. err_resolve.message) end
-    --     if resolved_action.edit then vim.lsp.util.apply_workspace_edit(resolved_action.edit, client.offset_encoding) end
-    --   end, bufnr)
-    -- end, bufnr)
-  end,
+  -- FIXME: disabled because it breaks glob imports :(
+  -- -- Source: https://github.com/mrcjkb/rustaceanvim/issues/259#issuecomment-2674029681
+  -- -- Needed until https://github.com/rust-lang/rust-analyzer/issues/5131 is merged
+  -- ["rust_analyzer"] = function(client, bufnr)
+  --   local last_line = vim.api.nvim_buf_get_lines(bufnr, -2, -1, false)[1]
+  --   if not last_line then return end -- if there's no lines, there's no point in organizing.
+  --   local params = vim.lsp.util.make_given_range_params( -- full file
+  --     { 1, 0 },
+  --     { vim.api.nvim_buf_line_count(bufnr), #last_line - 1 },
+  --     bufnr,
+  --     "utf-16"
+  --   )
+  --   ---@diagnostic disable-next-line: inject-field -- it's wrong
+  --   params.context =
+  --     { diagnostics = {}, only = { "quickfix" }, triggerKind = vim.lsp.protocol.CodeActionTriggerKind.Invoked }
+  --
+  --   local actions = client:request_sync("textDocument/codeAction", params, 1000, bufnr)
+  --   if not actions or actions.err then return end -- don't log error, the use will probably (need to) try again laster
+  --   local action = vim.iter(actions.result):find(function(a) return a.title == "Remove all unused imports" end) --- @type lsp.CodeAction[]
+  --   if not action then return end
+  --
+  --   local resolve = assert(client:request_sync("codeAction/resolve", action, 1000, bufnr))
+  --   if resolve.err then return error(resolve.err.code .. ": " .. resolve.err.message) end
+  --   if resolve.result.edit then vim.lsp.util.apply_workspace_edit(resolve.result.edit, client.offset_encoding) end
+  --
+  --   -- client:request("textDocument/codeAction", params, function(err, result) --- @param result? lsp.CodeAction[]
+  --   --   if err then error(err.code .. ": " .. err.message) end
+  --   --   if not result then return end
+  --   --   local action = vim.iter(result):find(function(a) return a.title == "Remove all unused imports" end) --- @type lsp.CodeAction[]
+  --   --   if not action then return end
+  --   --   client:request("codeAction/resolve", action, function(err_resolve, resolved_action)
+  --   --     if err_resolve then error(err_resolve.code .. ": " .. err_resolve.message) end
+  --   --     if resolved_action.edit then vim.lsp.util.apply_workspace_edit(resolved_action.edit, client.offset_encoding) end
+  --   --   end, bufnr)
+  --   -- end, bufnr)
+  -- end,
 }
 M.skip = {
   jdtls = true, -- JAVA is dumb and removes all imports on a syntax error
