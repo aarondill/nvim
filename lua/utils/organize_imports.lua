@@ -21,7 +21,10 @@ local function get_clients(bufnr, force)
   local clients = vim.lsp.get_clients({ bufnr = bufnr })
   -- This client does not support the workspace/executeCommand method
   local supported = vim.tbl_filter(
-    function(client) return client:supports_method("workspace/executeCommand", bufnr) end,
+    function(client)
+      return client:supports_method("workspace/executeCommand", bufnr)
+        or type(M.server_commands[client.name]) == "function"
+    end,
     clients
   )
   if force then return supported end
@@ -39,6 +42,9 @@ function M.organize_imports(bufnr, force)
     local command = M.server_commands[name] or M.server_commands.default
     if type(command) == "function" then command = command(client, bufnr) end
     if command then -- If there's a command, or the function returned a command, run it
+      if not client:supports_method("workspace/executeCommand", bufnr) then
+        error(("client %s does not support workspace/executeCommand"):format(client.name))
+      end
       client:request_sync(
         "workspace/executeCommand",
         { command = command, arguments = { vim.api.nvim_buf_get_name(bufnr) } },
