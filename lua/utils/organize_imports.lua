@@ -10,6 +10,20 @@ M.server_commands = {
   default = "source.organizeImports",
   ["ts_ls"] = "_typescript.organizeImports",
   ["jdtls"] = function() require("jdtls").organize_imports() end,
+  -- Needed until https://github.com/rust-lang/rust-analyzer/issues/5131 is merged
+  ["rust_analyzer"] = function(client, bufnr)
+    local last_line = vim.api.nvim_buf_get_lines(bufnr, -2, -1, false)[1]
+    if not last_line then return end -- if there's no lines, there's no point in organizing.
+    vim.lsp.buf.code_action({
+      context = { only = { "quickfix" }, diagnostics = {} },
+      apply = true,
+      filter = function(a, client_id) return client.id == client_id and a.title == "Remove all unused imports" end,
+      range = {
+        start = { 1, 0 },
+        ["end"] = { #vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), #last_line - 1 },
+      },
+    })
+  end,
 }
 M.skip = {
   jdtls = true, -- JAVA is dumb and removes all imports on a syntax error
