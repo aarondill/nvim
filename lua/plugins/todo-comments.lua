@@ -9,7 +9,9 @@ return {
       -- TODO: This note
       TODO = { icon = " ", color = "info", alt = { "WIP" } },
       -- HACK: This note
-      HACK = { icon = " ", color = "warning", alt = { "DEV" } },
+      HACK = { icon = " ", color = "warning" },
+      -- DEBUG: This note
+      DEBUG = { icon = " ", color = "error", alt = { "DEV" } },
       -- WARN: This note
       WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
       -- PERF: This note
