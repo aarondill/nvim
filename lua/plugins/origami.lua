@@ -4,6 +4,10 @@ return {
   event = "LazyFile",
   main = "origami",
   opts = {
+    foldKeymaps = { closeOnlyOnFirstColumn = true },
+    useLspFoldsWithTreesitterFallback = {
+      foldmethodIfNeitherIsAvailable = "marker",
+    },
     foldtext = {
       disableOnFt = require("consts").ignored_filetypes,
     },
